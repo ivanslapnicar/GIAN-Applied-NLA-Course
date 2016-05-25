@@ -65,3 +65,4 @@ PDF files are in the directory `src/pdf`.
 
     The directory `GIAN-Applied-NLA-Course` is now listed. The notebooks are located in
 the dircetory `src/`.
+# GIAN-Applied-NLA-Course
