@@ -3,6 +3,8 @@
 This is the collection of course materials for the GIAN Course
 _Modern Applications of Numerical Linear Algebra Methods_.
 
+[Browse the notebooks](http://nbviewer.jupyter.org/url/github.com/ivanslapnicar/GIAN-Applied-NLA-Course/tree/master/src/)
+
 The course is scheduled from _June 26, 2016_ to _July 5, 2016_ at IIT Indore.
 
 Here are some links:
