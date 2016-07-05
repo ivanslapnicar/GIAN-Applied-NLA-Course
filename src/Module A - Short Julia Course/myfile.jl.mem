@@ -19,7 +19,7 @@
         - end
         - 
         - n=1000001
-        - pbig=Poly(rand(n))
+        - pbig=Poly(rand(n));
         - x=0.12345
         - 
         - polyval(pbig,x)
