@@ -217,7 +217,8 @@ end
 ### DSTEDC
 # Part of the preamble of lapack.jl
 const liblapack = Base.liblapack_name
-import Base.blasfunc
+# import Base.blasfunc
+import Base.LinAlg.BLAS.@blasfunc
 # import ..LinAlg: BlasFloat, Char, BlasInt, LAPACKException,
     # DimensionMismatch, SingularException, PosDefException, chkstride1, chksquare
 import Base.LinAlg.BlasInt
@@ -255,7 +256,7 @@ for (stedc, elty) in
             liwork=6+6*n+5*n*round(Int,ceil(log(n)/log(2)))
             iwork = Array(BlasInt,liwork)
             info = Array(BlasInt,1)
-            ccall(($(blasfunc(stedc)), liblapack), Void,
+            ccall((@blasfunc($stedc), liblapack), Void,
                 (Ptr{UInt8}, Ptr{BlasInt}, Ptr{$elty},
                 Ptr{$elty}, Ptr{$elty}, Ptr{BlasInt}, Ptr{$elty}, Ptr{BlasInt},
                 Ptr{BlasInt}, Ptr{BlasInt}, Ptr{BlasInt}),
