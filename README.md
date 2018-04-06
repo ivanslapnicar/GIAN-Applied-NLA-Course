@@ -5,7 +5,7 @@ _Modern Applications of Numerical Linear Algebra Methods_.
 
 [Browse the notebooks](http://nbviewer.jupyter.org/url/github.com/ivanslapnicar/GIAN-Applied-NLA-Course/tree/master/src/)
 
-The course is scheduled from _June 26, 2016_ to _July 5, 2016_ at IIT Indore.
+The course was held from _June 26, 2016_ to _July 5, 2016_ at IIT Indore.
 
 Here are some links:
 * [Global Initiative of Academic Networks](http://www.gian.iitkgp.ac.in/)
@@ -30,7 +30,7 @@ The naming scheme of the notebooks is the following:
 * tutorial assignments start with `T`, and
 * solutions to tutorial assignments start with`S`.
 
-PDF files for the three modules are also provided.
+PDF files for the three modules are also provided. The notebooks have been updated and ported to current version of Julia, but the PDF file are from the original course.
 
 To understand the author's concepts behind the creation of the course,
 read the [Manifest](src/Manifest.md).
@@ -38,12 +38,12 @@ read the [Manifest](src/Manifest.md).
 The notebooks can be used in three ways:
 
 1. Browsing the notebooks with
-[IPython notebook viewer](http://nbviewer.jupyter.org/) ->
+[Jupyter notebook viewer](http://nbviewer.jupyter.org/) ->
 [browse the notebooks](http://nbviewer.jupyter.org/url/github.com/ivanslapnicar/GIAN-Applied-NLA-Course/tree/master/src/)
 
 2. Cloning the notebooks to your computer with the command (in Linux)
 
-    `git clone https://github.com/ivanslapnicar/GIAN-Applied-NLA-Course`
+    `git clone https://github.com/ivanslapnicar/GIAN-Applied-NLA-Course.git`
 
     For Windows, you can install the [GitHub Desktop](https://desktop.github.com/)
     and use it to clone the repository.
@@ -54,17 +54,15 @@ be used interactively (you need to install  [Julia](http://julialang.org/) and
 [L00 Installing and Running Julia](http://nbviewer.jupyter.org/url/github.com/ivanslapnicar/GIAN-Applied-NLA-Course/tree/master/src/Module A - Short Julia Course/L00 Installing and Running Julia.ipynb)).
 PDF files are in the directory `src/pdf`.
 
-3. Executing the notebooks on [JuliaBox](https://juliabox.org/):
-  * go to https://juliabox.org and sign in
-  * go to __Sync__
-  * paste the address `https://github.com/ivanslapnicar/GIAN-Applied-NLA-Course` into
-    __Git Clone URL__ box
-  * check that the __Branch__ is set to _master_
-  * check that  __JuliaBox Folder__ is set to _GIAN-Applied-NLA-Course_
-  * press _+_ to add the repository
-  * press down arrow to synchronize the repository
-  * go to  __IJulia__
+3. Executing the notebooks on [JuliaBox](https://juliabox.com/):
 
-    The directory `GIAN-Applied-NLA-Course` is now listed. The notebooks are located in
-the dircetory `src/`.
-# GIAN-Applied-NLA-Course
+  * go to https://juliabox.com and sign in
+  * go to __Git__
+  * paste the address `https://github.com/ivanslapnicar/GIAN-Applied-NLA-Course.git` into
+__Git Clone URL__ box
+  * check that the __Branch__ is set to _master_
+  * press _+_ to add the repository
+  * close the __Git__ window
+
+  The directory `GIAN-Applied-NLA-Course` is now listed. The notebooks are
+  located in the directory `src/`.
