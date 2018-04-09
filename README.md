@@ -30,7 +30,7 @@ The naming scheme of the notebooks is the following:
 * tutorial assignments start with `T`, and
 * solutions to tutorial assignments start with`S`.
 
-PDF files for the three modules are also provided. The notebooks have been updated and ported to current version of Julia, but the PDF file are from the original course.
+PDF files for the three modules are also provided. Meanwhile, the notebooks are being updated and ported to the current version of Julia.
 
 To understand the author's concepts behind the creation of the course,
 read the [Manifest](src/Manifest.md).
@@ -52,7 +52,8 @@ The notebooks can be used in three ways:
 be used interactively (you need to install  [Julia](http://julialang.org/) and
 [Jupyter](http://jupyter.org/) as described in the notebook
 [L00 Installing and Running Julia](http://nbviewer.jupyter.org/url/github.com/ivanslapnicar/GIAN-Applied-NLA-Course/tree/master/src/Module A - Short Julia Course/L00 Installing and Running Julia.ipynb)).
-PDF files are in the directory `src/pdf`.
+PDF files used in original course are in the directory `src/pdf`.
+PDF files of the updated notebooks are in the directory `src/pdf/new`.
 
 3. Executing the notebooks on [JuliaBox](https://juliabox.com/):
 
