@@ -5,7 +5,7 @@ _Modern Applications of Numerical Linear Algebra Methods_.
 
 [Browse the notebooks](http://nbviewer.jupyter.org/url/github.com/ivanslapnicar/GIAN-Applied-NLA-Course/tree/master/src/)
 
-The course was held from _June 26, 2016_ to _July 5, 2016_ at IIT Indore.
+The course was held from _June 26, 2016_ to _July 5, 2016_ at IIT Indore. The notebooks are currently being used in the course "Numerical Linear Algebra" at the University of Split.
 
 Here are some links:
 * [Global Initiative of Academic Networks](http://www.gian.iitkgp.ac.in/)
