@@ -1,9 +1,11 @@
 module ModuleB
 
+using LinearAlgebra
+
 export myPower, myDeflation, myPowerMethod, myTridiag, myTridiagX, myTridiagG, myTridEigQR,
 mySymEigQR, stedc!, myJacobi, myLanczos, myBidiagX, myBidiagY, myBidiagG, myJacobiR
 
-function myPower(A::Array,x::Vector,tol::Float64)
+function myPower(A::Matrix,x::Vector,tol::Real)
     y=A*x
     ν=x⋅y
     steps=1
@@ -16,16 +18,17 @@ function myPower(A::Array,x::Vector,tol::Float64)
     ν, y/norm(y), steps
 end
 
-function myDeflation(A::Array,x::Vector)
-    X,R=qr(x[:,:],thin=false)
+function myDeflation(A::Matrix,x::Vector)
+    X,R=qr(x[:,:])
     # To make sure the returned matrix symmetric use
     # full(Symmetric(X[:,2:end]'*A*X[:,2:end]))
     X[:,2:end]'*A*X[:,2:end]
 end
 
-function myPowerMethod(A::Array, tol::T) where T
+function myPowerMethod(A::Matrix{T}, tol::Real) where T
     n=size(A,1)
-    λ=Array{T}(n)
+    S =  T==Int ? Float64 : T
+    λ=Vector{S}(undef,n)
     for i=1:n
         λ[i],x,steps=myPower(A,ones(n-i+1),tol)
         A=myDeflation(A,x)
@@ -33,16 +36,16 @@ function myPowerMethod(A::Array, tol::T) where T
     λ
 end
 
-function myTridiag(A::Array)
-    # Normalized Householder vectors are stored in the lower
+function myTridiag(A::Matrix)
+    # Normalized Householder vectors are stored in the lower 
     # triangular part of A below the first subdiagonal
     n=size(A,1)
     T=Float64
     A=map(T,A)
-    v=Array{T}(n)
+    v=Vector{T}(undef,n)
     Trid=SymTridiagonal(zeros(n),zeros(n-1))
     for j = 1 : n-2
-        μ = sign(A[j+1,j])*vecnorm(A[j+1:n, j])
+        μ = sign(A[j+1,j])*norm(A[j+1:n, j])
         if μ != zero(T)
             β =A[j+1,j]+μ
             v[j+2:n] = A[j+2:n,j] / β
@@ -52,7 +55,7 @@ function myTridiag(A::Array)
         v[j+1] = one(T)
         γ = -2 / (v[j+1:n]⋅v[j+1:n])
         w = γ* A[j+1:n, j+1:n]*v[j+1:n]
-        q = w + γ * v[j+1:n]*(v[j+1:n]⋅w) / 2
+        q = w + γ * v[j+1:n]*(v[j+1:n]⋅w) / 2 
         A[j+1:n, j+1:n] = A[j+1:n,j+1:n] + v[j+1:n]*q' + q*v[j+1:n]'
         A[j+2:n, j] = v[j+2:n]
     end
@@ -60,11 +63,11 @@ function myTridiag(A::Array)
 end
 
 # Extract X
-function myTridiagX(H::Array)
+function myTridiagX(H::Matrix)
     n=size(H,1)
-    X = eye(n)
     T=Float64
-    v=Array{T}(n)
+    X = Matrix{T}(I,n,n)
+    v=Vector{T}(undef,n)
     for j = n-2 : -1 : 1
         v[j+1] = one(T)
         v[j+2:n] = H[j+2:n, j]
@@ -76,9 +79,10 @@ function myTridiagX(H::Array)
 end
 
 # Tridiagonalization using Givens rotations
-function myTridiagG(A::Array)
+function myTridiagG(A::Matrix)
     n=size(A,1)
-    X=eye(n)
+    T=Float64
+    X=Matrix{T}(I,n,n)
     for j = 1 : n-2
         for i = j+2 : n
             G,r=givens(A,j+1,i,j)
@@ -93,8 +97,8 @@ function myTridEigQR(A1::SymTridiagonal)
     A=deepcopy(A1)
     n=length(A.dv)
     T=Float64
-    λ=Array{T}(n)
-    B=Array{T}
+    λ=Vector{T}(undef,n)
+    B=Matrix{T}
     if n==1
         return map(T,A.dv)
     end
@@ -142,19 +146,20 @@ function myTridEigQR(A1::SymTridiagonal)
         steps+=1
         # Deflation criterion
         k=findfirst(abs.(A.ev) .< sqrt.(abs.(A.dv[1:n-1].*A.dv[2:n]))*eps(T))
+        k=k==nothing ? 0 : k
     end
     λ[1:k]=myTridEigQR(SymTridiagonal(A.dv[1:k],A.ev[1:k-1]))
     λ[k+1:n]=myTridEigQR(SymTridiagonal(A.dv[k+1:n],A.ev[k+1:n-1]))
     λ
 end
 
-function myTridEigQR(A1::SymTridiagonal,U::Array)
+function myTridEigQR(A1::SymTridiagonal,U::Matrix)
     # U is either the identity matrix or the output from myTridiagX()
     A=deepcopy(A1)
     n=length(A.dv)
     T=Float64
-    λ=Array{T}(n)
-    B=Array{T}
+    λ=Vector{T}(undef,n)
+    B=Matrix{T}
     if n==1
         return map(T,A.dv), U
     end
@@ -206,13 +211,14 @@ function myTridEigQR(A1::SymTridiagonal,U::Array)
         steps+=1
         # Deflation criterion
         k=findfirst(abs.(A.ev) .< sqrt.(abs.(A.dv[1:n-1].*A.dv[2:n]))*eps())
+        k=k==nothing ? 0 : k
     end
     λ[1:k], U[:,1:k]=myTridEigQR(SymTridiagonal(A.dv[1:k],A.ev[1:k-1]),U[:,1:k])
     λ[k+1:n], U[:,k+1:n]=myTridEigQR(SymTridiagonal(A.dv[k+1:n],A.ev[k+1:n-1]),U[:,k+1:n])
     λ, U
 end
 
-function mySymEigQR(A::Array)
+function mySymEigQR(A::Matrix)
     T,H=myTridiag(A)
     X=myTridiagX(H)
     myTridEigQR(T,X)
@@ -221,10 +227,10 @@ end
 ### DSTEDC
 # Part of the preamble of lapack.jl
 const liblapack = Base.liblapack_name
-import Base.LinAlg.BLAS.@blasfunc
+import LinearAlgebra.BLAS.@blasfunc
 # import ..LinAlg: BlasFloat, Char, BlasInt, LAPACKException,
     # DimensionMismatch, SingularException, PosDefException, chkstride1, chksquare
-import Base.LinAlg.BlasInt
+import LinearAlgebra.BlasInt
 function chklapackerror(ret::BlasInt)
     if ret == 0
         return
@@ -248,39 +254,38 @@ for (stedc, elty) in
                   matrix used to reduce the original matrix to
                   tridiagonal form.
         """
-        function stedc!(compz::Char, dv::Vector{$elty}, ev::Vector{$elty},
+        function stedc!(compz::Char, dv::Vector{$elty}, ev::Vector{$elty}, 
                 Z::Array{$elty})
             n = length(dv)
             ldz=n
             if length(ev) != n - 1
-                throw(DimensionMismatch("ev has length $(length(ev))
+                throw(DimensionMismatch("ev has length $(length(ev)) 
                         but needs one less than dv's length, $n)"))
             end
             w = deepcopy(dv)
             u = deepcopy(ev)
             lwork=5*n^2
-            work = Array{$elty}(lwork)
+            work = Array{$elty}(undef,lwork)
             liwork=6+6*n+5*n*round(Int,ceil(log(n)/log(2)))
-            iwork = Array{BlasInt}(liwork)
-            info = Array{BlasInt}(5)
-            ccall((@blasfunc($stedc), liblapack), Void,
-                (Ptr{UInt8}, Ptr{BlasInt}, Ptr{$elty},
-                Ptr{$elty}, Ptr{$elty}, Ptr{BlasInt}, Ptr{$elty}, Ptr{BlasInt},
-                Ptr{BlasInt}, Ptr{BlasInt}, Ptr{BlasInt}),
-                &compz, &n, w,
-                u, Z, &ldz, work, &lwork,
-                iwork, &liwork, info)
+            iwork = Array{BlasInt}(undef,liwork)
+            # info = Array{BlasInt}(undef,5)
+            info = Ref{BlasInt}()
+            ccall((@blasfunc($stedc), liblapack), Cvoid,
+                (Ref{UInt8}, Ref{BlasInt}, Ptr{$elty},
+                Ptr{$elty}, Ptr{$elty}, Ref{BlasInt}, Ptr{$elty}, 
+                    Ref{BlasInt}, Ptr{BlasInt}, Ref{BlasInt}, 
+                    Ptr{BlasInt}), compz, n, w, u, Z, ldz, work, 
+                    lwork, iwork, liwork, info) 
                 chklapackerror(info[])
-            w,Z
+            return w,Z
         end
     end
 end
 
-function myJacobi(A1::Array)
+function myJacobi(A1::Array{T}) where T<:Real
     A=deepcopy(A1)
     n=size(A,1)
-    T=typeof(A[1,1])
-    U=eye(T,n)
+    U=Matrix{T}(I,n,n)
     # Tolerance for rotation
     tol=sqrt(map(T,n))*eps(T)
     # Counters
@@ -292,10 +297,10 @@ function myJacobi(A1::Array)
     while sweep<30 && pcurrent<p
         sweep+=1
         # Row-cyclic strategy
-        for i = 1 : n-1
+        for i = 1 : n-1 
             for j = i+1 : n
                 # Check for the tolerance - the first criterion is standard,
-                # the second one is for relative accuracy for PD matrices
+                # the second one is for relative accuracy for PD matrices               
                 # if A[i,j]!=zero(T)
                 if abs(A[i,j])>tol*sqrt(abs(A[i,i]*A[j,j]))
                     # Compute c and s
@@ -303,15 +308,15 @@ function myJacobi(A1::Array)
                     t=sign(τ)/(abs(τ)+sqrt(1+τ^2))
                     c=1/sqrt(1+t^2)
                     s=c*t
-                    G=LinAlg.Givens(i,j,c,s)
+                    G=LinearAlgebra.Givens(i,j,c,s)
                     # A=G*A
-                    A_mul_B!(G,A)
+                    lmul!(G,A)
                     # A*=G'
-                    A_mul_Bc!(A,G)
+                    rmul!(A,adjoint(G))
                     A[i,j]=zero(T)
                     A[j,i]=zero(T)
                     # U*=G'
-                    A_mul_Bc!(U,G)
+                    rmul!(U,adjoint(G))
                     pcurrent=0
                 else
                     pcurrent+=1
@@ -322,12 +327,11 @@ function myJacobi(A1::Array)
     diag(A), U
 end
 
-function myLanczos(A::Array, x::Vector, k::Int)
+function myLanczos(A::Array{T}, x::Vector{T}, k::Int) where T
     n=size(A,1)
-    T=typeof(A[1,1])
-    X=Array{T}(n,k)
-    dv=Array{T}(k)
-    ev=Array{T}(k-1)
+    X=Array{T}(undef,n,k)
+    dv=Array{T}(undef,k)
+    ev=Array{T}(undef,k-1)
     X[:,1]=x/norm(x)
     for i=1:k-1
         z=A*X[:,i]
@@ -360,11 +364,11 @@ function myLanczos(A::Array, x::Vector, k::Int)
 end
 
 # Extract X
-function myBidiagX(H::Array)
+function myBidiagX(H::Matrix)
     m,n=size(H)
     T=typeof(H[1,1])
-    X = eye(T,m,n)
-    v=Array{T}(m)
+    X = Matrix{T}(I,m,n)
+    v = Array{T}(undef,m)
     for j = n : -1 : 1
         v[j] = one(T)
         v[j+1:m] = H[j+1:m, j]
@@ -376,11 +380,11 @@ function myBidiagX(H::Array)
 end
 
 # Extract Y
-function myBidiagY(H::Array)
+function myBidiagY(H::AbstractMatrix)
     n,m=size(H)
     T=typeof(H[1,1])
-    Y = eye(T,n)
-    v=Array{T}(n)
+    Y = Matrix{T}(I,n,n)
+    v = Array{T}(undef,n)
     for j = n-2 : -1 : 1
         v[j+1] = one(T)
         v[j+2:n] = H[j+2:n, j]
@@ -392,37 +396,37 @@ function myBidiagY(H::Array)
 end
 
 # Bidiagonalization using Givens rotations
-function myBidiagG(A1::Array)
+function myBidiagG(A1::Matrix)
     A=deepcopy(A1)
     m,n=size(A)
     T=typeof(A[1,1])
-    X=eye(T,m,m)
-    Y=eye(T,n,n)
-    for j = 1 : n
+    X=Matrix{T}(I,m,m)
+    Y=Matrix{T}(I,n,n)
+    for j = 1 : n        
         for i = j+1 : m
             G,r=givens(A,j,i,j)
             # Use the faster in-place variant
             # A=G*A
+            lmul!(G,A)
             # X=G*X
-            A_mul_B!(G,A)
-            A_mul_B!(G,X)
+            lmul!(G,X)
         end
         for i=j+2:n
             G,r=givens(A',j+1,i,j)
-            # A=A*G'
-            # Y*=G'
-            A_mul_Bc!(A,G)
-            A_mul_Bc!(Y,G)
+            # A*=adjoint(G)
+            rmul!(A,adjoint(G))
+            # Y*=adjoint(G)
+            rmul!(Y,adjoint(G)) 
         end
     end
-    X',Bidiagonal(diag(A),diag(A,1),true), Y
+    X',Bidiagonal(diag(A),diag(A,1),'U'), Y
 end
 
-function myJacobiR(A1::Array)
+function myJacobiR(A1::AbstractMatrix)
     A=deepcopy(A1)
     m,n=size(A)
     T=typeof(A[1,1])
-    V=eye(T,n,n)
+    V=Matrix{T}(I,n,n)
     # Tolerance for rotation
     tol=sqrt(map(T,n))*eps(T)
     # Counters
@@ -434,26 +438,25 @@ function myJacobiR(A1::Array)
     while sweep<30 && pcurrent<p
         sweep+=1
         # Row-cyclic strategy
-        for i = 1 : n-1
+        for i = 1 : n-1 
             for j = i+1 : n
                 # Compute the 2 x 2 sumbatrix of A'*A
                 F=A[:,[i,j]]'*A[:,[i,j]]
                 # Check the tolerance - the first criterion is standard,
-                # the second one is for relative accuracy
+                # the second one is for relative accuracy               
                 # if A[i,j]!=zero(T)
-                #
+                # 
                 if abs(F[1,2])>tol*sqrt(F[1,1]*F[2,2])
                     # Compute c and s
                     τ=(F[1,1]-F[2,2])/(2*F[1,2])
                     t=sign(τ)/(abs(τ)+sqrt(1+τ^2))
                     c=1/sqrt(1+t^2)
                     s=c*t
-                    G=LinAlg.Givens(i,j,c,s)
-                    # A*=G'
-                    # In-place multiplication
-                    A_mul_Bc!(A,G)
-                    # V*=G'
-                    A_mul_Bc!(V,G)
+                    G=LinearAlgebra.Givens(i,j,c,s)
+                    A*=G'
+                    # rmul!(A,adjoint(G))
+                    V*=G'
+                    # rmul!(A,adjoint(G))
                     pcurrent=0
                 else
                     pcurrent+=1
@@ -461,7 +464,7 @@ function myJacobiR(A1::Array)
             end
         end
     end
-    σ=[vecnorm(A[:,k]) for k=1:n]
+    σ=[norm(A[:,k]) for k=1:n]
     for k=1:n
         A[:,k]./=σ[k]
     end
