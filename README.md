@@ -3,7 +3,6 @@
 This is the collection of course materials for the GIAN Course
 _Modern Applications of Numerical Linear Algebra Methods_.
 
-[Browse the notebooks](http://nbviewer.jupyter.org/url/github.com/ivanslapnicar/GIAN-Applied-NLA-Course/tree/master/src/)
 
 The course was held from _June 26, 2016_ to _July 5, 2016_ at IIT Indore. The notebooks are currently being used in the course "Numerical Linear Algebra" at the University of Split.
 
@@ -49,7 +48,4 @@ The notebooks can be used in three ways:
 
     The notebooks are now located in the directory `GIAN-Applied-NLA-Course/src/` and can
 be used interactively as described in the notebook
-[L00 Installing and Running Julia](https://ivanslapnicar.github.io/GIAN-Applied-NLA-Course/L00 Installing and Running Julia.jl.html).
-
-PDF files used in original course are in the directory `src/pdf`.
-PDF files of some updated notebooks are in the directory `src/pdf/new`.
+[L00 Installing and Running Julia](https://ivanslapnicar.github.io/GIAN-Applied-NLA-Course/L00%20Installing%20and%20Running%20Julia.jl.html).
