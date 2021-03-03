@@ -23,47 +23,33 @@ The course consists of three modules:
 The course is presented through twenty  one-hour lectures and ten two-hour tutorials.
 
 Course materials are using [Julia](http://julialang.org/) programming language
-and are presented as [Jupyter](http://jupyter.org/) notebooks.
+and are presented as Jupyter or Pluto notebooks.
 The naming scheme of the notebooks is the following:
 
 * lectures start with `L`,
 * tutorial assignments start with `T`, and
 * solutions to tutorial assignments start with`S`.
 
-PDF files for the three modules are also provided. Meanwhile, the notebooks are being updated and ported to the current version of Julia.
+PDF files (may be outdated) for the three modules are also provided. Meanwhile, the notebooks are being updated and ported to the current version of Julia.
 
 To understand the author's concepts behind the creation of the course,
 read the [Manifest](src/Manifest.md).
 
 The notebooks can be used in three ways:
 
-1. Browsing the notebooks with
-[Jupyter notebook viewer](http://nbviewer.jupyter.org/) ->
-[browse the notebooks](http://nbviewer.jupyter.org/url/github.com/ivanslapnicar/GIAN-Applied-NLA-Course/tree/master/src/)
-
+1. Browsing:
+* [Jupyter notebooks](https://nbviewer.jupyter.org/github/ivanslapnicar/GIAN-Applied-NLA-Course/tree/master/src/)
+* [Pluto notebooks](https://ivanslapnicar.github.io/GIAN-Applied-NLA-Course/)
 2. Cloning the notebooks to your computer with the command (in Linux)
 
     `git clone https://github.com/ivanslapnicar/GIAN-Applied-NLA-Course.git`
 
     For Windows, you can install the [GitHub Desktop](https://desktop.github.com/)
-    and use it to clone the repository.
+    and use it to clone the repository, or download the zip file.
 
     The notebooks are now located in the directory `GIAN-Applied-NLA-Course/src/` and can
-be used interactively (you need to install  [Julia](http://julialang.org/) and
-[Jupyter](http://jupyter.org/) as described in the notebook
-[L00 Installing and Running Julia](http://nbviewer.jupyter.org/url/github.com/ivanslapnicar/GIAN-Applied-NLA-Course/tree/master/src/Module A - Short Julia Course/L00 Installing and Running Julia.ipynb)).
+be used interactively as described in the notebook
+[L00 Installing and Running Julia](https://ivanslapnicar.github.io/GIAN-Applied-NLA-Course/L00 Installing and Running Julia.jl.html).
+
 PDF files used in original course are in the directory `src/pdf`.
-PDF files of the updated notebooks are in the directory `src/pdf/new`.
-
-3. Executing the notebooks on [JuliaBox](https://juliabox.com/):
-
-  * go to https://juliabox.com and sign in
-  * go to __Git__
-  * paste the address `https://github.com/ivanslapnicar/GIAN-Applied-NLA-Course.git` into
-__Git Clone URL__ box
-  * check that the __Branch__ is set to _master_
-  * press _+_ to add the repository
-  * close the __Git__ window
-
-  The directory `GIAN-Applied-NLA-Course` is now listed. The notebooks are
-  located in the directory `src/`.
+PDF files of some updated notebooks are in the directory `src/pdf/new`.
