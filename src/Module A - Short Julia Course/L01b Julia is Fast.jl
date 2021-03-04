@@ -79,7 +79,7 @@ Let us now run the big-size computation. Notice the unnaturally high byte alloca
 
 # ╔═╡ a9691c4d-7f2c-461c-a42d-cfb5209f3a2d
 # Notice the unnaturally high byte  allocation!
-@time f(1000000)
+@time f(1_000_000)
 
 # ╔═╡ e5545357-9216-46f4-98d1-dfd4a3f31ff7
 md"""
@@ -128,7 +128,7 @@ Using `return` in the last line is optional.
 # ╔═╡ 236594df-0138-4bdd-be1e-bd6a4f69fa02
 function fexpma( A::Vector{T}, α::T ) where T
 # Fast exponential moving average: X - moving average, 
-# A - data, alpha - exponential forgetting parameter
+# A - data, α - exponential forgetting parameter
     n = length(A)
     X = Array{T}(undef,n) # Declare X
     β = one(T)-α
@@ -196,7 +196,7 @@ Let us plot the data $A$ and its exponential moving average $X$. The dimension o
 @bind k Slider(1:1000:length(A)-1,show_value=true)
 
 # ╔═╡ 07a499e7-6399-42e1-9677-a00d5bf95970
-plot(collect(k:k+1000),[A[k:k+1000],X[k:k+1000]],label=["Data" "Moving average"])
+scatter(collect(k:k+1000),[A[k:k+1000],X[k:k+1000]],label=["Data" "Moving average"],ms=2, markerstrokecolor=:white)
 
 # ╔═╡ 44a8c386-f5fe-497e-b8b3-829c575d9a11
 md"""

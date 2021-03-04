@@ -136,7 +136,7 @@ md"""
 """
 
 # ╔═╡ 2078e00d-b3b2-4188-b5be-9835de2ab357
-[i for i=1:5]
+[i for i=1.0:5]
 
 # ╔═╡ 0bc90ce5-9976-498d-930c-e34fea9c7193
 x₀=1:10
@@ -268,6 +268,9 @@ A*v
 # ╔═╡ c919d9d4-079e-490a-b858-762bac13c648
 # Usual matrix multiplication formula does not work. Why?
 B₁=[A[i,:]*A[:,j] for i=1:5, j=1:5]
+
+# ╔═╡ f4ba5280-7cd2-11eb-1cb5-e3bf3534f077
+A
 
 # ╔═╡ b5263af0-bd84-4086-9481-eaf9e8b6d402
 # Rows and columns are both 1D vectors - must use dot product!
@@ -465,6 +468,7 @@ c=4
 ```
 __Notice that now the result of the last line is displayed by default__  - in this case it is `4`, the values of `c`. The output of the random matrix and of `b` is forced.
 
+
 Input in Pluto notebook must be handled differently:
 """
 
@@ -557,6 +561,7 @@ ccall(:clock,Int,())
 # ╠═19c4f76b-a9f2-4c78-b0a3-0f2bf3109b6f
 # ╠═d31925e5-5c02-4386-8181-d308b3f937f4
 # ╠═c919d9d4-079e-490a-b858-762bac13c648
+# ╠═f4ba5280-7cd2-11eb-1cb5-e3bf3534f077
 # ╠═b5263af0-bd84-4086-9481-eaf9e8b6d402
 # ╠═19abf655-4f37-44aa-9557-e776fb9e5392
 # ╟─30e36ce9-896c-4714-b82c-17736ed6b508

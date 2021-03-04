@@ -85,8 +85,11 @@ md"""
 ### The `"+"` operator
 """
 
-# ╔═╡ 89001db7-980c-41b3-85c4-c0e453900828
+# ╔═╡ 9c208420-7cdf-11eb-2b99-e32e66b46e85
 # methods(+)
+
+# ╔═╡ bfb87460-7cdf-11eb-38ca-0961560c093b
+# methodswith(Tridiagonal)
 
 # ╔═╡ cb3e314e-68e0-4fc0-8ece-c5c8bc279f55
 md"""
@@ -389,7 +392,8 @@ f(a,b)=2a+b^2
 # ╠═7a55f84e-1439-45ec-b428-5976cac084cd
 # ╟─7514d88c-d0fa-45e5-947d-10fe0ce47f7d
 # ╟─611770e1-4b5b-47a6-be3a-e0806990796d
-# ╠═89001db7-980c-41b3-85c4-c0e453900828
+# ╠═9c208420-7cdf-11eb-2b99-e32e66b46e85
+# ╠═bfb87460-7cdf-11eb-38ca-0961560c093b
 # ╟─cb3e314e-68e0-4fc0-8ece-c5c8bc279f55
 # ╠═0f3c49cd-00c7-4654-9dc9-674a89e19a30
 # ╠═595878a2-30ab-4a19-a5ad-e621dd37f6c7

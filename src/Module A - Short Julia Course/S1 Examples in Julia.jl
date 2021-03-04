@@ -48,6 +48,9 @@ subtypes(AbstractFloat)
 # Default values are for Float64
 eps(), floatmax(), floatmin()
 
+# ╔═╡ c0b0f670-7ce5-11eb-3b0a-4f234cd20b49
+1.0+eps()/2>1.0
+
 # ╔═╡ 5e133d50-7c4c-11eb-1d2b-d951910f16e2
 for T in (Float16, Float32, Float64, BigFloat)
     println(eps(T)," ", floatmin(T)," ", floatmax(T))
@@ -77,8 +80,23 @@ md"""
 Here is the function for the Graeffe's method. We also define small test polynomial with all real simple zeros.
 """
 
+# ╔═╡ dc4cfc80-7ce5-11eb-0a0e-852f1c12ce11
+# varinfo(Polynomials)
+
 # ╔═╡ c1531fcb-5e7f-4994-baf0-c12d1028ad2e
 roots(p)
+
+# ╔═╡ eeca4340-7ce5-11eb-191c-79230c225529
+derivative(p)
+
+# ╔═╡ 0285883e-7ce6-11eb-0b3b-e708c1fd8980
+integrate(p)
+
+# ╔═╡ 50532280-7ce6-11eb-1034-bd8a269fbd56
+companion(p)
+
+# ╔═╡ 71e04ea0-7ce6-11eb-2232-a7680fccc403
+eigvals(companion(p))
 
 # ╔═╡ 60d365fa-907a-47f7-89cd-034215bd91e5
 function Graeffe(p::Polynomial{T},steps::Int64) where T
@@ -282,12 +300,13 @@ begin
 	E=Array{Any}(undef,nₘ,kₘ)
 	for i=1:kₘ
 		# Unsymmetric uniform distribution
-	    A=rand(nₘ,nₘ)
+	    # A=rand(nₘ,nₘ)
 		# Unsymmetric normal distribution
 		# A=randn(nₘ,nₘ)
 		# Symmetric uniform distribution
 		# B=rand(nₘ,nₘ); A=B'+B
 		# Symmetric normal distribution
+		B=randn(nₘ,nₘ); A=B'+B
 	    E[:,i]=eigvals(A)
 	end
 	# We need this since plot cannot handle `Any`
@@ -309,6 +328,7 @@ _Mathematics is about spotting patterns!_ (Alan Edelman)
 # ╟─2bd4e64a-85a4-4726-aad7-01938b4d7edc
 # ╠═976a9e66-ad6c-42b3-939a-afa33c4dcfb8
 # ╠═45e49a4e-f595-4d50-9bba-3d350962ee71
+# ╠═c0b0f670-7ce5-11eb-3b0a-4f234cd20b49
 # ╠═5e133d50-7c4c-11eb-1d2b-d951910f16e2
 # ╟─acc500d1-3cdf-4c3f-86c6-985a0176ef7c
 # ╠═25b172d5-8ee1-479a-9621-dc9b02054fee
@@ -316,7 +336,12 @@ _Mathematics is about spotting patterns!_ (Alan Edelman)
 # ╠═71652918-d91f-451b-80e8-5f59a2e6ce10
 # ╟─db19eb66-2ecb-4b47-929c-4369718373e1
 # ╠═80456803-2a40-40a3-adf5-b412cf132143
+# ╠═dc4cfc80-7ce5-11eb-0a0e-852f1c12ce11
 # ╠═c1531fcb-5e7f-4994-baf0-c12d1028ad2e
+# ╠═eeca4340-7ce5-11eb-191c-79230c225529
+# ╠═0285883e-7ce6-11eb-0b3b-e708c1fd8980
+# ╠═50532280-7ce6-11eb-1034-bd8a269fbd56
+# ╠═71e04ea0-7ce6-11eb-2232-a7680fccc403
 # ╠═60d365fa-907a-47f7-89cd-034215bd91e5
 # ╠═b0e22007-d80a-4db0-8796-f3d28e735ddd
 # ╟─a5ea266d-2406-4bd3-b5b6-0007f06fda60
