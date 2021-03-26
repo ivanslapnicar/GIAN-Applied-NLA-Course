@@ -57,13 +57,13 @@ There are many excellent books on the subject. Here we list a few:
 
 # ╔═╡ b87354b9-ee7b-4ce0-bf26-b4e71c6be6a9
 md"""
-## General matrices
+# General matrices
 
 For more details and the proofs of the Facts below, see 
 [L. M. DeAlba, Determinants and Eigenvalues, pp. 4.1-1.15](https://www.routledge.com/Handbook-of-Linear-Algebra/Hogben/p/book/9781138199897) and the references therein.
 
 
-### Definitions
+## Definitions
 
 We state the basic definitions:
 
@@ -122,7 +122,7 @@ where $Q$ is unitary and $T$ is upper triangular.
 
 # ╔═╡ 31a71b9e-1dba-4a69-b87e-9202292eb3ed
 md"""
-### Facts
+## Facts
 
 There are many facts related to the eigenvalue problem for general matrices. We state some basic ones:
 
@@ -170,14 +170,14 @@ $$\lambda e^{\lambda t} x=Ae^{\lambda t} x \quad \textrm{or} \quad Ax=\lambda x.
 
 # ╔═╡ 2f5aee03-3c2e-4920-9d10-c509b06be627
 md"""
-### Examples
+## Examples
 
 We shall illustrate above Definitions and Facts on several small examples, using symbolic computation.
 """
 
 # ╔═╡ 37d24090-8d78-11eb-059d-737014bb6588
 md"
-#### Defective eigenvalue
+### Defective eigenvalue
 "
 
 # ╔═╡ 184bc4ec-c566-4f21-99b3-b6e8cd328b47
@@ -257,7 +257,7 @@ end
 
 # ╔═╡ 7aa7ac89-837c-4ee8-b9f1-8ad0256f25e1
 md"""
-#### Diagonalizable matrix
+### Diagonalizable matrix
 
 This matrix is nondefective and diagonalizable.
 """
@@ -283,7 +283,7 @@ schur(A₁).T
 
 # ╔═╡ 189544ef-122c-4e30-bfd6-cfc126fc0320
 md"""
-#### Symbolic computation for $n=4$
+### Symbolic computation for $n=4$
 
 Let us try some random examples of dimension $n=4$ (the largest $n$ for which we can compute eigevalues symbolically).
 """
@@ -345,7 +345,7 @@ end
 
 # ╔═╡ 90b4341d-7964-4e41-a268-8a047a058286
 md"""
-#### Circulant matrix
+### Circulant matrix
 
 For more details, see 
 [A. B&ouml;ttcher and I. Spitkovsky, Special Types of Matrices, pp. 22.1-22.20](https://www.routledge.com/Handbook-of-Linear-Algebra/Hogben/p/book/9781138199897) and the references therein.
@@ -435,12 +435,12 @@ end
 # ╔═╡ a7999464-7060-4345-b396-e2e15fcbcaac
 md"""
 
-## Hermitian and real symmetric matrices
+# Hermitian and real symmetric matrices
 
 For more details and the proofs of the Facts below, see 
 [W. Barrett, Hermitian and Positive Definite Matrices, pp. 9.1-9.13](https://www.routledge.com/Handbook-of-Linear-Algebra/Hogben/p/book/9781138199897) and the references therein.
 
-### Definitions
+## Definitions
 
 Matrix $A\in \mathbb{C}^{n\times n}$ is __Hermitian__ or __self-adjoint__ if $A^*=A$, 
 or element-wise, $\bar a_{ij}=a_{ji}$. We say $A\in\mathcal{H}_n$.
@@ -468,7 +468,7 @@ __Gram matrix__ of a set of vectors $x_1,x_2,\ldots,x_k\in\mathbb{C}^{n}$ is the
 
 # ╔═╡ 01e2e27b-506e-439a-ba9a-bef034328482
 md"""
-### Facts
+## Facts
 
 Assume $A$ is Hermitian and $x\in\mathbb{C}^n$ is nonzero. Then
 
@@ -545,7 +545,8 @@ $$\pi(A+B)\leq \pi(A)+\pi(B), \qquad \nu(A+B)\leq \nu(A)+\nu(B).$$
 
 # ╔═╡ 40c67883-7c5a-4033-96df-090c58b72f65
 md"""
-###  Example of a Hermitian matrix
+## Examples
+### Hermitian matrix
 """
 
 # ╔═╡ 43ee6302-cd9e-472e-8c25-9c079d90bd1c
@@ -649,7 +650,7 @@ sort(λₕ,rev=true)
 
 # ╔═╡ 80c270bc-e313-4b78-94d0-2fcd9aa29a89
 md"""
-### Example of a real symmetric matrix
+### Real symmetric matrix
 """
 
 # ╔═╡ da3207e5-1cdb-474f-a5f0-11b7c7ea5640
@@ -681,17 +682,17 @@ end
 
 # ╔═╡ 53637040-356d-4310-970e-6a9b9c1260c9
 md"""
-## Positive definite matrices
+# Positive definite matrices
 
 These matrices are an important subset of Hermitian or real symmteric matrices.
 
-### Definitions
+## Definitions
 
 Matrix $A\in\mathcal{H}_n$ is __positive definite__ (PD) if $x^*Ax>0$ for all nonzero $x\in\mathbb{C}^n$.
 
 Matrix $A\in\mathcal{H}_n$ is __positive semidefinite__ (PSD) if $x^*Ax\geq 0$ for all nonzero $x\in\mathbb{C}^n$.
 
-### Facts
+## Facts
 
 1.  $A\in\mathcal{S}_n$ is PD if $x^TAx>0$ for all nonzero $x\in \mathbb{R}^n$, and is PSD if $x^TAx\geq 0$ for all $x\in \mathbb{R}^n$.
  
@@ -714,7 +715,8 @@ Matrix $A\in\mathcal{H}_n$ is __positive semidefinite__ (PSD) if $x^*Ax\geq 0$ f
 
 # ╔═╡ 5082d501-8e0f-45ec-8927-ad1a0be51ae3
 md"""
-### Example of a positive definite matrix
+## Examples
+### Positive definite matrix
 """
 
 # ╔═╡ e00702a4-2ad5-4dee-8d0c-7d15c4ffdeb8
@@ -752,7 +754,7 @@ norm(Aₚ-Lₚ*Lₚ')
 
 # ╔═╡ 8b3db768-e5d1-49cf-8320-7cb36a400ce1
 md"
-### Example of a positive semidefinite matrix
+### Positive semidefinite matrix
 "
 
 # ╔═╡ 18457042-90d2-4180-a999-8d3454134528
