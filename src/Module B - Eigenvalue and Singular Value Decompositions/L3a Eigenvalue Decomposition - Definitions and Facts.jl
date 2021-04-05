@@ -214,10 +214,10 @@ $\alpha(\lambda_1)=1$ and $\alpha(\lambda_2)=2$.
 """
 
 # ╔═╡ 1b90d50a-bf97-4b1a-9580-d729b03c914e
-nullspace(map(Float64,A-λ[1]*I))
+nullspace(float.(A-λ[1]*I))
 
 # ╔═╡ 15b60cd5-eb30-43bb-bbcf-dd533e29c35f
-nullspace(map(Float64,A-λ[2]*I))
+nullspace(float.(A-λ[2]*I))
 
 # ╔═╡ 3619fca4-1374-4adc-b29c-8058b2e147e0
 md"""
@@ -275,7 +275,7 @@ factor(p₁(x))
 λ₁=solve(p₁(x),x)
 
 # ╔═╡ f7aae752-70c4-4a10-b96e-206c13a6ced1
-nullspace(map(Float64,A₁-λ₁[2]*I))
+nullspace(float.(A₁-λ₁[2]*I))
 
 # ╔═╡ 60525ba5-2c76-406e-8eb3-63ced2e00bdd
 # F=schur(A)
@@ -290,6 +290,16 @@ Let us try some random examples of dimension $n=4$ (the largest $n$ for which we
 
 # ╔═╡ e72bf173-7e55-4476-91ff-789847dc53cf
 p₄(x)=factor(det(A₄-x*eye(4)))
+
+# ╔═╡ da4a5d70-92d8-11eb-0635-11c530ff7d21
+p₄(x)
+
+# ╔═╡ ec7fc5c0-92d8-11eb-16df-af1133ccb42a
+f(x)=x^4-5*x^3+2*x^2-30*x-30*x^0
+
+# ╔═╡ 29de5fd0-92d9-11eb-09c0-0356001caaef
+# Cayley-Hamilton teorem
+f(A₄)
 
 # ╔═╡ d43480a3-9247-48a4-8a3b-e006ab58539e
 λ₄=solve(p₄(x),x)
@@ -313,7 +323,7 @@ With high probability, all eigenvalues of a random matrix are simple.
 
 Do not try to use `nullspace()` here.
 
-Symbolic computation does not work well with floating-point numbers - in the following example, the degree of $p_A(x)$ is 8 instead of 4:
+Symbolic computation does not work well with floating-point numbers - in the following example, the determinant of $A-xI$ is a rational function:
 """
 
 # ╔═╡ 22f0a627-beb2-4b06-aa94-ee1e90fe8a6c
@@ -321,6 +331,9 @@ begin
 	A₂=rand(4,4)
     factor(det(A₂-x*eye(4)))
 end
+
+# ╔═╡ da6baba0-92d9-11eb-1603-7961ad1f49c8
+A₂
 
 # ╔═╡ c6ab93ab-b336-4bb4-9dda-b725108f7827
 md"""
@@ -348,7 +361,7 @@ md"""
 ### Circulant matrix
 
 For more details, see 
-[A. B&ouml;ttcher and I. Spitkovsky, Special Types of Matrices, pp. 22.1-22.20](https://www.routledge.com/Handbook-of-Linear-Algebra/Hogben/p/book/9781138199897) and the references therein.
+[A. Böttcher and I. Spitkovsky, Special Types of Matrices, pp. 22.1-22.20](https://www.routledge.com/Handbook-of-Linear-Algebra/Hogben/p/book/9781138199897) and the references therein.
 
 
 Given $a_0,a_1,\ldots,a_{n-1}\in \mathbb{C}$, the __circulant matrix__ is
@@ -880,6 +893,9 @@ rank(Covₜ)
 # ╟─189544ef-122c-4e30-bfd6-cfc126fc0320
 # ╠═da340240-f845-4591-94c3-9ffce6a33d8a
 # ╠═e72bf173-7e55-4476-91ff-789847dc53cf
+# ╠═da4a5d70-92d8-11eb-0635-11c530ff7d21
+# ╠═ec7fc5c0-92d8-11eb-16df-af1133ccb42a
+# ╠═29de5fd0-92d9-11eb-09c0-0356001caaef
 # ╠═d43480a3-9247-48a4-8a3b-e006ab58539e
 # ╠═5995cd31-a75d-4718-8808-4ada01920344
 # ╠═57e2742e-8d79-11eb-0a33-f7250ac02840
@@ -887,6 +903,7 @@ rank(Covₜ)
 # ╠═63167eee-8d79-11eb-29c2-2febbd7cbd93
 # ╟─e051d2eb-3972-4c97-b7eb-8a18629f6171
 # ╠═22f0a627-beb2-4b06-aa94-ee1e90fe8a6c
+# ╠═da6baba0-92d9-11eb-1603-7961ad1f49c8
 # ╟─c6ab93ab-b336-4bb4-9dda-b725108f7827
 # ╠═ffcb919f-9754-4650-92f1-7dd163c5df25
 # ╠═32ce58b9-783b-4739-9001-0fe581b2953d
