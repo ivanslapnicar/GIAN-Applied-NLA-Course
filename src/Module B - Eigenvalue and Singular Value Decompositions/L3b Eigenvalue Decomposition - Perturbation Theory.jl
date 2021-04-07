@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.14.0
+# v0.14.1
 
 using Markdown
 using InteractiveUtils
@@ -150,25 +150,24 @@ A
 
 # ╔═╡ 060b8d2f-e6f3-4625-9cf6-d4cc504145fa
 # Absolute norms. Spectral norm is not absolute.
-opnorm(A,1), opnorm(abs.(A),1), opnorm(A,Inf), opnorm(abs.(A),Inf), norm(A),
-norm(abs.(A)),  opnorm(A),opnorm(abs.(A))
+opnorm(A,1), opnorm(abs.(A),1), norm(A,1), opnorm(A,Inf), opnorm(abs.(A),Inf), norm(A), norm(abs.(A)),  opnorm(A),opnorm(abs.(A))
 
 # ╔═╡ f55a3c60-9315-11eb-027a-dd008031f6f9
 m,n=size(A)
 
 # ╔═╡ c4a1b888-9497-4eb4-aa1c-23671123f426
 # Equivalence of norms
-opnorm(A,Inf)\sqrt(n),opnorm(A), sqrt(m)*opnorm(A,Inf)
+opnorm(A,Inf)\ √n,opnorm(A), √m*opnorm(A,Inf)
 
 # ╔═╡ b46cbb6f-36f4-4a66-b970-8fe9b0506b6a
-opnorm(A), norm(A), sqrt(n)*opnorm(A)
+opnorm(A), norm(A), √n*opnorm(A)
 
 # ╔═╡ 254b2df4-f57e-4284-a735-6fd5d4546c52
-opnorm(A,1)\sqrt(m),opnorm(A), sqrt(n)*opnorm(A,1)
+opnorm(A,1)\ √m,opnorm(A), √n*opnorm(A,1)
 
 # ╔═╡ 09fd0923-1987-4a2e-be28-78451aa2c11a
 # Fact 12
-opnorm(A), sqrt(opnorm(A,1)*opnorm(A,Inf))
+opnorm(A), √(opnorm(A,1)*opnorm(A,Inf))
 
 # ╔═╡ dcba6892-b90e-41ad-8d58-53e72d40e882
 begin
@@ -285,20 +284,20 @@ For more details and the proofs of the Facts below, see
 
 $$\|\Lambda- \tilde\Lambda_\tau\|_2\leq 4(\|A\|_2+\|\tilde A\|_2)^{1-1/n}\|\Delta A\|_2^{1/n}.$$
 
-2. __First-order perturbation bounds.__ Let $(y,\lambda,x)$ be an eigentriplet of a simple $\lambda$. $\Delta A$ changes $\lambda$ to $\tilde\lambda=\lambda+ \delta\lambda$, where
+2. __First-order perturbation bounds.__ Let $(y,\lambda,x)$ be an eigentriplet of a simple $\lambda$. $\Delta A$ changes $\lambda$ to $\tilde\lambda=\lambda+ \delta\lambda$, where _(for proof see GVL p. 359)_
 
 $$\delta\lambda=\frac{y^*(\Delta A)x}{y^*x}+O(\|\Delta A\|_2^2).$$
 
 3. Let $\mu$ be a semisimple eigenvalue of $A$ with multiplicitiy $k$, and let $X,Y\in \mathbb{C}^{n\times k}$ be the matrices of the corresponding right and left eigenvectors, that is, $AX=\lambda X$ and $Y^*A=\lambda Y^*$, such that $Y^*X=I_k$. $\Delta A$ changes the $k$ copies of $\mu$ to $\tilde \mu=\mu+\delta\mu_i$, where $\delta\mu_i$ are the eigenvalues of $Y^*(\Delta A) X$ up to $O(\|\Delta A\|_2^2)$.
 
-4. Perturbations and the inverse: if $\|A\|_p<1$, then $I-A$ is nonsingular and _(for proof see GVL p. 74 (98))_
+4. Perturbations and the inverse: if $\|A\|_p<1$, then $I-A$ is nonsingular and _(for proof see GVL p. 74)_
 
 $$(I-A)^{-1}=\sum\limits_{k=0}^\infty A^k,$$
 
 $$\|(I-A)^{-1}\|_p \leq \frac{1}{1-\|A\|_p},\qquad 
 \|(I-A)^{-1}-I\|_p \leq \frac{\|A\|_p}{1-\|A\|_p}.$$
 
-5. __Geršgorin Circle Theorem.__ If $X^{-1} A X=D+F$, where $D=\mathop{\mathrm{diag}}(d_1,\ldots,d_n)$ and $F$ has zero diagonal entries, then _(for proof see GVL p.357 (381))_
+5. __Geršgorin Circle Theorem.__ If $X^{-1} A X=D+F$, where $D=\mathop{\mathrm{diag}}(d_1,\ldots,d_n)$ and $F$ has zero diagonal entries, then _(for proof see GVL p. 357)_
 
 $$\sigma(A) \subseteq \bigcup\limits_{i=1}^n D_i,$$
 
@@ -308,7 +307,7 @@ $$D_i=\big\{z\in\mathbb{C} : |z-d_i| \leq \sum\limits_{j=1}^n |f_{ij}| \big\}.$$
 
 Moreover, by continuity, if a connected component of $D$ consists of $k$ circles, it contains $k$ eigenvalues.
 
-6. __Bauer-Fike Theorem.__ If $A$ is diagonalizable and $A=X\Lambda X^{-1}$ is its eigenvalue decomposition, then _(for proof see GVL p.357 (381))_
+6. __Bauer-Fike Theorem.__ If $A$ is diagonalizable and $A=X\Lambda X^{-1}$ is its eigenvalue decomposition, then _(for proof see GVL p. 357)_
 
 $$\max_i\min_j |\tilde \lambda_i -
 \lambda_j|\leq \|X^{-1}(\Delta A)X\|_p\leq \kappa_p(X)\|\Delta A\|_p.$$
@@ -453,7 +452,7 @@ y₄'*J-0.5*y₄'
 
 # ╔═╡ 989b7c60-c673-4b77-ada8-909db2904fa2
 # Just one perturbed element in the lower left corner
-ΔJ=sqrt(eps())*[zeros(n₄-1);1]*Matrix(I,1,n₄)
+ΔJ=√eps()*[zeros(n₄-1);1]*Matrix(I,1,n₄)
 
 # ╔═╡ 1da2bfee-6792-4aed-8798-91cc058cd540
 μ₄=eigvals(J+ΔJ)
@@ -627,7 +626,7 @@ begin
 end
 
 # ╔═╡ 433a0652-912f-4f59-8494-4d0381e22115
-2*norm(E)^2/(η₇+sqrt(η₇^2+4*norm(E)^2))
+2*norm(E)^2/(η₇+√(η₇^2+4*norm(E)^2))
 
 # ╔═╡ ad6ca597-65b2-4403-a6aa-1394399c3ed8
 begin
@@ -641,7 +640,7 @@ begin
 	# sin(Θ(U[:,1:3],V[:,1:3]))
 	X₆=U₆[:,1:3]
 	Q=V[:,1:3]
-	cosθ₆=svdvals(sqrt(Q'*Q)*Q'*X₆*sqrt(X₆'*X₆))
+	cosθ₆=svdvals(√(Q'*Q)*Q'*X₆*√(X₆'*X₆))
 	sinθ₆=sqrt.(1 .-cosθ₆.^2)
 end
 

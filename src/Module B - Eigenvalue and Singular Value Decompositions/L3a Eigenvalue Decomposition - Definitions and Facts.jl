@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.12.21
+# v0.14.1
 
 using Markdown
 using InteractiveUtils
@@ -150,19 +150,21 @@ There are many facts related to the eigenvalue problem for general matrices. We 
 
 11.  $A$ is diagonalizable $\Leftrightarrow$ $A$ is nondefective $\Leftrightarrow$ $A$ has $n$ linearly independent eigenvectors. 
 
-12. Every $A$ has Schur decomposition. Moreover, $T_{ii}=\lambda_i$.
+12. Every $A$ has Schur decomposition. Moreover, $T_{ii}=\lambda_i$.  _(For proof see GVL p.351 (375).)_
 
-14. If $A$ is normal, matrix $T$ from its Schur decomposition is normal. Consequently:
+13. If $A$ is normal, matrix $T$ from its Schur decomposition is normal. Consequently:
 
     *  $T$ is diagonal, and has eigenvalues of $A$ on diagonal,
     * matrix $Q$ of the Schur decomposition is the unitary matrix of eigenvectors,
     * all eigenvalues of $A$ are semisimple and $A$ is nondefective.
 
-13. If $A$ and $B$ are similar, $\sigma(A)=\sigma(B)$. Consequently, $\mathop{\mathrm{tr}}(A)=\mathop{\mathrm{tr}}(B)$ and $\det(A)=\det(B)$.
+14. Real matrix has a __real Schur decomposition__, $Q^TAQ=T$, where $Q$ is real orthogonal and $T$ is upper block-triangular with $1\times 1$ and $2 \times 2$ blocks on the diagonal. The $1\times 1$ blocks correspond to real eigenvalues, and the $2\times 2$ blocks correspond to pairs of complex conjugate eigenvalues.  
 
-11. Eigenvalues and eigenvectors are continous and differentiable: if $\lambda$ is a simple eigenvalue of $A$ and $A(\varepsilon)=A+\varepsilon E$ for some $E\in F^{n\times n}$, for small $\varepsilon$ there exist differentiable functions $\lambda(\varepsilon)$ and $x(\varepsilon)$ such that $A(\varepsilon) x(\varepsilon) = \lambda(\varepsilon) x(\varepsilon)$.
+15. If $A$ and $B$ are similar, $\sigma(A)=\sigma(B)$. Consequently, $\mathop{\mathrm{tr}}(A)=\mathop{\mathrm{tr}}(B)$ and $\det(A)=\det(B)$.
 
-16. Classical motivation for the eigenvalue problem is the following: consider the system of linear differential equations with constant coefficients, $\dot y(t)=Ay(t)$. If the solution is $y=e^{\lambda t} x$ for some constant vector $x$, then
+16. Eigenvalues and eigenvectors are continous and differentiable: if $\lambda$ is a simple eigenvalue of $A$ and $A(\varepsilon)=A+\varepsilon E$ for some $E\in F^{n\times n}$, for small $\varepsilon$ there exist differentiable functions $\lambda(\varepsilon)$ and $x(\varepsilon)$ such that $A(\varepsilon) x(\varepsilon) = \lambda(\varepsilon) x(\varepsilon)$.
+
+17. Classical motivation for the eigenvalue problem is the following: consider the system of linear differential equations with constant coefficients, $\dot y(t)=Ay(t)$. If the solution is $y=e^{\lambda t} x$ for some constant vector $x$, then
 
 $$\lambda e^{\lambda t} x=Ae^{\lambda t} x \quad \textrm{or} \quad Ax=\lambda x.$$
 
@@ -183,15 +185,15 @@ md"
 # ╔═╡ 184bc4ec-c566-4f21-99b3-b6e8cd328b47
 A=[-3 7 -1; 6 8 -2; 72 -28 19]
 
+# ╔═╡ 5d0aac9e-4f48-4f09-956f-5033a1fb8f11
+x=symbols("x")
+
 # ╔═╡ 73ece9ec-97dd-46bc-8e17-10ce7bfc18bc
 begin
 	using LinearAlgebra
 	eye(n)=Matrix{Int}(I,n,n)
 	A-x*eye(3)
 end
-
-# ╔═╡ 5d0aac9e-4f48-4f09-956f-5033a1fb8f11
-@vars x
 
 # ╔═╡ ce83f04c-e915-4599-beeb-d4a0a681bc17
 # Characteristic polynomial p_A(λ)
@@ -254,6 +256,21 @@ begin
 	M=rand(-5:5,3,3)
 	eigvals(M*A*inv(M)), tr(M*A*inv(M)), det(M*A*inv(M))
 end
+
+# ╔═╡ 343c8f45-6226-4361-a149-5313a47c355c
+md"
+### Real Schur decomposition
+"
+
+# ╔═╡ 41a05c50-f6df-4b93-bd8a-50412829105e
+begin
+	# Fact 14
+	Random.seed!(326)
+	A₀=rand(-9:9,6,6)
+end
+
+# ╔═╡ cd8fb666-d2f2-423c-ac39-405c842e97ba
+schur(A₀)
 
 # ╔═╡ 7aa7ac89-837c-4ee8-b9f1-8ad0256f25e1
 md"""
@@ -883,6 +900,9 @@ rank(Covₜ)
 # ╠═bdf079a6-beee-44f5-8200-613e54b3a8dc
 # ╠═e1f5027c-1080-4c95-81cc-a75dde641b88
 # ╠═c71a7760-b4c6-404e-b5ef-f4879cb787cd
+# ╟─343c8f45-6226-4361-a149-5313a47c355c
+# ╠═41a05c50-f6df-4b93-bd8a-50412829105e
+# ╠═cd8fb666-d2f2-423c-ac39-405c842e97ba
 # ╟─7aa7ac89-837c-4ee8-b9f1-8ad0256f25e1
 # ╠═c3724c4f-142b-4863-8c04-4a0c15411f40
 # ╠═792f632e-fdc2-4016-baaa-b366704f02fd

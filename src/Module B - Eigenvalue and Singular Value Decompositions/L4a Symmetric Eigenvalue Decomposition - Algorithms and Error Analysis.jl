@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.14.0
+# v0.14.1
 
 using Markdown
 using InteractiveUtils
@@ -173,7 +173,7 @@ function Power(A::Matrix,x::Vector,tol::Real)
         x=y/norm(y)
         y=A*x
         ν=x⋅y
-        # display(x)
+        # println(ν)
         steps+=1
     end
     ν, y/norm(y), steps
@@ -184,6 +184,9 @@ end
 
 # ╔═╡ 2c3d8a7f-c986-4277-9470-c5abab058ee4
 eigvals(A)
+
+# ╔═╡ 290024ee-b36d-4a71-8adf-d433a6daf6ad
+ν-eigvals(A)[6]
 
 # ╔═╡ 71107f6d-4c6e-4bc1-a27b-51a99a172b87
 # Speed of convergence
@@ -800,6 +803,7 @@ eigvals(Matrix(H₄.H))
 # ╠═5450fb80-ab1f-4212-ad6f-aa0483bf74d6
 # ╠═ab54ea2a-efbd-44d8-953e-cdd86b2e783d
 # ╠═2c3d8a7f-c986-4277-9470-c5abab058ee4
+# ╠═290024ee-b36d-4a71-8adf-d433a6daf6ad
 # ╠═71107f6d-4c6e-4bc1-a27b-51a99a172b87
 # ╠═b6db0848-4142-4d88-98ca-1cb415b92742
 # ╠═e9285938-1fc7-41f7-b809-0785f925e72d
