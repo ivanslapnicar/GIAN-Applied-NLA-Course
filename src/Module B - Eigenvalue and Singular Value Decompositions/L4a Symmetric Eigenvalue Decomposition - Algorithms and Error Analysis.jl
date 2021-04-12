@@ -603,7 +603,7 @@ begin
 	@time Ub=LAPACK.stein!(Tbig.dv,Tbig.ev,λbig);
 	@time λb,Xb=eigen(Tbig);
 	# Residual
-	norm(Tbig*Ub-Ub*Diagonal(sort(λbig))), norm(Tbig*Xb-Xb*Diagonal(sort(λb)))
+	norm(Tbig*Ub-Ub*Diagonal(λbig)), norm(Tbig*Xb-Xb*Diagonal(λb))
 end
 
 # ╔═╡ dd74443c-eba6-464d-99cc-612884b105e5

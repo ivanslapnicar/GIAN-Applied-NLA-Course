@@ -4,6 +4,15 @@
 using Markdown
 using InteractiveUtils
 
+# This Pluto notebook uses @bind for interactivity. When running this notebook outside of Pluto, the following 'mock version' of @bind gives bound variables a default value (instead of an error).
+macro bind(def, element)
+    quote
+        local el = $(esc(element))
+        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : missing
+        el
+    end
+end
+
 # ╔═╡ ec1fe200-8d73-11eb-0ba3-e593aa79dab2
 begin
 	using PlutoUI
@@ -25,6 +34,9 @@ begin
 	using SpecialMatrices
 	using Polynomials
 end
+
+# ╔═╡ bb8416e3-b682-4733-af6d-36fd48f0a7b8
+using Plots
 
 # ╔═╡ 10910df9-240f-4e6b-8076-1a9be4d66ba1
 md"""
@@ -873,6 +885,44 @@ inertia(Covₜ)
 # ╔═╡ cc0422bf-2e9b-463a-9b1a-468b09bb370e
 rank(Covₜ)
 
+# ╔═╡ 3e29a10b-0e07-4ddf-ad6d-848100804262
+md"
+# Eigenvalues of random matrices
+"
+
+# ╔═╡ 846047e6-56c7-4ce5-b7f6-6d037c9918bb
+md"""
+k = $(@bind kₘ Slider(10:30,show_value=true))
+
+n = $(@bind nₘ Slider(10:30,show_value=true))
+
+Matrix type = $(@bind mt Select(["Uniform", "Normal", "Uniform symmetric", "Normal Symmetric"]))
+"""
+
+# ╔═╡ c36a856f-a726-4ccb-bee9-691f01147b97
+begin
+	E=Array{Any}(undef,nₘ,kₘ)
+	for i=1:kₘ
+		if mt=="Uniform"
+			# Unsymmetric uniform distribution
+	    	A=rand(nₘ,nₘ)
+		elseif mt=="Normal"
+			# Unsymmetric normal distribution
+			A=randn(nₘ,nₘ)
+		elseif mt=="Uniform symmetric"
+			# Symmetric uniform distribution
+			A=Symmetric(rand(nₘ,nₘ))
+		else
+			# Symmetric normal distribution
+			A=Symmetric(randn(nₘ,nₘ))
+		end
+	    E[:,i]=eigvals(A)
+	end
+	# We need this since plot cannot handle `Any`
+	E=map(eltype(E[1,1]),E)
+	scatter(E,legend=false)
+end
+
 # ╔═╡ Cell order:
 # ╟─10910df9-240f-4e6b-8076-1a9be4d66ba1
 # ╟─ec1fe200-8d73-11eb-0ba3-e593aa79dab2
@@ -1002,3 +1052,7 @@ rank(Covₜ)
 # ╠═80a7d977-99e7-4d51-9cc9-4e6b7c410a6a
 # ╠═c74eb635-2948-4db3-bd53-c7d7a5b2a454
 # ╠═cc0422bf-2e9b-463a-9b1a-468b09bb370e
+# ╟─3e29a10b-0e07-4ddf-ad6d-848100804262
+# ╠═bb8416e3-b682-4733-af6d-36fd48f0a7b8
+# ╟─846047e6-56c7-4ce5-b7f6-6d037c9918bb
+# ╠═c36a856f-a726-4ccb-bee9-691f01147b97
