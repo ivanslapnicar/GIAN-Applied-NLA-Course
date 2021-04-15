@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.14.1
+# v0.14.2
 
 using Markdown
 using InteractiveUtils
@@ -127,7 +127,7 @@ methods(LAPACK.stebz!)
 λ₁, =LAPACK.stebz!('A','E',1.0,1.0,1,1,2*eps(),copy(T.dv),copy(T.ev))
 
 # ╔═╡ 88bfbb99-a597-4ccc-89e0-b3f4b23e1949
-Λ-λ₁
+norm(Λ-λ₁)
 
 # ╔═╡ c7663867-20b4-4dd3-b173-456f283aa629
 U₁=LAPACK.stein!(copy(T.dv),copy(T.ev),λ₁)
@@ -297,7 +297,7 @@ for (stedc, elty) in
                     Ptr{BlasInt}), compz, n, w, u, Z, ldz, work, 
                     lwork, iwork, liwork, info) 
                 chklapackerror(info[])
-            return w,Z
+            return Eigen(w,Z)
         end
     end
 end
