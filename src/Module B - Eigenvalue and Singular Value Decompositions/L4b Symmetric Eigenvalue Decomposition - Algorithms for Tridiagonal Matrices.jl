@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.14.1
+# v0.14.4
 
 using Markdown
 using InteractiveUtils
@@ -335,6 +335,7 @@ function DivideConquer(T::SymTridiagonal{S}) where S
             U[:,i]=(D-Λ[i]*I)\v
             normalize!(view(U,:,i))
         end
+		# This can be done using Caucly-like matrices
         U[1:k,:]=U₁*U[1:k,:]
         U[k+1:n,:]=U₂*U[k+1:n,:]
     end
