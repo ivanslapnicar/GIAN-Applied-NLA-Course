@@ -167,16 +167,16 @@ function Jacobi(A::Array{T}) where T<:Real
                 # if A[i,j]!=zero(T)
                 if abs(A[i,j])>tol*√(abs(A[i,i]*A[j,j]))
                     # Compute c and s
-                    τ=(A[i,i]-A[j,j])/(2*A[i,j])
+                    τ=(A[j,j]-A[i,i])/(2*A[i,j])
                     t=sign(τ)/(abs(τ)+√(1+τ^2))
                     c=one(T)/√(one(T)+t^2)
                     s=c*t
                     G=LinearAlgebra.Givens(i,j,c,s)
-                    A=G*A
-                    A*=G'
+                    A=G'*A
+                    A*=G
                     A[i,j]=zero(T)
                     A[j,i]=zero(T)
-                    U*=G'
+                    U*=G
                     pcurrent=0
                     # To observe convergence
                     # display(A)
@@ -258,19 +258,19 @@ function Jacobi₁(A₁::Array{T}) where T<:Real
                 # if A[i,j]!=zero(T)
                 if abs(A[i,j])>tol*√(abs(A[i,i]*A[j,j]))
                     # Compute c and s
-                    τ=(A[i,i]-A[j,j])/(2*A[i,j])
+                    τ=(A[j,j]-A[i,i])/(2*A[i,j])
                     t=sign(τ)/(abs(τ)+√(1+τ^2))
                     c=1/√(1+t^2)
                     s=c*t
                     G=LinearAlgebra.Givens(i,j,c,s)
                     # A=G*A
-                    lmul!(G,A)
-                    # A*=G'
-                    rmul!(A,adjoint(G))
+                    lmul!(adjoint(G),A)
+                    # A*=G
+                    rmul!(A,G)
                     A[i,j]=zero(T)
                     A[j,i]=zero(T)
-                    # U*=G'
-                    rmul!(U,adjoint(G))
+                    # U*=G
+                    rmul!(U,G)
                     pcurrent=0
                 else
                     pcurrent+=1
@@ -283,6 +283,9 @@ end
 
 # ╔═╡ 182805c0-0ab1-40ef-a795-adee10713cca
 @time Jacobi₁(A₁)
+
+# ╔═╡ d9a7da1c-206c-4890-8ab4-ec51ec02b6a9
+# E₁.values
 
 # ╔═╡ 5c5e6429-63e5-4844-8f21-07e1423ada47
 md"""
@@ -426,6 +429,7 @@ The details of the indefinite case are beyond the scope of this course, and the 
 # ╟─3c7034f9-a477-470e-8d71-88e3bda9340b
 # ╠═46c32fa9-e5a8-4f94-a314-115f7b234e7d
 # ╠═182805c0-0ab1-40ef-a795-adee10713cca
+# ╠═d9a7da1c-206c-4890-8ab4-ec51ec02b6a9
 # ╟─5c5e6429-63e5-4844-8f21-07e1423ada47
 # ╟─733d322f-8d91-4f70-a01b-0fa8f0edf3ab
 # ╠═2fb8d573-5c61-4406-bf67-042e6adb86b5

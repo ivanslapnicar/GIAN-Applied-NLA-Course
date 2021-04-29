@@ -16,7 +16,7 @@ begin
 	Random.seed!(421)
 	using LinearAlgebra
 	n=6
-	T=SymTridiagonal(rand(n),rand(n-1))
+	T=SymTridiagonal(randn(n),randn(n-1))
 end
 
 # ╔═╡ fee10c7e-f1f4-41d4-86a9-c980b5b9b8a5
@@ -223,6 +223,9 @@ begin
 	X=cat(X₁,X₂,dims=(1,2))
 end
 
+# ╔═╡ 06c885f9-f73c-448e-9ba7-7664ba1ad105
+Matrix(T₂)
+
 # ╔═╡ e2c2803c-e709-43c1-9b79-524bf6dc03e3
 X'*T*X
 
@@ -239,7 +242,7 @@ md"
 
 # ╔═╡ cb7ac40c-b1fb-4b67-8a76-6c0df47fb270
 # See the list of imported LAPACK routines - D&C is not among them
-LAPACK.bdsdc!
+LAPACK.stebz!
 
 # ╔═╡ bc5ea97a-70ef-4a95-b59e-96790ba0346f
 begin
@@ -335,7 +338,7 @@ function DivideConquer(T::SymTridiagonal{S}) where S
             U[:,i]=(D-Λ[i]*I)\v
             normalize!(view(U,:,i))
         end
-		# This can be done using Caucly-like matrices
+		# This can be done using Cauchy-like matrices
         U[1:k,:]=U₁*U[1:k,:]
         U[k+1:n,:]=U₂*U[k+1:n,:]
     end
@@ -353,7 +356,7 @@ md"
 # ╔═╡ ab72f31d-6753-4728-a8f5-f66aaff618fd
 begin
 	# Timings
-	n₃=3000
+	n₃=1500
 	T₃=SymTridiagonal(randn(n₃),randn(n₃-1));
 end
 
@@ -421,6 +424,7 @@ LAPACK.stegr!('V',copy(T.dv),copy(T.ev))
 # ╟─9582de91-3ac0-40c8-a160-a52b2d785e2c
 # ╟─131ae1b7-a946-4e3f-b260-d037ee7ee6ce
 # ╠═e1288577-8a5b-4b21-8533-68be1619a5e6
+# ╠═06c885f9-f73c-448e-9ba7-7664ba1ad105
 # ╠═04206e97-57c2-41fe-938f-9108cab56740
 # ╠═e2c2803c-e709-43c1-9b79-524bf6dc03e3
 # ╠═6b848adb-1b45-44c8-9be2-e451ef5d21d7
