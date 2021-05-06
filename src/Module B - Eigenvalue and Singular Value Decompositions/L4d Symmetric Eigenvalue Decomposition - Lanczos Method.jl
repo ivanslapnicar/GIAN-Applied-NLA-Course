@@ -76,7 +76,9 @@ $$
 \|AU_{:,i}-\lambda_i U_{:,i}\|_2&=\mu |Q_{ki}|, \quad  i=1,\ldots,k.
 \end{aligned}$$
 
-Further, there are $k$ eigenvalues $\tilde\lambda_1,\ldots,\tilde\lambda_k$ of $A$ such that $|\lambda_i-\tilde\lambda_i|\leq \mu$, and for the corresponding eigenvectors, we have $$\sin2\Theta(U_{:,i},\tilde U_{:,i}) \leq \frac{2\mu}{\min_{j\neq i} |\lambda_i-\tilde \lambda_j|}.$$ 
+Further, there are $k$ eigenvalues $\tilde\lambda_1,\ldots,\tilde\lambda_k$ of $A$ such that $|\lambda_i-\tilde\lambda_i|\leq \mu$, and for the corresponding eigenvectors, we have 
+
+$$\sin2\Theta(U_{:,i},\tilde U_{:,i}) \leq \frac{2\mu}{\min_{j\neq i} |\lambda_i-\tilde \lambda_j|}.$$ 
 
 5. In practical implementations, $\mu$ is usually used to determine the index $k$. 
 
@@ -117,7 +119,7 @@ function Lanczos(A::Array{T}, x::Vector{T}, k::Int) where T
             # z=z-dv[i]*X[:,i]-ev[i-1]*X[:,i-1]
             # Full reorthogonalization - once or even twice
             z=z-sum([(z⋅X[:,j])*X[:,j] for j=1:i])
-            # z=z-sum([(z⋅X[:,j])*X[:,j] for j=1:i])
+            z=z-sum([(z⋅X[:,j])*X[:,j] for j=1:i])
         end
         μ=norm(z)
         if μ==0
@@ -138,7 +140,7 @@ function Lanczos(A::Array{T}, x::Vector{T}, k::Int) where T
 end
 
 # ╔═╡ 219ce78b-8bd3-4df3-93df-c08fad30e33f
-λ,U,X,μ=Lanczos(A,x,k)
+λ,U,X,μ=Lanczos(A,x,10)
 
 # ╔═╡ 1ef82905-e422-4644-ad00-26c448cb0e3a
 # Orthogonality of X

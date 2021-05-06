@@ -165,7 +165,7 @@ begin
 	x=x/norm(x)
 	y=y/norm(y)
 	ζ=(x'*A*y)[]
-	σ, j, ζ
+	σ, j, ζ-σ[j]
 end
 
 # ╔═╡ 1cb8d9ff-7356-46a0-b932-b5d00d2bc3d0

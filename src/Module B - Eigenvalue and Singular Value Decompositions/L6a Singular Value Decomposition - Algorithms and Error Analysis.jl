@@ -84,7 +84,7 @@ md"""
 
 7. The bidiagonal reduction is implemented in the [LAPACK](http://www.netlib.org/lapack) subroutine [DGEBRD](http://www.netlib.org/lapack/explore-html/dd/d9a/group__double_g_ecomputational.html#ga9c735b94f840f927f8085fd23f3ee2e6). The computation of $X$ and $Y$ is implemented in the subroutine [DORGBR](http://www.netlib.org/lapack/lapack-3.1.1/html/dorgtr.f.html), which is not yet wrapped in Julia.
 
-8. Bidiagonalization can also be performed using Givens rotations. Givens rotations act more selectively than Householder reflectors, and are useful if $A$ has some special structure, for example, if $A$ is a banded matrix. Error bounds for function `myBidiagG()` are the same as above, but with slightly different functions $\psi$ and $\phi$.
+8. Bidiagonalization can also be performed using Givens rotations. Givens rotations act more selectively than Householder reflectors, and are useful if $A$ has some special structure, for example, if $A$ is a banded matrix. Error bounds for function `BidiagG()` are the same as above, but with slightly different functions $\psi$ and $\phi$.
 """
 
 # ╔═╡ 875fce0a-1b1b-4332-a150-6ec5f20aa7dc
@@ -106,7 +106,7 @@ end
 function H(x)
     v=copy(x)
     v[1]+=sign(x[1])*norm(x)
-    display(v/v[1])
+    # display(v/v[1])
     I-(2/(v⋅v))*v*v'
 end
 
@@ -275,7 +275,7 @@ W,σ,Z=svd(B)
 σ₁=svdvals(B)
 
 # ╔═╡ 860a3476-b257-4384-b255-4a8bd68728c9
-@which svdvals(B)
+@which svdvals!(B)
 
 # ╔═╡ 2c1943df-95d8-43bb-bf6a-8fe13424a2c9
 σ-σ₁

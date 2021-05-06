@@ -284,9 +284,6 @@ end
 # ╔═╡ 182805c0-0ab1-40ef-a795-adee10713cca
 @time Jacobi₁(A₁)
 
-# ╔═╡ d9a7da1c-206c-4890-8ab4-ec51ec02b6a9
-# E₁.values
-
 # ╔═╡ 5c5e6429-63e5-4844-8f21-07e1423ada47
 md"""
 # Relative perturbation theory
@@ -351,6 +348,9 @@ begin
 	Aₛ=[A₂[i,j]/√(A₂[i,i]*A₂[j,j]) for i=1:n₂, j=1:n₂]
 end
 
+# ╔═╡ 1f1b8df4-09a6-46c4-b08a-621461652aa7
+A₂
+
 # ╔═╡ 5b8fd806-78e6-4aef-8800-df5c0feba3bb
 cond(Aₛ), cond(A₂)
 
@@ -373,8 +373,8 @@ cond(Hₛ),cond(H)
 λ₂,U₂=Jacobi(H)
 
 # ╔═╡ 5dd05357-7bd0-4857-b562-4c46f06a502d
-# Orthogonality and residual 
-norm(U₂'*U₂-I),norm(H*U₂-U₂*Diagonal(λ₂)) # /norm(H)
+# Orthogonality and relative residual 
+norm(U₂'*U₂-I),norm(H*U₂-U₂*Diagonal(λ₂))/norm(H)
 
 # ╔═╡ 2cf0b11f-b01e-4eb5-a617-be0eff673d89
 # Standard QR method
@@ -413,6 +413,21 @@ This is positive definite part of the polar decomposition of $A$.
 The details of the indefinite case are beyond the scope of this course, and the reader should consider references.
 """
 
+# ╔═╡ fb368704-0f09-49aa-b870-b4378f1c5424
+C=Symmetric(rand(5,5).-0.5)
+
+# ╔═╡ 43fa4cac-6254-489e-b70c-9c8d7a45a7ad
+G=eigen(C)
+
+# ╔═╡ c86490af-ecf3-48e4-a4e3-99d5471081ac
+Cₐ=√(C*C)
+
+# ╔═╡ 210d21f3-077b-4fea-9d43-d12d33e4312f
+eigvals(Cₐ)
+
+# ╔═╡ 5f671402-af57-45d0-bc95-357d709d59ff
+G.vectors*Diagonal(abs.(G.values))*G.vectors'
+
 # ╔═╡ Cell order:
 # ╟─8911d755-8ad6-4eb2-82f0-44a403f2ef60
 # ╟─70c2fde9-110c-4f20-9324-0e0601934c2c
@@ -429,9 +444,9 @@ The details of the indefinite case are beyond the scope of this course, and the 
 # ╟─3c7034f9-a477-470e-8d71-88e3bda9340b
 # ╠═46c32fa9-e5a8-4f94-a314-115f7b234e7d
 # ╠═182805c0-0ab1-40ef-a795-adee10713cca
-# ╠═d9a7da1c-206c-4890-8ab4-ec51ec02b6a9
 # ╟─5c5e6429-63e5-4844-8f21-07e1423ada47
 # ╟─733d322f-8d91-4f70-a01b-0fa8f0edf3ab
+# ╠═1f1b8df4-09a6-46c4-b08a-621461652aa7
 # ╠═2fb8d573-5c61-4406-bf67-042e6adb86b5
 # ╠═5b8fd806-78e6-4aef-8800-df5c0feba3bb
 # ╠═9dba38b0-b08e-4928-9e6f-de9ce3c27106
@@ -445,3 +460,8 @@ The details of the indefinite case are beyond the scope of this course, and the 
 # ╠═011b7cd7-8692-4a29-9e97-ea223d98c761
 # ╠═1a57313f-d4c4-476c-92be-ad45be008edf
 # ╟─0055c941-e98a-40dd-802a-98ceebedc374
+# ╠═fb368704-0f09-49aa-b870-b4378f1c5424
+# ╠═43fa4cac-6254-489e-b70c-9c8d7a45a7ad
+# ╠═c86490af-ecf3-48e4-a4e3-99d5471081ac
+# ╠═210d21f3-077b-4fea-9d43-d12d33e4312f
+# ╠═5f671402-af57-45d0-bc95-357d709d59ff
