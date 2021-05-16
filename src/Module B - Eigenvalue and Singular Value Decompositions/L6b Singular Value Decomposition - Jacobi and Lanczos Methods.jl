@@ -47,7 +47,7 @@ Let $A=BD$, where $D=\mathop{\mathrm{diag}} (\| A_{:,1}\|_2, \ldots, \|A_{:,n}\|
 
 1. Let $\tilde U$, $\tilde V$ and $\tilde \Sigma$ be the approximations of $U$, $V$ and $\Sigma$, respectively, computed by a backward stable algorithm as $A+\Delta A=\tilde U\tilde \Sigma \tilde V^T$. Since the orthogonality of $\tilde U$ and $\tilde V$ cannot be guaranteed, this product in general does not represent and SVD. There exist nearby orthogonal matrices $\hat U$ and $\hat V$ such that $(I+E_1)(A+\Delta A)(I+E_2)=\hat U \tilde \Sigma \hat V^T$, where departures from orthogonalithy, $E_1$ and $E_2$, are small in norm.
 
-2. Standard algorithms compute the singular values with backward error $\| \Delta A\|\leq \phi\varepsilon \|A\|_2$, where $\varepsilon$ is machine precision and $\phi$ is a slowly growing function og $n$. The best error bound for the singular values is $|\sigma_j-\tilde \sigma_j|\leq \| \Delta A\|_2$, and the best relative error bound is
+2. Standard algorithms compute the singular values with backward error $\| \Delta A\|\leq \phi\varepsilon \|A\|_2$, where $\varepsilon$ is machine precision and $\phi$ is a slowly growing function of $n$. The best error bound for the singular values is $|\sigma_j-\tilde \sigma_j|\leq \| \Delta A\|_2$, and the best relative error bound is
 
 $$
 \max_j \frac{|\sigma_j-\tilde\sigma_j|}{\sigma_j}\leq \frac{\| \Delta A \|_2}{\sigma_j} \leq \phi \varepsilon \kappa_2(A).$$
@@ -181,10 +181,10 @@ U₁,σ₁,V₁=JacobiR(A₁);
 
 # ╔═╡ f1734a00-d452-4adf-8125-dfbcee74d338
 # Residual
-norm(A₁*V₁-U₁*Diagonal(σ₁))
+norm(A₁*V₁-U₁*Diagonal(σ₁))/norm(A₁)
 
 # ╔═╡ caa171b1-e8cd-4fbe-a064-964c1a896f7a
-# Diagopnalization
+# Diagonalization
 U₁'*A₁*V₁
 
 # ╔═╡ 98fa4641-2d3f-48f5-ae1d-a9f3b96f798e
@@ -263,7 +263,7 @@ md"
 begin
 	m₃=2000
 	n₃=1500
-	A₃=rand(m₃,n₃)
+	A₃=randn(m₃,n₃)
 end
 
 # ╔═╡ a7068313-39ae-4e83-a5cd-68aec37712c9
@@ -293,7 +293,7 @@ A₄=sprand(10000,3000,0.05)
 # ╔═╡ 017a66c9-bbc2-464a-905b-b5316c49292a
 begin
 	# No vectors, this takes about 5 sec.
-	k₄=100
+	k₄=10
 	@time S₄,rest₄=svds(A₄,nsv=k₄,ritzvec=false)
 end
 

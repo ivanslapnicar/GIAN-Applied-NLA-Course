@@ -232,9 +232,8 @@ U,σ,V=JacobiR(Matrix(L.L));
 
 # ╔═╡ c474702a-8af8-4640-9f45-bca748ab3952
 begin
-	λ=σ.^2
 	U₁=U[invperm(p),:]
-	λ
+	λ=σ.^2
 end
 
 # ╔═╡ 25143fe5-3965-468a-8cb1-7c3e8e8027ea
@@ -427,7 +426,7 @@ X₂,D₂,Y₂=RRD(C₂);
 norm((X₂*Diagonal(D₂)*Y₂')-C₂)
 
 # ╔═╡ c7fd604c-9e63-4ac0-8839-82371f968ba7
-cond(C)
+cond(C₂)
 
 # ╔═╡ 23df1242-1b43-4d52-a8ed-1b12b0d5d4b9
 # Is this RRD? here X=Y

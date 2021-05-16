@@ -327,6 +327,7 @@ begin
 	n₀=1000
 	Bₙ=Bidiagonal(rand(n₀),rand(n₀-1),'U')
 	B₂ₙ=Bidiagonal(rand(2*n₀),rand(2*n₀-1),'U')
+	println(" ")
 	@time svdvals(Bₙ)
 	@time svdvals(B₂ₙ)
 	@time LAPACK.bdsdc!('U','N',copy(Bₙ.dv),copy(Bₙ.ev))
@@ -385,6 +386,7 @@ begin
 	n₁=1000
 	Aₙ=rand(n₁,n₁)
 	A₂ₙ=rand(2*n₁,2*n₁)
+	println(" ")
 	@time Uₙ,σₙ,Vₙ=svd(Aₙ)
 	@time svd(A₂ₙ)
 	@time LAPACK.gesvd!('A','A',copy(Aₙ))
