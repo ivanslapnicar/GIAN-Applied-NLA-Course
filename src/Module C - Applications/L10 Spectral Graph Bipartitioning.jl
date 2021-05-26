@@ -132,8 +132,7 @@ begin
 	
 	function NormalizedLaplacian(L::AbstractMatrix)
 	    D=1.0./sqrt.(diag(L))
-	    n=length(D)
-	    [L[i,j]*(D[i]*D[j]) for i=1:n, j=1:n]
+		Diagonal(D)*L*Diagonal(D)
 	end
 end
 
@@ -151,6 +150,9 @@ end
 
 # ╔═╡ 86e5f00f-13ee-4867-b0cd-187f2c782a46
 Lₙ=NormalizedLaplacian(L)
+
+# ╔═╡ cf26dbe9-3c4f-4c95-88ef-f197f360d759
+Matrix(Lₙ)
 
 # ╔═╡ 8fcd2440-4013-4b37-a747-2c0c7f6d4aeb
 issymmetric(Lₙ)
@@ -235,7 +237,7 @@ end
 
 # ╔═╡ fed7f592-be03-4baf-8ace-ff9ee78fee71
 # Fact 8
-eigvals(Lₙ)
+eigvals(Matrix(Lₙ))
 
 # ╔═╡ 9f31928e-c933-43bb-9a5c-bf55f29737cd
 md"""
@@ -274,7 +276,7 @@ md"""
 
 Consider the following partitions (all edges have unit weights):
 
- $(load(\"../files/cut2.png\"))
+ $(load(\"./files/cut2.png\"))
 
 Left partition is $\pi$, right partition is $\pi'$.
 
@@ -299,7 +301,7 @@ The first problem favors partitions into subsets with similar numbers of vertice
 
 2. Both problems are NP-hard.
 
-3. Approximate solutions can be computed by suitable relaxations in $O(n^2)$ operations.
+3. __Approximate solutions can be computed by suitable relaxations in $O(n^2)$ operations.__
 
 4. The partition $\pi$ is defined by the vector $y$ such that
 
@@ -389,7 +391,7 @@ eigs(Lₙ,nev=2,which=:SM, v0=ones(n))
 
 # ╔═╡ bfac7a55-0d82-4549-b999-7db3272eaa20
 md"""
-### Concentric circles
+### Concentric rings
 
 A __complete graph__ has edges connecting each pair of vertices.
 
@@ -439,7 +441,7 @@ begin
 			X[:,i]=center+radii[j]*[cos(ϕ[i]);sin(ϕ[i])] + (rand(2).-0.5)/50
 		end
 	end
-	scatter(X[1,:],X[2,:],title="Concentric Circles", aspect_ratio=1,label="Points")
+	scatter(X[1,:],X[2,:],title="Concentric rings", aspect_ratio=1,label="Points")
 end
 
 # ╔═╡ fa4ae713-a0b2-46ce-b5f7-558b26d82019
@@ -570,6 +572,7 @@ There is no guarantee for optimality of this algorithm. Clearly, the optimal $k$
 # ╠═3f5447bb-95cd-4520-b0b9-e85f33b323bd
 # ╠═ecb2a46e-f9dc-4e57-812f-0a2788afb202
 # ╠═86e5f00f-13ee-4867-b0cd-187f2c782a46
+# ╠═cf26dbe9-3c4f-4c95-88ef-f197f360d759
 # ╠═8fcd2440-4013-4b37-a747-2c0c7f6d4aeb
 # ╠═0c8d3572-3436-446f-952a-b19d0370ab38
 # ╠═1437aadc-1c26-4eff-bb22-9cf9c15e1f5f

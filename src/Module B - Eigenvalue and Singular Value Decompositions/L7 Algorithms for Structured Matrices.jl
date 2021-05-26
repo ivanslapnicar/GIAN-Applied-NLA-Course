@@ -616,7 +616,7 @@ methods(GenSymArrow)
 
 # ╔═╡ bd8ea662-f4c2-4f2d-943b-b1a5f59cbe74
 begin
-	n₃=10
+	n₃=8
 	A₃=GenSymArrow(n₃,n₃)
 end
 
@@ -626,6 +626,9 @@ A₃.D, A₃.z, A₃.a, A₃.i
 
 # ╔═╡ a3ba9c15-1d55-4e2b-b32e-4202fbeca671
 E₃,info₃=eigen(A₃)
+
+# ╔═╡ 34d1bc3f-b703-4b31-887e-36d036e5c3f9
+@which eigen(A₃)
 
 # ╔═╡ 8677d8b8-f68b-4013-864c-89902ffff8fd
 # Residual and orthogonality
@@ -730,7 +733,7 @@ md"""
 
 # ╔═╡ 71d0022d-3cd8-488c-80b8-4c3c958ed8fa
 begin
-	n₅=10
+	n₅=8
 	A₅=GenSymDPR1(n₅)
 end
 
@@ -842,6 +845,7 @@ norm(E₆.vectors'*E₆.vectors-I)
 # ╠═bd8ea662-f4c2-4f2d-943b-b1a5f59cbe74
 # ╠═9fe07467-4033-4374-b4f2-b0ceecf91a03
 # ╠═a3ba9c15-1d55-4e2b-b32e-4202fbeca671
+# ╠═34d1bc3f-b703-4b31-887e-36d036e5c3f9
 # ╠═8677d8b8-f68b-4013-864c-89902ffff8fd
 # ╠═360829ce-2790-4d70-8699-687650fc51b4
 # ╟─9f2a5e5d-a705-4d65-8ebf-6b6d9d548999

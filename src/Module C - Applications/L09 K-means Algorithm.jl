@@ -123,10 +123,10 @@ S_{B}&=\sum_{i=1}^k|C_{i}|(c_{i}-c)(c_{i}-c)^{T} =
 """
 
 # ╔═╡ 86d55833-ee5a-4f73-b0bf-e8b6e6d65617
-function myKmeans(X::Array{T}, k::Int) where T
+function myKmeans(X::Vector{T}, k::Int) where T
     # X is Array of Arrays
     m,n=length(X),length(X[1])
-    C=Array{Int}(undef,m)
+    C=Vector{Int}(undef,m)
     # Choose random k means among X
     c=X[randperm(m)[1:k]]
     # This is just to start the while loop
@@ -169,7 +169,7 @@ begin
 	sizes=rand(10:50,k)
 	csizes=cumsum(sizes)
 	# X is array of arrays
-	X=Array{Tuple{Float64,Float64}}(undef,sum(sizes))
+	X=Vector{Tuple{Float64,Float64}}(undef,sum(sizes))
 	X[1:csizes[1]]=[centers[1].+Tuple((rand(2).-0.5)/2) for i=1:sizes[1]]
 	for j=2:k
 		X[csizes[j-1]+1:csizes[j]]=[centers[j].+Tuple((rand(2).-0.5)/2) for i=1:sizes[j]]
@@ -189,7 +189,7 @@ end
 
 # ╔═╡ f559b870-608a-426e-a23b-b66ef6d4b47f
 # Plot the solution
-function plotKmeansresult(C::Array,c::Array,X::Vector)
+function plotKmeansresult(C::Vector,c::Vector,X::Vector)
     scatter()
     # Clusters
     for j=1:k
@@ -199,6 +199,9 @@ function plotKmeansresult(C::Array,c::Array,X::Vector)
     scatter!(c,markershape=:hexagon,ms=6,color=:red,label="Centers")
 	plot!(title="Computed clusters")
 end
+
+# ╔═╡ ba84fe97-4dd0-47d3-b980-f5e5a8de6fa3
+X
 
 # ╔═╡ 310a4957-cc58-424b-845c-3ebaf7db77f3
 md"""
@@ -307,12 +310,12 @@ begin
 			X₁[:,i]=center+radii[j]*[cos(ϕ[i]);sin(ϕ[i])] + (rand(2).-0.5)/50
 		end
 	end
-	scatter(X₁[1,:],X₁[2,:],title="Concentric Circles", aspect_ratio=1,label="Points")
+	scatter(X₁[1,:],X₁[2,:],title="Concentric Rings", aspect_ratio=1,label="Points")
 end
 
 # ╔═╡ 0be24dd5-f3b0-4daa-aad8-5dbcdfca9313
 begin
-	out₁=kmeans(X₁,k₁)
+	out₁=kmeans(X₁,k₁,init=:rand)
 	plotKmeansresult(out₁,X₁)
 end
 
@@ -334,6 +337,7 @@ end
 # ╠═fceab134-0921-459b-8d91-952a44abb07b
 # ╠═f559b870-608a-426e-a23b-b66ef6d4b47f
 # ╠═8e5b89ce-e6b5-4473-bd98-a2285331418c
+# ╠═ba84fe97-4dd0-47d3-b980-f5e5a8de6fa3
 # ╟─310a4957-cc58-424b-845c-3ebaf7db77f3
 # ╠═f9af8a75-48fd-4e82-b43e-61867bead6f9
 # ╠═7e869699-8eb1-4e38-905d-a9448d037841
