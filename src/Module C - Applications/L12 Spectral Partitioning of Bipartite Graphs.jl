@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.14.4
+# v0.14.6
 
 using Markdown
 using InteractiveUtils
@@ -27,7 +27,7 @@ begin
 	using Random
 	m=[200,100,100]
 	n=[100,200,100]
-	density=[0.5,0.7,0.4]
+	density=[0.5,0.7,0.2]
 	Pts=Array{Any}(undef,3)
 	Random.seed!(421)
 	for i=1:3
@@ -37,12 +37,8 @@ begin
 	B=blockdiag(Pts[1],Pts[2],Pts[3])
 end
 
-# ╔═╡ b95d4070-c127-4db0-987b-5fc17421b667
-begin
-	# The structure of singular vectors reflects the blocks
-	using Arpack
-	S,rest₀=svds(B,nsv=3)
-end
+# ╔═╡ 9ab98160-3e37-44c3-b219-a3e1bf95fd68
+using Arpack
 
 # ╔═╡ 89299cb7-a4eb-48f3-b3f1-ab2b5c6cfa2e
 md"""
@@ -234,6 +230,10 @@ md"
 # ╔═╡ e1149b05-d594-4d75-ae56-1ce18bd0f60d
 spy(Matrix(B))
 
+# ╔═╡ b95d4070-c127-4db0-987b-5fc17421b667
+# The structure of singular vectors reflects the block
+S,rest₀=svds(B,nsv=3);
+
 # ╔═╡ 57d472c1-548d-4678-b884-85f863771aa7
 # S is a structure
 S.S
@@ -279,7 +279,7 @@ __Answer.__ Yes (with spectral partitioning)!
 """
 
 # ╔═╡ 81d99f24-82b9-4216-8d17-6a18317beb77
-Sₙ,rest=svds(D,nsv=3)
+Sₙ,rest=svds(D,nsv=3);
 
 # ╔═╡ 8f925ff7-90b4-4fe4-a869-86dec693c0f4
 # K-means on rows of U 
@@ -288,6 +288,9 @@ outU=kmeans(Matrix(transpose(Sₙ.U)),3)
 # ╔═╡ d446724a-97d1-403f-baaf-d0619203f351
 # K-means on Vt
 outV=kmeans(Sₙ.Vt,3)
+
+# ╔═╡ 7572c241-dbcc-4094-97e3-ee3172255294
+sortperm(outU.assignments)
 
 # ╔═╡ 22e90c11-ba4e-4073-9f78-f3b7beb24e69
 begin
@@ -323,6 +326,7 @@ end
 # ╟─5f27f1a2-80de-41d1-b1e2-da3a99493217
 # ╠═7cd3af86-f459-4e4b-8e35-c29bc6966eed
 # ╠═e1149b05-d594-4d75-ae56-1ce18bd0f60d
+# ╠═9ab98160-3e37-44c3-b219-a3e1bf95fd68
 # ╠═b95d4070-c127-4db0-987b-5fc17421b667
 # ╠═57d472c1-548d-4678-b884-85f863771aa7
 # ╠═4806378b-63cb-445a-8c71-583458fce846
@@ -333,4 +337,5 @@ end
 # ╠═81d99f24-82b9-4216-8d17-6a18317beb77
 # ╠═8f925ff7-90b4-4fe4-a869-86dec693c0f4
 # ╠═d446724a-97d1-403f-baaf-d0619203f351
+# ╠═7572c241-dbcc-4094-97e3-ee3172255294
 # ╠═22e90c11-ba4e-4073-9f78-f3b7beb24e69

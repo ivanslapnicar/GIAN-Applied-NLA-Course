@@ -1,8 +1,14 @@
 ### A Pluto.jl notebook ###
-# v0.12.7
+# v0.14.7
 
 using Markdown
 using InteractiveUtils
+
+# ╔═╡ 32ab2dfc-4381-4388-80ff-bbdbda513180
+begin
+	using PlutoUI
+	PlutoUI.TableOfContents(aside=true)
+end
 
 # ╔═╡ ae78af77-541e-4fa4-a4f9-d98333e773d9
 begin
@@ -64,15 +70,15 @@ __Credits__: Daniel Bragg, an IASTE Intern, performed testing of some of the met
 
 # ╔═╡ e0b4e064-da18-45ae-8d96-d723b4cafac6
 md"""
-## Underdetermined systems
+# Underdetermined systems
 
 Let $A\in\mathbb{R}^{m\times n}$ with $m<n$, $x\in\mathbb{R}^n$ and $b\in\mathbb{R}^m$.
 
-### Definitions
+## Definitions
 
 The system $Ax=b$ is __underdetermined__.
 
-$\|x\|_0$ is the number of nonzero entries of $x$ (__a quasi-norm__).
+ $\|x\|_0$ is the number of nonzero entries of $x$ (__a quasi-norm__).
 
 A matrix $A$ satisfies the __restricted isometry property__ (RIP) of order $k$ with constant $\delta_k\in(0,1)$ 
 if 
@@ -87,8 +93,7 @@ A __mutual incoherence__ of a matrix $A$ is
 $$
 \mathcal{M}(A)= \max_{i \neq j} |[A^TA]_{ij}|,$$
 
-that is, the absolutely maximal inner product of distinct columns of $A$. If the columns of $A$ have unit
-norms, $\mathcal{M}(A)\in[0,1]$.
+that is, the absolutely maximal inner product of distinct columns of $A$. If the columns of $A$ have unit norms, $\mathcal{M}(A)\in[0,1]$.
 
 The __spark__ of a given matrix $A$, $\mathop{\mathrm{spark}}(A)$, is the smallest number of columns of $A$ that are linearly dependant.
 
@@ -96,7 +101,7 @@ The __spark__ of a given matrix $A$, $\mathop{\mathrm{spark}}(A)$, is the smalle
 
 # ╔═╡ ef27be74-2570-4dbf-9127-ca34aa3084b5
 md"""
-### Facts
+## Facts
 
 1. An underdetermined system either has no solution or has infinitely many solutions. 
 
@@ -159,6 +164,7 @@ If $m ≥ C \cdot k \log\left(\displaystyle\frac{n}{k}\right)$, where $C$ is som
 
 # ╔═╡ 2d1d9c68-228e-48e7-88b5-d3f3e439065e
 md"""
+## Examples 
 ### $l_2$ minimization
 """
 
@@ -178,7 +184,7 @@ end
 
 # ╔═╡ 4ae0b6d2-2e9b-4b09-aaef-caa899824853
 md"""
-## Small linear programming example
+### Small linear programming example
 
 $$\begin{split}\min_{x,y}\, &-x\\
 s.t.\quad          &2x + y \leq 1.5\\
@@ -188,7 +194,8 @@ s.t.\quad          &2x + y \leq 1.5\\
 # ╔═╡ d498125b-54a0-401e-bd54-26a2b2d99ca5
 begin
 	model₀ = Model(with_optimizer(Clp.Optimizer))
-	@variable(model₀, 0 <=x₀)
+	x₀, y₀, con = nothing, nothing, nothing
+	@variable(model₀, 0 <= x₀)
 	@variable(model₀, 0 <= y₀)
 	@objective(model₀, Min, -x₀)
 	@constraint(model₀, con, 2x₀ + 1y₀ <= 1.5)
@@ -206,7 +213,7 @@ value(x₀),value(y₀)
 
 # ╔═╡ 35b0bd70-b0f8-4ca8-a7e7-805e31a032d8
 md"""
-## Exact sparse signal recovery
+### Exact sparse signal recovery
 
 We recover randomly generated sparse signals "measured" with rows of the matrix $A$. 
 The experiment is performed for types of matrices from Fact 9.
@@ -281,10 +288,7 @@ end
 bₛ=Aₛ*xₛ;
 
 # ╔═╡ acab203d-f158-4460-9452-7037895559bd
-xᵣ=recovery(Aₛ,bₛ);
-
-# ╔═╡ b59c4990-234b-11eb-2b2c-91b62567688f
-xᵣ
+xᵣ=recovery(Aₛ,bₛ)
 
 # ╔═╡ 372b7d99-b6e8-4656-aaa5-a5c489105e80
 begin
@@ -295,16 +299,16 @@ end
 
 # ╔═╡ 8825ba12-98ff-48c9-b33a-a1d1c0da2eb3
 md"""
-## Recovery from noisy observations
+# Recovery from noisy observations
 
 In the presence of noise in observation, we want to recover a vector $x$ from 
 $b=Ax + z$, where $z$ is a stochastic or deterministic unknown error term.
 
-### Definition
+## Definition
 
 The __hard thresholding operator__, $H_k(x)$, sets all but the $k$ entries of $x$ with largest magnitude to zero.
 
-### Facts
+## Facts
 
 1. The problem can be formulated as $l_1$ minimization problem
 
@@ -351,7 +355,7 @@ end
 
 # ╔═╡ 75621541-7741-4b23-92b4-56fda45ad6cf
 md"""
-###  Example
+##  Example
 
 We construct the $k$ sparse $x$, form $b$, add noise, and recover it with the algorithm from Fact 4. The conditions on $A$ are rather restrictive, which means that $k$ must be rather small compared to $n$ and $m$ must be rather large. For convergence, we limit the number of iterations to $50m$.
 """
@@ -387,7 +391,7 @@ begin
 end
 
 # ╔═╡ edb56b65-1ed2-4202-ad2d-02d7c4f026f1
-SparseMatrixCSC(xₙ)
+SparseMatrixCSC(xₙ);
 
 # ╔═╡ 3629a2a6-15c5-40fe-ba9a-2a605743ff5a
 md"""
@@ -396,9 +400,6 @@ Let us try linear programing in the case of noisy observations.
 
 # ╔═╡ bd2cd42e-3dd4-453f-8046-d0292eae6896
 zₙ=recovery(Aₙ,bₙ)
-
-# ╔═╡ f856b943-36cc-42f5-89c0-82495a714bd0
-SparseMatrixCSC(sparse(zₙ))
 
 # ╔═╡ 1703a5e3-2985-4770-8ea9-e6a49b1f46d9
 begin
@@ -410,14 +411,14 @@ end
 
 # ╔═╡ cd074ea6-27b8-4f76-a025-6790b7a95ade
 md"""
-## Sensing images
+# Sensing images
 
 Wavelet transformation of an image is essentially sparse, since only small number of cofficients is significant. This fact can be used for compression.
 
 Wavelet transforms are implemented the package 
 [Wavelets.jl](https://github.com/JuliaDSP/Wavelets.jl).
 
-### Lena and R
+## Lena and R
 
 The `tif` version of the image "Lena" has `65_798` bytes, the `png` version has `58_837` bytes, and the `jpeg` version has `26_214` bytes. We also test the algorithm on a simpler image of letter "R".
 """
@@ -458,7 +459,7 @@ colorview(Gray,real(xₜ))
 
 # ╔═╡ 0c2f32af-0156-4e4a-a957-03032c10c4ce
 md"""
-We now set all but the 10% or 5% absolutely largest coefficients to zero and reconstruct the image. The images are very similar, which illustrates that the wavelet transform of an image is essentially sparse.
+We now set __all except__ the 10% or 5% absolutely largest coefficients to zero and reconstruct the image. The images are very similar, which illustrates that the wavelet transform of an image is essentially sparse.
 """
 
 # ╔═╡ a2bff419-b8b7-44b7-834d-6104d187e31b
@@ -539,6 +540,7 @@ colorview(Gray,imgrecover)
 size(bᵢ)
 
 # ╔═╡ Cell order:
+# ╟─32ab2dfc-4381-4388-80ff-bbdbda513180
 # ╟─a5172a1d-a631-49b3-bc9a-21e98d4cf9e5
 # ╟─e0b4e064-da18-45ae-8d96-d723b4cafac6
 # ╟─ef27be74-2570-4dbf-9127-ca34aa3084b5
@@ -557,7 +559,6 @@ size(bᵢ)
 # ╠═9d5e6751-9e3e-4b0a-8fd3-35a43e079ee7
 # ╠═c17eac6a-1ab5-406a-b063-95c91dd81e46
 # ╠═acab203d-f158-4460-9452-7037895559bd
-# ╠═b59c4990-234b-11eb-2b2c-91b62567688f
 # ╠═372b7d99-b6e8-4656-aaa5-a5c489105e80
 # ╟─8825ba12-98ff-48c9-b33a-a1d1c0da2eb3
 # ╠═022cecdf-945c-4fa9-a26e-a13b11068ca7
@@ -569,7 +570,6 @@ size(bᵢ)
 # ╠═edb56b65-1ed2-4202-ad2d-02d7c4f026f1
 # ╟─3629a2a6-15c5-40fe-ba9a-2a605743ff5a
 # ╠═bd2cd42e-3dd4-453f-8046-d0292eae6896
-# ╠═f856b943-36cc-42f5-89c0-82495a714bd0
 # ╠═1703a5e3-2985-4770-8ea9-e6a49b1f46d9
 # ╟─cd074ea6-27b8-4f76-a025-6790b7a95ade
 # ╠═a33fb7e2-cbe8-4404-9c3b-d370429b1cde

@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.14.4
+# v0.14.7
 
 using Markdown
 using InteractiveUtils
@@ -211,7 +211,7 @@ end
 
 # ╔═╡ e7a50a63-2312-43f0-b771-64452e33d808
 # Generate the matrix A, it is a full matrix with full rank
-A=L+S
+A=L+S;
 
 # ╔═╡ 42904941-1859-4a05-a08c-a7a650f6b188
 rank(A)
@@ -356,8 +356,8 @@ Sparse
 
 # ╔═╡ 80a6d992-0e72-4c9f-a593-18a0fed09e1c
 begin
-	i=10
-	hcat(images[i],LowRank[i],Sparse[i])
+	i=29
+	hcat(images[i],LowRank[i],Sparse[i],0.9*LowRank[i]+Sparse[i])
 end
 
 # ╔═╡ 85975780-6c17-4af9-a169-9fe906c1e369
