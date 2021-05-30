@@ -6,12 +6,23 @@ using InteractiveUtils
 
 # ╔═╡ 53107773-07e7-4da5-9900-8ba5cefd7b68
 begin
+	# For binder uncomment the following lines
+	#=
 	import Pkg
     Pkg.activate(mktempdir())
     Pkg.add([
-        Pkg.PackageSpec(name="Plots", version="1"),
-        Pkg.PackageSpec(name="PlutoUI", version="0.7"),
+		Pkg.PackageSpec(name="Plots"),
+        Pkg.PackageSpec(name="PlutoUI"),
+		Pkg.PackageSpec(name="Clp"),
+		Pkg.PackageSpec(name="JuMP"),
+		Pkg.PackageSpec(name="Distributions"),
+		Pkg.PackageSpec(name="SparseArrays"),
+		Pkg.PackageSpec(name="FFTW"),
+		Pkg.PackageSpec(name="Wavelets"),
+		Pkg.PackageSpec(name="Images"),
+		Pkg.PackageSpec(name="TestImages")
     ])
+	=#
 	using Plots
 	using Clp
 	using JuMP
