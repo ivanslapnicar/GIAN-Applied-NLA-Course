@@ -4,14 +4,14 @@
 using Markdown
 using InteractiveUtils
 
-# ╔═╡ 32ab2dfc-4381-4388-80ff-bbdbda513180
+# ╔═╡ 53107773-07e7-4da5-9900-8ba5cefd7b68
 begin
-	using PlutoUI
-	PlutoUI.TableOfContents(aside=true)
-end
-
-# ╔═╡ ae78af77-541e-4fa4-a4f9-d98333e773d9
-begin
+	import Pkg
+    Pkg.activate(mktempdir())
+    Pkg.add([
+        Pkg.PackageSpec(name="Plots", version="1"),
+        Pkg.PackageSpec(name="PlutoUI", version="0.7"),
+    ])
 	using Plots
 	using Clp
 	using JuMP
@@ -20,14 +20,14 @@ begin
 	using SparseArrays
 	using FFTW
 	using Random
-end
-
-# ╔═╡ a33fb7e2-cbe8-4404-9c3b-d370429b1cde
-begin
+    using PlutoUI
 	using Wavelets
 	using Images
 	using TestImages
 end
+
+# ╔═╡ 32ab2dfc-4381-4388-80ff-bbdbda513180
+TableOfContents(title="📚 Table of Contents", aside=true)
 
 # ╔═╡ a5172a1d-a631-49b3-bc9a-21e98d4cf9e5
 md"""
@@ -540,12 +540,12 @@ colorview(Gray,imgrecover)
 size(bᵢ)
 
 # ╔═╡ Cell order:
-# ╟─32ab2dfc-4381-4388-80ff-bbdbda513180
+# ╠═53107773-07e7-4da5-9900-8ba5cefd7b68
+# ╠═32ab2dfc-4381-4388-80ff-bbdbda513180
 # ╟─a5172a1d-a631-49b3-bc9a-21e98d4cf9e5
 # ╟─e0b4e064-da18-45ae-8d96-d723b4cafac6
 # ╟─ef27be74-2570-4dbf-9127-ca34aa3084b5
 # ╟─2d1d9c68-228e-48e7-88b5-d3f3e439065e
-# ╠═ae78af77-541e-4fa4-a4f9-d98333e773d9
 # ╠═75d9b8f8-42c0-4a02-9683-878a351bb137
 # ╠═17d946d6-458a-482c-9b28-d71c15c4027e
 # ╟─4ae0b6d2-2e9b-4b09-aaef-caa899824853
@@ -572,7 +572,6 @@ size(bᵢ)
 # ╠═bd2cd42e-3dd4-453f-8046-d0292eae6896
 # ╠═1703a5e3-2985-4770-8ea9-e6a49b1f46d9
 # ╟─cd074ea6-27b8-4f76-a025-6790b7a95ade
-# ╠═a33fb7e2-cbe8-4404-9c3b-d370429b1cde
 # ╠═a6b83c90-9431-471e-bef3-6de5a2b7d920
 # ╠═01fff994-6b74-45e9-ab65-b52c6339fe45
 # ╠═9c0a1f14-f63d-4387-905d-809d9ffbf63a
