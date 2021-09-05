@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.14.2
+# v0.14.4
 
 using Markdown
 using InteractiveUtils
@@ -137,7 +137,7 @@ where $c_i$ is the coefficient of the $i$-th eigenvector in the linear combinati
 
 4. After computing the dominant eigenpair, we can perform deflation to reduce the given EVD for $A$ to the one of size $n-1$ for $A_1$:
 
-$$\begin{bmatrix} U_{:1} & X \end{bmatrix}^T A  \begin{bmatrix} U_{:1} & X \end{bmatrix}= \begin{bmatrix} \lambda_1 & \\ & A_1 \end{bmatrix}, \quad \begin{bmatrix} U_{:1} & X \end{bmatrix} \qquad \textrm{orthonormal}, \quad A_1=X^TAX.$$
+$$\begin{bmatrix} U_{:1} & X \end{bmatrix}^T A  \begin{bmatrix} U_{:1} & X \end{bmatrix}= \begin{bmatrix} \lambda_1 & \\ & A_1 \end{bmatrix}, \quad \begin{bmatrix} U_{:1} & X \end{bmatrix} \textrm{orthonormal}, \quad A_1=X^TAX.$$
 
 5. The EVD of the shifted matrix $A-\mu I$ is $U(\Lambda-\mu I) U^T$.  
 
@@ -201,15 +201,13 @@ eigvals(A)
 function Deflation(A::Matrix,x::Vector)
     X,R=qr(x)
     # To make sure the returned matrix symmetric use
-    Matrix(Symmetric(X[:,2:end]'*A*X[:,2:end]))
-    # X[:,2:end]'*A*X[:,2:end]
+    # full(Symmetric(X[:,2:end]'*A*X[:,2:end]))
+    # display(X'*A*X)
+    X[:,2:end]'*A*X[:,2:end]
 end
 
 # ╔═╡ 3e464ca7-d32c-4e72-96d3-07e48d0c9b34
 A₁=Deflation(A,x)
-
-# ╔═╡ 82f04ff8-55f4-448a-b7ce-52df6b545cfd
-issymmetric(A₁)
 
 # ╔═╡ 3adb99d9-288d-4d27-b283-456306d54aae
 eigvals(A₁)
@@ -234,16 +232,6 @@ end
 # ╔═╡ a9a8b682-e673-4fbe-84a1-138cb1220808
 PowerMethod(A,1e-10)
 
-# ╔═╡ b863c5b1-513a-4bf3-b08a-faf00b481a7e
-begin
-	# Inverse iteration
-	μ=-2.3206
-	P=Power(inv(A-μ*I),ones(size(A,1)),1e-10)
-end
-
-# ╔═╡ 2b0ee860-6352-4ca6-9e59-a9012b6e348f
-1/P[1]+μ-eigvals(A)[3]
-
 # ╔═╡ e4587338-6727-49f4-9036-831fdf3bf172
 # QR iteration
 function QRIteration(A::Matrix, tol::Real)
@@ -257,7 +245,7 @@ function QRIteration(A::Matrix, tol::Real)
 end
 
 # ╔═╡ edb2bd46-9c83-46b4-be8f-ffb02411a690
-QRIteration(A,1e-15)
+QRIteration(A,1e-5)
 
 # ╔═╡ 13366c0b-ae11-4bd5-8844-f33694bbd16c
 md"""
@@ -295,7 +283,7 @@ md"""
 $$
 Hx=-\mathop{\mathrm{sign}}(x_{1})\, \|x\|_2\, e_1.$$
 
-2. Given a 2-dimensional vector $\begin{bmatrix}x\\y\end{bmatrix}$, choosing $r= \sqrt{x^2+y^2}$, $c=\displaystyle\frac{x}{r}$ and $s=\displaystyle\frac{y}{r}$, gives the Givens roatation matrix such that
+2. Given a 2-dimensional vector $\begin{bmatrix}x\\y\end{bmatrix}$, choosing $r= \sqrt{x^2+y^2}$, $c=\frac{x}{r}$ and $s=\frac{y}{r}$, gives the Givens roatation matrix such that
 
 $$
 G(c,s,1,2)\cdot \begin{bmatrix}x\\y\end{bmatrix}=\begin{bmatrix}r\\ 0 \end{bmatrix}.$$
@@ -329,13 +317,13 @@ A column-oriented version is possible as well, and the operation count in both c
 
 9. The backward error bounds for functions `Tridiag()` and `TridiagX()` are as follows: The computed matrix $\tilde T$ is equal to the matrix which would be obtained by exact tridiagonalization of some perturbed matrix $A+\Delta A$, where $\|\Delta A\|_2 \leq \psi \varepsilon \|A\|_2$ and $\psi$ is a slowly increasing function of $n$. The computed matrix $\tilde X$ satisfies $\tilde X=X+\Delta X$, where $\|\Delta X \|_2\leq \phi \varepsilon$ and $\phi$ is a slowly increasing function of $n$.
 
-10. Tridiagonalization using Givens rotations requires $\displaystyle\frac{(n-1)(n-2)}{2}$ plane rotations, which amounts to $4n^3$ operations if symmetry is properly exploited. The operation count is reduced to $8n^3/3$ if fast rotations are used. Fast rotations are obtained by factoring out absolutely larger of $c$ and $s$ from $G$.
+10. Tridiagonalization using Givens rotations requires $\frac{(n-1)(n-2)}{2}$ plane rotations, which amounts to $4n^3$ operations if symmetry is properly exploited. The operation count is reduced to $8n^3/3$ if fast rotations are used. Fast rotations are obtained by factoring out absolutely larger of $c$ and $s$ from $G$.
 
 11. Givens rotations in the function `TridiagG()`  can be performed in different orderings. For example, the elements in the first column and row can be annihilated by rotations in the planes $(n-1,n)$, $(n-2,n-1)$, $\ldots$, $(2,3)$. Givens rotations act more selectively than Householder reflectors, and are useful if $A$ has some special structure, for example, if $A$ is a banded matrix. 
 
 12. Error bounds for function `TridiagG()` are the same as above, but with slightly different functions $\psi$ and $\phi$.
 
-12. The block version of tridiagonal reduction is implemented in the  [LAPACK](http://www.netlib.org/lapack) subroutine [DSYTRD](http://www.netlib.org/lapack/explore-3.1.1-html/dsytrd.f.html). The computation of $X$ is implemented in the subroutine [DORGTR](http://www.netlib.org/lapack/lapack-3.1.1/html/dorgtr.f.html). The size of the required extra workspace (in elements) is  $lwork=nb*n$, where $nb$ is the optimal block size (here, $nb=64)$, and it is determined automatically by the subroutines. The subroutine [DSBTRD](http://www.netlib.org/lapack/lapack-3.1.1/html/dsbtrd.f.html) tridiagonalizes a symmetric band matrix by using Givens rotations. There are no Julia wappers for `DSYTRD` and `DSBTRD`.
+12. The block version of tridiagonal reduction is implemented in the  [LAPACK](http://www.netlib.org/lapack) subroutine [DSYTRD](http://www.netlib.org/lapack/explore-3.1.1-html/dsytrd.f.html). The computation of $X$ is implemented in the subroutine [DORGTR](http://www.netlib.org/lapack/lapack-3.1.1/html/dorgtr.f.html). The size of the required extra workspace (in elements) is  $lwork=nb*n$, where $nb$ is the optimal block size (here, $nb=64)$, and it is determined automatically by the subroutines. The subroutine [DSBTRD](http://www.netlib.org/lapack/explore-html/d0/d62/dsbtrd_8f.html) tridiagonalizes a symmetric band matrix by using Givens rotations. There are no Julia wappers for these routines yet!
 
 """
 
@@ -383,9 +371,6 @@ T,H=Tridiag(A)
 # ╔═╡ bdd46cff-bae9-47bb-b868-3045520ec8be
 [eigvals(A) eigvals(T)]
 
-# ╔═╡ 89b01736-1fa7-4456-b8d6-e1ee79c67de1
-H
-
 # ╔═╡ 289e5149-bdd4-4ece-abfa-53bb0413ba48
 # How is H stored
 v₁=[1;H[3:6,1]]
@@ -418,7 +403,7 @@ X=TridiagX(H)
 
 # ╔═╡ 46c42818-3d23-470d-b05d-033bd5bc2d88
 # Fact 7: norm(ΔX)<ϕ*eps()
-norm(X'*X-I)
+X'*X
 
 # ╔═╡ 8f84d695-ccf9-48d2-a82f-337bb626dff1
 # Tridiagonalization
@@ -431,9 +416,8 @@ md"
 
 # ╔═╡ fcc9ff8b-1549-4782-89ca-13c0f867af00
 # Tridiagonalization using Givens rotations
-function TridiagG(A₁::Matrix)
-	A=float(A₁)
-	n=size(A,1)
+function TridiagG(A::Matrix)
+    n=size(A,1)
     X=Matrix{Float64}(I,n,n)
     for j = 1 : n-2
         for i = j+2 : n
@@ -449,15 +433,12 @@ end
 # ╔═╡ 61c41ad7-df89-421f-a9a5-2a0ee606b9f6
 #?givens
 
-# ╔═╡ 7fd710a5-4e49-42fd-8e4e-adfdf2fcd480
-A
-
 # ╔═╡ 68f9bdd0-4059-424c-8ee8-cd46ab9ecc29
-T₁,X₁=TridiagG(A)
+T₁,X₁=TridiagG(float(A))
 
 # ╔═╡ 4b53ee99-6b20-4153-af8e-79b13c1b4ee3
 # Orthogonality
-norm(X₁'*X₁-I)
+X₁'*X₁
 
 # ╔═╡ 4a484bf9-001f-4ec6-a4cd-d6bf2fc5b617
 # Tridiagonalization
@@ -506,7 +487,7 @@ $$
 
 5. Since the convergence of the function `TridEigQR()` is quadratic (or even cubic), an eigenvalue is isolated after just a few steps, which requires $O(n)$ operations. This means that $O(n^2)$ operations are needed to compute all eigenvalues. 
 
-6. If the eigenvector matrix $Q$ is desired, the plane rotations need to be accumulated similarly to the accumulation of $X$ in the function `TridiagG()`. This accumulation requires $O(n^3)$ operations. Another, faster, algorithm to  first compute only $\Lambda$ and then compute $Q$ using inverse iterations. Inverse iterations on a tridiagonal matrix are implemented in the LAPACK routine [DSTEIN](http://www.netlib.org/lapack/lapack-3.1.1/html/dstein.f.html).
+6. If the eigenvector matrix $Q$ is desired, the plane rotations need to be accumulated similarly to the accumulation of $X$ in the function `TridiagG()`. This accumulation requires $O(n^3)$ operations. Another, faster, algorithm to  first compute only $\Lambda$ and then compute $Q$ using inverse iterations. Inverse iterations on a tridiagonal matrix are implemented in the LAPACK routine [DSTEIN](http://www.netlib.org/lapack/explore-html/d8/d35/dstein_8f.html).
 
 7. __Error bounds.__ Let $U\Lambda U^T$ and $\tilde U \tilde \Lambda \tilde U^T$ be the exact and the computed EVDs of $A$, respectively, such that the diagonals of $\Lambda$ and $\tilde \Lambda$ are in the same order. Numerical methods generally compute the EVD with the errors bounded by 
 
@@ -523,7 +504,7 @@ where $\epsilon$ is machine precision and $\phi$ and $\psi$ are slowly growing p
    
 9. The EVD computed by function `SymEigQR()` satisfies the error bounds given in Fact 7. However, the algorithm tends to perform better on matrices, which are graded downwards, that is, on matrices that exhibit systematic decrease in the size of the matrix elements as we move along the diagonal. For such matrices the tiny eigenvalues can usually be computed with higher relative accuracy (although counterexamples can be easily constructed). If the tiny eigenvalues are of interest, it should be checked whether there exists a symmetric permutation that moves larger elements to the upper left corner, thus converting the given matrix to the one that is graded downwards.
 
-10. The function `TridEigQR()` is implemented in the LAPACK subroutine [DSTEQR](http://www.netlib.org/lapack/lapack-3.1.1/html/dsteqr.f.html). This routine can compute just the eigenvalues, or both eigenvalues and eigenvectors.
+10. The function `TridEigQR()` is implemented in the LAPACK subroutine [DSTEQR](http://www.netlib.org/lapack/explore-html/d9/d3f/dsteqr_8f.html). This routine can compute just the eigenvalues, or both eigenvalues and eigenvectors.
 
 11. The function `SymEigQR()` is  Algorithm 5 is implemented in the functions `eigen()`, `eigvals()` and `eigvecs()`,  and in the  LAPACK routine [DSYEV](http://www.netlib.org/lapack/explore-html/dd/d4c/dsyev_8f.html). To compute only eigenvalues, DSYEV calls DSYTRD and DSTEQR without the eigenvector option. To compute both eigenvalues and eigenvectors, DSYEV calls DSYTRD, DORGTR, and DSTEQR with the eigenvector option.
 """
@@ -545,7 +526,7 @@ function TridEigQR(A₁::SymTridiagonal)
     end
     if n==2
         τ=(A.dv[end-1]-A.dv[end])/2
-		μ=A.dv[end]-A.ev[end]^2/(τ+sign(τ)*√(τ^2+A.ev[end]^2))
+        μ=A.dv[end]-A.ev[end]^2/(τ+sign(τ)*sqrt(τ^2+A.ev[end]^2))
         # Only rotation
         B=A[1:2,1:2]
         G,r=givens(B-μ*I,1,2,1)
@@ -557,7 +538,7 @@ function TridEigQR(A₁::SymTridiagonal)
     while k==0 && steps<=10
         # Shift
         τ=(A.dv[end-1]-A.dv[end])/2
-		μ=A.dv[end]-A.ev[end]^2/(τ+sign(τ)*√(τ^2+A.ev[end]^2))
+        μ=A.dv[end]-A.ev[end]^2/(τ+sign(τ)*sqrt(τ^2+A.ev[end]^2))
         # First rotation
         B=A[1:3,1:3]
         G,r=givens(B-μ*I,1,2,1)
@@ -588,7 +569,7 @@ function TridEigQR(A₁::SymTridiagonal)
         # Deflation criterion
         k=findfirst(abs.(A.ev) .< sqrt.(abs.(A.dv[1:n-1].*A.dv[2:n]))*eps(T))
         k=k==nothing ? 0 : k
-        # @show A
+        # display(A)
     end
     λ[1:k]=TridEigQR(SymTridiagonal(A.dv[1:k],A.ev[1:k-1]))
     λ[k+1:n]=TridEigQR(SymTridiagonal(A.dv[k+1:n],A.ev[k+1:n-1]))
@@ -624,9 +605,6 @@ begin
 	# Residual
 	norm(Tbig*Ub-Ub*Diagonal(λbig)), norm(Tbig*Xb-Xb*Diagonal(λb))
 end
-
-# ╔═╡ 38edc6b1-43f8-465b-91ef-9df970c190c8
-# @which eigen(Tbig) 
 
 # ╔═╡ dd74443c-eba6-464d-99cc-612884b105e5
 md"""
@@ -696,7 +674,7 @@ function TridEigQR(A₁::SymTridiagonal,U::Matrix)
     end
     λ[1:k], U[:,1:k]=TridEigQR(SymTridiagonal(A.dv[1:k],A.ev[1:k-1]),U[:,1:k])
     λ[k+1:n], U[:,k+1:n]=TridEigQR(SymTridiagonal(A.dv[k+1:n],A.ev[k+1:n-1]),U[:,k+1:n])
-    return Eigen(λ,U)
+    λ, U
 end
 
 # ╔═╡ 2b575a6a-7a14-449b-9e77-90bbf49633a6
@@ -751,15 +729,15 @@ end
 A
 
 # ╔═╡ 5fc4fef5-cd3d-43b2-8c21-a989932bf0aa
-E₃=SymEigQR(float(A))
+λ₃,U₃=SymEigQR(float(A))
 
 # ╔═╡ 0950e002-06b7-4f4f-b4a4-248c2b924ecf
 # Orthogonality 
-norm(E₃.vectors'*E₃.vectors-I)
+norm(U₃'*U₃-I)
 
 # ╔═╡ d85d8841-e9a5-48d2-a8cd-e39493a96ffc
 # Residual
-norm(A*E₃.vectors-E₃.vectors*Diagonal(E₃.values))
+norm(A*U₃-U₃*Diagonal(λ₃))
 
 # ╔═╡ 1806c500-36ee-4e48-a279-dc0be1a6e574
 md"""
@@ -811,6 +789,9 @@ H₄.Q'*A₄*H₄.Q
 # ╔═╡ 3be5de14-d041-40c6-86a9-048eca55699d
 eigvals(Matrix(H₄.H))
 
+# ╔═╡ d10b422c-beef-4eb2-803a-229a4054c7f8
+
+
 # ╔═╡ Cell order:
 # ╟─44758c8b-25bd-47d4-b728-90b4e98b6baf
 # ╟─e355fccd-fb92-49d4-b978-c4f1680fbb8d
@@ -827,13 +808,10 @@ eigvals(Matrix(H₄.H))
 # ╠═b6db0848-4142-4d88-98ca-1cb415b92742
 # ╠═e9285938-1fc7-41f7-b809-0785f925e72d
 # ╠═3e464ca7-d32c-4e72-96d3-07e48d0c9b34
-# ╠═82f04ff8-55f4-448a-b7ce-52df6b545cfd
 # ╠═3adb99d9-288d-4d27-b283-456306d54aae
 # ╠═2dc7c262-098d-4433-ab17-8e8d3ca00bd7
 # ╠═e4f1b71f-2809-4136-8e56-aa9389d4d674
 # ╠═a9a8b682-e673-4fbe-84a1-138cb1220808
-# ╠═b863c5b1-513a-4bf3-b08a-faf00b481a7e
-# ╠═2b0ee860-6352-4ca6-9e59-a9012b6e348f
 # ╠═e4587338-6727-49f4-9036-831fdf3bf172
 # ╠═edb2bd46-9c83-46b4-be8f-ffb02411a690
 # ╟─13366c0b-ae11-4bd5-8844-f33694bbd16c
@@ -843,7 +821,6 @@ eigvals(Matrix(H₄.H))
 # ╠═a752ab01-7008-46ee-815e-40bc7d8e07ea
 # ╠═a78d3cc7-42dc-4d5e-86ef-e0b6efc5ab18
 # ╠═bdd46cff-bae9-47bb-b868-3045520ec8be
-# ╠═89b01736-1fa7-4456-b8d6-e1ee79c67de1
 # ╠═289e5149-bdd4-4ece-abfa-53bb0413ba48
 # ╠═dd920abd-55bc-4eed-895c-b68b1f6393a1
 # ╠═14924dfe-1a0c-480d-80e1-b77ea965e789
@@ -854,7 +831,6 @@ eigvals(Matrix(H₄.H))
 # ╟─9a7a6c5a-d11e-46f7-8906-fcf907d2cd97
 # ╠═fcc9ff8b-1549-4782-89ca-13c0f867af00
 # ╠═61c41ad7-df89-421f-a9a5-2a0ee606b9f6
-# ╠═7fd710a5-4e49-42fd-8e4e-adfdf2fcd480
 # ╠═68f9bdd0-4059-424c-8ee8-cd46ab9ecc29
 # ╠═4b53ee99-6b20-4153-af8e-79b13c1b4ee3
 # ╠═4a484bf9-001f-4ec6-a4cd-d6bf2fc5b617
@@ -875,7 +851,6 @@ eigvals(Matrix(H₄.H))
 # ╠═593617c3-729c-472c-9fb4-fb921eeddd82
 # ╠═d8c56876-1cfa-4a3a-98f3-aef736bc984f
 # ╠═892a6a42-df98-4088-b0bd-c406daf0eecb
-# ╠═38edc6b1-43f8-465b-91ef-9df970c190c8
 # ╟─dd74443c-eba6-464d-99cc-612884b105e5
 # ╠═030c2a11-c204-4c67-9412-d745b1826a50
 # ╠═764db6d6-62eb-4b30-9cc5-f8e74de215d3
@@ -897,3 +872,4 @@ eigvals(Matrix(H₄.H))
 # ╠═fd066fd1-0910-40b4-96e1-a703ec23e834
 # ╠═403ad3f2-d761-4361-98c9-a94dedcc73bd
 # ╠═3be5de14-d041-40c6-86a9-048eca55699d
+# ╠═d10b422c-beef-4eb2-803a-229a4054c7f8

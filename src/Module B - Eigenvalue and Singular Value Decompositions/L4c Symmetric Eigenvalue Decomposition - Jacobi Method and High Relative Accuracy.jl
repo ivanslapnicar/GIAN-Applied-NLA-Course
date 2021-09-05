@@ -1,26 +1,25 @@
 ### A Pluto.jl notebook ###
-# v0.14.2
+# v0.14.4
 
 using Markdown
 using InteractiveUtils
 
-# ╔═╡ 2cd8aee2-d752-47fd-8203-55148bd75002
+# ╔═╡ 8911d755-8ad6-4eb2-82f0-44a403f2ef60
 begin
-	using PlutoUI, LinearAlgebra
+	using LinearAlgebra, PlutoUI
 	PlutoUI.TableOfContents(aside=true)
 end
 
-# ╔═╡ 69545c6e-1af7-49fc-b3ae-a8fb0cdc600e
+# ╔═╡ 70c2fde9-110c-4f20-9324-0e0601934c2c
 md"""
 # Symmetric Eigenvalue Decomposition - Jacobi Method and High Relative Accuracy
 
 
-The Jacobi method is the oldest method for EVD computations, dating back from 1864.  The method does not require tridiagonalization. Instead, the method computes a sequence of orthogonally similar  matrices which converge to a diagonal matrix of eigenvalues. In each step a simple plane rotation which sets one off-diagonal element to zero is performed. 
+The Jacobi method is the oldest method for EVD computations, dating back from 1864. The method does not require tridiagonalization. Instead, the method computes a sequence of orthogonally similar matrices which converge to a diagonal matrix of eigenvalues. In each step a simple plane rotation which sets one off-diagonal element to zero is performed. 
 
 For positive definite matrices, the method computes eigenvalues with high relative accuracy.
 
 For more details, see [I. Slapničar, Symmetric Matrix Eigenvalue Techniques, pp. 55.1-55.25](https://www.routledge.com/Handbook-of-Linear-Algebra/Hogben/p/book/9781138199897) and [Z. Drmač, Computing Eigenvalues and Singular Values to High Relative Accuracy, pp. 59.1-59.21](https://www.routledge.com/Handbook-of-Linear-Algebra/Hogben/p/book/9781138199897) and the references therein.
-
 
 
 __Prerequisites__
@@ -30,11 +29,11 @@ The reader should be familiar with concepts of eigenvalues and eigenvectors, rel
  
 __Competences__
 
-The reader should be able to recognise matrices which warrant high relative accuracy and to apply Jacobi method to them.
+The reader should be able to recognise matrices which warrant high relative accuracy and to apply  Jacobi method to them.
 
 """
 
-# ╔═╡ 21e8ee7c-3394-44a6-ae15-3d2a5548cbb5
+# ╔═╡ abc0c46c-ec25-4fcb-8a8f-cefeda20418d
 md"""
 # Jacobi method
 
@@ -45,10 +44,11 @@ md"""
 The __Jacobi method__ forms a sequence of matrices,
 
 $$
-A_0=A, \qquad A_{k+1}=G^T(c,s,i_k,j_k)\ A_k\ G(c,s,i_k,j_k), \qquad
+A_0=A, \qquad A_{k+1}=G(c,s,i_k,j_k) \,A_k \,G(c,s,i_k,j_k)^T, \qquad
 k=1,2,\ldots,$$
 
-where $G(c,s,i_k,j_k)$ is the orthogonal __plane rotation matrix__. The parameters $c$ and $s$ are chosen such that 
+where $G(c,s,i_k,j_k)$ is the orthogonal __plane rotation matrix__.
+The parameters $c$ and $s$ are chosen such that 
 
 $$
 [A_{k+1}]_{i_k j_k}=[A_{k+1}]_{j_k i_k}=0.$$
@@ -60,16 +60,20 @@ The __off-norm__ of $A$ is
 $$
 \| A\|_{\mathrm{off}}=\big(\sum_{i}\sum_{j\neq i} a_{ij}^2\big)^{1/2},$$
 
-that is, off-norm is the Frobenius norm of the matrix consisting of all off-diagonal elements of $A$.
+that is, off-norm is the Frobenius norm of the
+matrix consisting of all off-diagonal elements of $A$.
 
-The choice of __pivot elements__ $[A_k]_{i_kj_k}$ is called the __pivoting strategy__.
+The choice of __pivot elements__ $[A_k]_{i_kj_k}$ is called the 
+__pivoting strategy__.
 
-The __optimal pivoting strategy__, originally used by Jacobi, chooses pivoting elements such that 
+The __optimal pivoting strategy__, originally used by Jacobi, chooses pivoting
+elements such that 
 
 $$
 |[A_k]_{i_k j_k}|=\max_{i<j} |[A_k]_{ij}|.$$
 
-The __row-cyclic__ pivoting strategy chooses pivot elements in the systematic row-wise order,
+The __row-cyclic__ pivoting strategy chooses pivot elements
+  in the systematic row-wise order,
 
 $$
 (1,2), (1,3), \ldots,(1,n),(2,3),
@@ -80,14 +84,15 @@ Similarly, the column-cyclic strategy chooses pivot elements column-wise.
 One pass through all matrix elements is called __cycle__ or __sweep__.
 """
 
-# ╔═╡ c7642876-0a2b-40af-b7da-a0ffcde1a304
+# ╔═╡ 1760ea70-45a2-426c-a9dd-23377711f3c9
 md"""
 ## Facts
 
-1. The Jacobi rotations parameters $c$ and $s$ are computed as follows: If $[A_k]_{i_kj_k}=0$, then $c=1$ and $s=0$, otherwise
+1. The Jacobi rotations parameters $c$ and $s$ are computed as follows: if $[A_k]_{i_kj_k}=0$, then $c=1$ and $s=0$, otherwise
 
-$$\begin{aligned}
-& \tau=\frac{[A_k]_{j_kj_k}-[A_k]_{i_ki_k} }{2[A_k]_{i_kj_k} },\qquad
+$$
+\begin{aligned}
+& \tau=\frac{[A_k]_{i_ki_k}-[A_k]_{j_kj_k} }{2[A_k]_{i_kj_k} },\qquad
 t=\frac{\mathop{\mathrm{sign}}(\tau)}{|\tau|+\sqrt{1+\tau^2}},\\
 & c=\frac{1}{\sqrt{1+t^2}},\qquad s=c\cdot t.
 \end{aligned}$$
@@ -99,12 +104,14 @@ $$
 
 With the appropriate pivoting strategy, the method converges in the sense that
 
-$$\|A_{k}\|_{\mathrm{off}}\to 0,\qquad A_k\to\Lambda, \qquad 
-\prod_{k=1}^{\infty} G(i_k,j_k,c,s) \to U.$$
+$$
+\|A_{k}\|_{\mathrm{off}}\to 0,\qquad A_k\to\Lambda, \qquad 
+\prod_{k=1}^{\infty} G(i_k,j_k,c,s)^T \to U.$$
 
 3. For the optimal pivoting strategy the square of the pivot element is greater than the average squared element,
 
-$$[A_k]_{i_kj_k}^2\geq \frac{1}{n(n-1)}\,
+$$
+[A_k]_{i_kj_k}^2\geq \frac{1}{n(n-1)}\,
 \|A_k\|_{\mathrm{off}}^2.$$
 
 Thus,
@@ -118,7 +125,6 @@ and the method converges.
 
 $$
 \|A_{k+n(n-1)/2}\|_{\mathrm{off}} \leq\ const\cdot  \|A_{k}\|_{\mathrm{off}}^2,$$
-
 provided $\|A_{k}\|_{\mathrm{off}}$ is sufficiently small.
 
 5. The EVD computed by the Jacobi method satisfies the standard error bounds.
@@ -130,66 +136,64 @@ provided $\|A_{k}\|_{\mathrm{off}}$ is sufficiently small.
 8. If $A$ is positive definite, the method can be modified such that it reaches the speed of the methods based on tridiagonalization and at the same time computes the EVD with high relative accuracy.
 """
 
-# ╔═╡ 8dd8a3e6-9488-4cbc-9a4e-f6819dba7112
-md"
-## Examples
-"
-
-# ╔═╡ 0be1d6d8-dffc-403b-b3b3-1b209cacb09c
+# ╔═╡ 972f4040-d91c-4b13-a885-2ba40e505c7f
 md"""
+## Examples
 
-$\begin{bmatrix} c & s\\ -s&  c\end{bmatrix}^T \begin{bmatrix} a & b\\ b & d\end{bmatrix}
+$\begin{bmatrix} c & s\\-s&  c\end{bmatrix}^T \begin{bmatrix} a & b\\ b & d\end{bmatrix}
 \begin{bmatrix} c & s\\-s&  c\end{bmatrix} = \begin{bmatrix} \tilde a & 0 \\ 0 &\tilde b\end{bmatrix}$
+
 """
 
-# ╔═╡ ff4f7ae3-7044-4c13-b079-c4cd4e8d39e6
+# ╔═╡ 5cc14464-8fc4-495d-97d4-f106570ed942
 function Jacobi(A::Array{T}) where T<:Real
-	n=size(A,1)
-	U=Matrix{T}(I,n,n)
-	# Tolerance for rotation
-	tol=√n*eps(T)
-	# Counters
-	p=n*(n-1)/2
-	sweep=0
-	pcurrent=0
-	# First criterion is for standard accuracy, second one is for relative accuracy
-	while sweep<10 && norm(A-Diagonal(diag(A)))>tol
-	    # while sweep<30 && pcurrent<p
-	    sweep+=1
-	    # Row-cyclic strategy
-	    for i = 1 : n-1 
-	        for j = i+1 : n
-	            # Check for the tolerance - the first criterion is standard,
-	            # the second one is for relative accuracy for PD matrices             
-	            # if A[i,j]!=zero(T)
-	            if abs(A[i,j])>tol*√(abs(A[i,i]*A[j,j]))
-	                # Compute c and s
-	                τ=(A[j,j]-A[i,i])/(2*A[i,j])
-	                t=sign(τ)/(abs(τ)+√(1+τ^2))
-	                c=one(T)/√(one(T)+t^2)
-	                s=c*t
-	                G=LinearAlgebra.Givens(i,j,c,s)
-	                A=G'*A*G
-	                A[i,j]=zero(T)
-	                A[j,i]=zero(T)
-	                U*=G
-	                pcurrent=0
-	                # To observe convergence
-	                # display(A)
-	            else
-	                pcurrent+=1
-	            end
-	        end
-	    end
-	    # display(A)
-	end
-	Eigen(diag(A), U)
+    n=size(A,1)
+    U=Matrix{T}(I,n,n)
+    # Tolerance for rotation
+    tol=√n*eps(T)
+    # Counters
+    p=n*(n-1)/2
+    sweep=0
+    pcurrent=0
+    # First criterion is for standard accuracy, second one is for relative accuracy
+    while sweep<10 && norm(A-Diagonal(diag(A)))>tol
+    # while sweep<30 && pcurrent<p
+        sweep+=1
+        # Row-cyclic strategy
+        for i = 1 : n-1 
+            for j = i+1 : n
+                # Check for the tolerance - the first criterion is standard,
+                # the second one is for relative accuracy for PD matrices               
+                # if A[i,j]!=zero(T)
+                if abs(A[i,j])>tol*√(abs(A[i,i]*A[j,j]))
+                    # Compute c and s
+                    τ=(A[j,j]-A[i,i])/(2*A[i,j])
+                    t=sign(τ)/(abs(τ)+√(1+τ^2))
+                    c=one(T)/√(one(T)+t^2)
+                    s=c*t
+                    G=LinearAlgebra.Givens(i,j,c,s)
+                    A=G'*A
+                    A*=G
+                    A[i,j]=zero(T)
+                    A[j,i]=zero(T)
+                    U*=G
+                    pcurrent=0
+                    # To observe convergence
+                    # display(A)
+                else
+                    pcurrent+=1
+                end
+            end
+        end
+        # display(A)
+    end
+    Eigen(diag(A),U)
 end
 
-# ╔═╡ 6aae1498-f7b6-4a44-b073-85af98370116
+# ╔═╡ cfd753ba-7102-4f84-8733-56b229d8a46d
  methodswith(LinearAlgebra.Givens);
 
-# ╔═╡ d33323b9-eddc-4b46-bb15-d7437511ae42
+# ╔═╡ d1d5fea3-f5e2-4a73-9db7-6dc6f550a88f
 begin
 	import Random
 	Random.seed!(516)
@@ -197,44 +201,32 @@ begin
 	A=Matrix(Symmetric(rand(n,n)))
 end
 
-# ╔═╡ cdc58669-88f1-4b68-bac6-b3d809926cee
+# ╔═╡ b12ff4b3-6cb9-497f-9990-40aa3bcf6665
 E=Jacobi(A)
 
-# ╔═╡ 902ab03a-576b-4222-8eb1-d21615885d32
+# ╔═╡ a995f1e7-10cb-4291-826b-37431237bd8f
 # Orthogonality and residual
-norm(E.vectors'*E.vectors-I),
-norm(A*E.vectors-E.vectors*Diagonal(E.values))
+norm(E.vectors'*E.vectors-I), norm(A*E.vectors-E.vectors*Diagonal(E.values))
 
-# ╔═╡ 8def3e64-cd9e-4195-82ce-4be64b6c86d2
+# ╔═╡ 963e458d-4020-418b-bba5-0c9513c8e52d
 begin
 	# Positive definite matrix
-	n₁=100
-	A₁=rand(n₁,n₁)
+	A₁=rand(100,100)
 	A₁=Matrix(Symmetric(A₁'*A₁))
+	@time E₁=Jacobi(A₁)
+	norm(E₁.vectors'*E₁.vectors-I), norm(A₁*E₁.vectors-E₁.vectors*Diagonal(E₁.values))
 end
 
-# ╔═╡ 4cc668c2-a428-45f8-b3cd-279e27c91731
-@time E₁=Jacobi(A₁)
+# ╔═╡ 21ac1147-b940-4172-a57a-04e0fe74ccd7
+begin
+	# Now the standard QR method
+	λₛ,Uₛ=eigen(A₁)
+	norm(Uₛ'*Uₛ-I),norm(A₁*Uₛ-Uₛ*Diagonal(λₛ))
+end
 
-# ╔═╡ a20d11c7-ed77-4328-9148-8df93cfc6d0a
-# Orthogonality and residual
-norm(E₁.vectors'*E₁.vectors-I),
-norm(A₁*E₁.vectors-E₁.vectors*Diagonal(E₁.values))
-
-# ╔═╡ 2777a09f-04c3-431d-adae-65f7227705a6
-cond(A₁)
-
-# ╔═╡ 40e61ea2-b363-42d5-b9e5-cdc0fda2c1d4
-# Now the standard QR method
-Eₛ=eigen(A₁);
-
-# ╔═╡ a934f125-cb2b-4b62-8b0a-b2f199efcd53
-norm(Eₛ.vectors'*Eₛ.vectors-I),
-norm(A₁*Eₛ.vectors-Eₛ.vectors*Diagonal(Eₛ.values))
-
-# ╔═╡ 27fe06a6-19b2-46a7-8a3b-dba02d9fc08a
+# ╔═╡ 3c7034f9-a477-470e-8d71-88e3bda9340b
 md"""
-`Jacobi()` is accurate, but slow. Notice the extremely high memory allocation.
+`Jacobi()` is accurate but very slow. Notice the extremely high memory allocation.
 
 The two key elements to reducing the allocations are: 
 1. make sure variables don't change type within a function, and  
@@ -243,16 +235,10 @@ The two key elements to reducing the allocations are:
 Here we will simply use the in-place multiplication routines which are in Julia denoted by `!`.
 """
 
-# ╔═╡ 68423c13-da3f-427a-a4b3-3c3906622979
-@time eigen(A₁);
-
-# ╔═╡ 2d0ba3db-a62e-4220-b56d-0524b634f40b
-@time Jacobi(A₁);
-
-# ╔═╡ c3f15544-4919-49a7-8735-a7fdb42968fa
+# ╔═╡ 46c32fa9-e5a8-4f94-a314-115f7b234e7d
 function Jacobi₁(A₁::Array{T}) where T<:Real
     A=copy(A₁)
-    n=size(A,1)	
+    n=size(A,1)
     U=Matrix{T}(I,n,n)
     # Tolerance for rotation
     tol=√n*eps(T)
@@ -274,16 +260,16 @@ function Jacobi₁(A₁::Array{T}) where T<:Real
                     # Compute c and s
                     τ=(A[j,j]-A[i,i])/(2*A[i,j])
                     t=sign(τ)/(abs(τ)+√(1+τ^2))
-                    c=1.0/√(1+t^2)
+                    c=1/√(1+t^2)
                     s=c*t
                     G=LinearAlgebra.Givens(i,j,c,s)
                     # A=G*A
-                    lmul!(G',A)
-                    # A*=G'
+                    lmul!(adjoint(G),A)
+                    # A*=G
                     rmul!(A,G)
                     A[i,j]=zero(T)
                     A[j,i]=zero(T)
-                    # U*=G'
+                    # U*=G
                     rmul!(U,G)
                     pcurrent=0
                 else
@@ -292,17 +278,13 @@ function Jacobi₁(A₁::Array{T}) where T<:Real
             end
         end
     end
-    Eigen(diag(A), U)
+    Eigen(diag(A),U)
 end
 
-# ╔═╡ 09e641cf-8541-4322-9a9d-76912fc5ed8b
-@time E₂=Jacobi₁(A₁);
+# ╔═╡ 182805c0-0ab1-40ef-a795-adee10713cca
+@time Jacobi₁(A₁)
 
-# ╔═╡ 53608bf9-ba8b-4dcb-b04b-5fcc8c281334
-# Orthogonality and residual
-norm(E₂.vectors'*E₂.vectors-I),norm(A₁*E₂.vectors-E₂.vectors*Diagonal(E₂.values))
-
-# ╔═╡ 384ec404-05f8-487f-86fb-1c9affda3d7e
+# ╔═╡ 5c5e6429-63e5-4844-8f21-07e1423ada47
 md"""
 # Relative perturbation theory
 
@@ -350,75 +332,66 @@ $$
 _provided_ that $\kappa_2([A_k]_S)$  does not grow much during the iterations. There is overwhelming numerical evidence that the scaled condition does not grow much, and the growth can be monitored, as well.
 
 The proofs of the above facts are in [J. Demmel and K. Veselić, Jacobi's method is more accurate than QR](http://www.netlib.org/lapack/lawnspdf/lawn15.pdf).  
-
-## Scaled matrix
-
 """
 
-# ╔═╡ e9d96500-0f41-4138-868b-eae1a4e9d89f
-# D=Diagonal([1,2,3,4,1000])
+# ╔═╡ 733d322f-8d91-4f70-a01b-0fa8f0edf3ab
+md"
+## Example of a scaled matrix
+"
 
-# ╔═╡ 217eefa9-fe09-4336-909b-583c056a9a43
+# ╔═╡ 2fb8d573-5c61-4406-bf67-042e6adb86b5
 begin
 	Random.seed!(431)
 	n₂=6
-	A₂=rand(n,n)
+	A₂=rand(n₂,n₂)
 	A₂=Matrix(Symmetric(A₂'*A₂));
+	Aₛ=[A₂[i,j]/√(A₂[i,i]*A₂[j,j]) for i=1:n₂, j=1:n₂]
 end
 
-# ╔═╡ 455e70f0-10e9-43a0-94f9-1704a3838f1d
-Aₛ=[A[i,j]/sqrt(A[i,i]*A[j,j]) for i=1:n, j=1:n]
+# ╔═╡ 1f1b8df4-09a6-46c4-b08a-621461652aa7
+A₂
 
-# ╔═╡ 7a7fd27e-bb03-40e9-a40c-1fc659ef0b8c
-cond(Aₛ), cond(A)
+# ╔═╡ 5b8fd806-78e6-4aef-8800-df5c0feba3bb
+cond(Aₛ), cond(A₂)
 
-# ╔═╡ fa29c15f-d09c-45e7-861b-b84e4981b9bf
-begin
-	# We add a strong scaling
-	Random.seed!(5621)
-	D=exp.(50*(rand(n).-0.5))
-end
+# ╔═╡ 9dba38b0-b08e-4928-9e6f-de9ce3c27106
+# We add a strong scaling
+D=exp.(50*(rand(n₂).-0.5))
 
-# ╔═╡ 96e7f4d8-bfb1-4be3-8061-375e50ecc9fa
+# ╔═╡ e526191c-7091-4170-af9f-f73e8a6dc734
 H=Diagonal(D)*Aₛ*Diagonal(D)
 
-# ╔═╡ 1186661c-bbc1-4a16-8bbc-60fcd62f5e42
+# ╔═╡ 795c80a3-3573-454e-a945-adfb03a258e2
 # Now we scale again
-Hₛ=[H[i,j]/sqrt(H[i,i]*H[j,j]) for i=1:n, j=1:n]
+Hₛ=[H[i,j]/ √(H[i,i]*H[j,j]) for i=1:n₂, j=1:n₂]
 
-# ╔═╡ a4014941-8b37-4d15-bb7d-99ab1ed29495
+# ╔═╡ 3baf9fc0-b0a3-4bc5-9112-a9ccd982f998
 cond(Hₛ),cond(H)
 
-# ╔═╡ 2cefe20f-3c9b-438c-9ab3-9ee65b60c1a7
+# ╔═╡ 9e2588e1-379f-482b-afe5-e57f9d0ae001
 # Jacobi method
-λ,U=Jacobi(H)
+λ₂,U₂=Jacobi(H)
 
-# ╔═╡ c73763d3-b310-4b20-93bc-800e5f8c9d5d
+# ╔═╡ 5dd05357-7bd0-4857-b562-4c46f06a502d
+# Orthogonality and relative residual 
+norm(U₂'*U₂-I),norm(H*U₂-U₂*Diagonal(λ₂))/norm(H)
+
+# ╔═╡ 2cf0b11f-b01e-4eb5-a617-be0eff673d89
 # Standard QR method
-λ₁,U₁=eigen(H)
+λ₃,U₃=eigen(H)
 
-# ╔═╡ 2ad7a58c-184a-402d-94c9-b952623ebec6
+# ╔═╡ 079159ab-f391-41df-a2e4-990f80243c6f
 # Compare
-[sort(λ) sort(λ₁)]
+[sort(λ₂) sort(λ₃)]
 
-# ╔═╡ 34bcad49-bd18-42d4-ae59-0d53021a8e3e
-λ[1]
-
-# ╔═╡ f1e072d7-45cc-4aac-bc0b-b1b2a5fb1b67
-sort(λ)-sort(λ₁)
-
-# ╔═╡ c297e58d-d572-4b41-9840-49d820c428ca
-(sort(λ)-sort(λ₁))./sort(λ)
-
-# ╔═╡ 10d26475-2ca4-4f2a-9efd-61b27087be39
+# ╔═╡ 011b7cd7-8692-4a29-9e97-ea223d98c761
 # Check with BigFloat
-λ₂,U₂=Jacobi(map(BigFloat,H))
+Jacobi(map(BigFloat,H))
 
-# ╔═╡ 1ff0ddf9-b340-4de5-a3d9-e9a3cd81bff7
-# Relative error is eps()*cond(AS)
-map(Float64,(sort(λ₂)-sort(λ))./sort(λ₂))
+# ╔═╡ 1a57313f-d4c4-476c-92be-ad45be008edf
+λ₂[1]
 
-# ╔═╡ 770c0f98-6fdf-47bc-b474-fe808c56aa19
+# ╔═╡ 0055c941-e98a-40dd-802a-98ceebedc374
 md"""
 # Indefinite matrices
 
@@ -440,49 +413,55 @@ This is positive definite part of the polar decomposition of $A$.
 The details of the indefinite case are beyond the scope of this course, and the reader should consider references.
 """
 
-# ╔═╡ eeab54c2-6cdc-4071-80a7-c1734f61057d
+# ╔═╡ fb368704-0f09-49aa-b870-b4378f1c5424
+C=Symmetric(rand(5,5).-0.5)
 
+# ╔═╡ 43fa4cac-6254-489e-b70c-9c8d7a45a7ad
+G=eigen(C)
+
+# ╔═╡ c86490af-ecf3-48e4-a4e3-99d5471081ac
+Cₐ=√(C*C)
+
+# ╔═╡ 210d21f3-077b-4fea-9d43-d12d33e4312f
+eigvals(Cₐ)
+
+# ╔═╡ 5f671402-af57-45d0-bc95-357d709d59ff
+G.vectors*Diagonal(abs.(G.values))*G.vectors'
 
 # ╔═╡ Cell order:
-# ╠═2cd8aee2-d752-47fd-8203-55148bd75002
-# ╟─69545c6e-1af7-49fc-b3ae-a8fb0cdc600e
-# ╟─21e8ee7c-3394-44a6-ae15-3d2a5548cbb5
-# ╟─c7642876-0a2b-40af-b7da-a0ffcde1a304
-# ╟─8dd8a3e6-9488-4cbc-9a4e-f6819dba7112
-# ╟─0be1d6d8-dffc-403b-b3b3-1b209cacb09c
-# ╠═ff4f7ae3-7044-4c13-b079-c4cd4e8d39e6
-# ╠═6aae1498-f7b6-4a44-b073-85af98370116
-# ╠═d33323b9-eddc-4b46-bb15-d7437511ae42
-# ╠═cdc58669-88f1-4b68-bac6-b3d809926cee
-# ╠═902ab03a-576b-4222-8eb1-d21615885d32
-# ╠═8def3e64-cd9e-4195-82ce-4be64b6c86d2
-# ╠═4cc668c2-a428-45f8-b3cd-279e27c91731
-# ╠═a20d11c7-ed77-4328-9148-8df93cfc6d0a
-# ╠═2777a09f-04c3-431d-adae-65f7227705a6
-# ╠═40e61ea2-b363-42d5-b9e5-cdc0fda2c1d4
-# ╠═a934f125-cb2b-4b62-8b0a-b2f199efcd53
-# ╟─27fe06a6-19b2-46a7-8a3b-dba02d9fc08a
-# ╠═68423c13-da3f-427a-a4b3-3c3906622979
-# ╠═2d0ba3db-a62e-4220-b56d-0524b634f40b
-# ╠═c3f15544-4919-49a7-8735-a7fdb42968fa
-# ╠═09e641cf-8541-4322-9a9d-76912fc5ed8b
-# ╠═53608bf9-ba8b-4dcb-b04b-5fcc8c281334
-# ╟─384ec404-05f8-487f-86fb-1c9affda3d7e
-# ╠═e9d96500-0f41-4138-868b-eae1a4e9d89f
-# ╠═217eefa9-fe09-4336-909b-583c056a9a43
-# ╠═455e70f0-10e9-43a0-94f9-1704a3838f1d
-# ╠═7a7fd27e-bb03-40e9-a40c-1fc659ef0b8c
-# ╠═fa29c15f-d09c-45e7-861b-b84e4981b9bf
-# ╠═96e7f4d8-bfb1-4be3-8061-375e50ecc9fa
-# ╠═1186661c-bbc1-4a16-8bbc-60fcd62f5e42
-# ╠═a4014941-8b37-4d15-bb7d-99ab1ed29495
-# ╠═2cefe20f-3c9b-438c-9ab3-9ee65b60c1a7
-# ╠═c73763d3-b310-4b20-93bc-800e5f8c9d5d
-# ╠═2ad7a58c-184a-402d-94c9-b952623ebec6
-# ╠═34bcad49-bd18-42d4-ae59-0d53021a8e3e
-# ╠═f1e072d7-45cc-4aac-bc0b-b1b2a5fb1b67
-# ╠═c297e58d-d572-4b41-9840-49d820c428ca
-# ╠═10d26475-2ca4-4f2a-9efd-61b27087be39
-# ╠═1ff0ddf9-b340-4de5-a3d9-e9a3cd81bff7
-# ╟─770c0f98-6fdf-47bc-b474-fe808c56aa19
-# ╠═eeab54c2-6cdc-4071-80a7-c1734f61057d
+# ╟─8911d755-8ad6-4eb2-82f0-44a403f2ef60
+# ╟─70c2fde9-110c-4f20-9324-0e0601934c2c
+# ╟─abc0c46c-ec25-4fcb-8a8f-cefeda20418d
+# ╟─1760ea70-45a2-426c-a9dd-23377711f3c9
+# ╟─972f4040-d91c-4b13-a885-2ba40e505c7f
+# ╠═5cc14464-8fc4-495d-97d4-f106570ed942
+# ╠═cfd753ba-7102-4f84-8733-56b229d8a46d
+# ╠═d1d5fea3-f5e2-4a73-9db7-6dc6f550a88f
+# ╠═b12ff4b3-6cb9-497f-9990-40aa3bcf6665
+# ╠═a995f1e7-10cb-4291-826b-37431237bd8f
+# ╠═963e458d-4020-418b-bba5-0c9513c8e52d
+# ╠═21ac1147-b940-4172-a57a-04e0fe74ccd7
+# ╟─3c7034f9-a477-470e-8d71-88e3bda9340b
+# ╠═46c32fa9-e5a8-4f94-a314-115f7b234e7d
+# ╠═182805c0-0ab1-40ef-a795-adee10713cca
+# ╟─5c5e6429-63e5-4844-8f21-07e1423ada47
+# ╟─733d322f-8d91-4f70-a01b-0fa8f0edf3ab
+# ╠═1f1b8df4-09a6-46c4-b08a-621461652aa7
+# ╠═2fb8d573-5c61-4406-bf67-042e6adb86b5
+# ╠═5b8fd806-78e6-4aef-8800-df5c0feba3bb
+# ╠═9dba38b0-b08e-4928-9e6f-de9ce3c27106
+# ╠═e526191c-7091-4170-af9f-f73e8a6dc734
+# ╠═795c80a3-3573-454e-a945-adfb03a258e2
+# ╠═3baf9fc0-b0a3-4bc5-9112-a9ccd982f998
+# ╠═9e2588e1-379f-482b-afe5-e57f9d0ae001
+# ╠═5dd05357-7bd0-4857-b562-4c46f06a502d
+# ╠═2cf0b11f-b01e-4eb5-a617-be0eff673d89
+# ╠═079159ab-f391-41df-a2e4-990f80243c6f
+# ╠═011b7cd7-8692-4a29-9e97-ea223d98c761
+# ╠═1a57313f-d4c4-476c-92be-ad45be008edf
+# ╟─0055c941-e98a-40dd-802a-98ceebedc374
+# ╠═fb368704-0f09-49aa-b870-b4378f1c5424
+# ╠═43fa4cac-6254-489e-b70c-9c8d7a45a7ad
+# ╠═c86490af-ecf3-48e4-a4e3-99d5471081ac
+# ╠═210d21f3-077b-4fea-9d43-d12d33e4312f
+# ╠═5f671402-af57-45d0-bc95-357d709d59ff
