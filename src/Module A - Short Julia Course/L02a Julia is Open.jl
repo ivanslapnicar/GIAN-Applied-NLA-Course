@@ -1,8 +1,11 @@
 ### A Pluto.jl notebook ###
-# v0.12.21
+# v0.16.1
 
 using Markdown
 using InteractiveUtils
+
+# ╔═╡ 2db004b0-7c45-11eb-2c3a-3f0e111cf63a
+using LinearAlgebra, PlutoUI
 
 # ╔═╡ 55f8789f-5361-421f-9f37-98c154fd40cf
 begin
@@ -10,12 +13,12 @@ begin
 	Dates.today()
 end
 
-# ╔═╡ 2db004b0-7c45-11eb-2c3a-3f0e111cf63a
-using LinearAlgebra
+# ╔═╡ 5ea33223-4dad-4869-8724-93b7cb91771f
+TableOfContents(title="📚 Table of Contents", aside=true)
 
 # ╔═╡ 8ccdfcf9-d5d1-4b69-a854-15f2715bfafa
 md"""
-# Julia is Open - `varinfo()`, `methods()`, `@which`, ...
+# Julia is Open
 
 
 `Julia` is an open-source project, source being entirely hosted on [github](https://github.com/JuliaLang/julia).
@@ -37,17 +40,17 @@ Since packages are written in `Julia`, they are navigated on the same way.
 
 In this notebook, we demonstrate how to get help and navigate the source code.
 
-## Prerequisites
+__Prerequisites__
 
 Basic knowledge of programming in any language.
 
 Read [Methods](https://docs.julialang.org/en/v1/manual/methods/#Methods) section of the `Julia` manual. (5 min)
 
-## Competences 
+__Competences__
 
 The reader should be able to read the code and be able to find and understand calling sequences and outputs of any function.
 
-## Credits 
+__Credits__
 
 Some examples are taken from [The Julia Manual](https://docs.julialang.org/en/v1/).
 
@@ -55,7 +58,7 @@ Some examples are taken from [The Julia Manual](https://docs.julialang.org/en/v1
 
 # ╔═╡ 4440847c-db90-44a5-be48-08c5794ee5b7
 md"""
-## Operators `+`, `*` and `⋅`
+# Operators `+`, `*` and `⋅`
 
 Consider operators `+`, `*` and `⋅`, the first two of them seem rather basic in any language. The `⋅` symbol is typed as LaTeX command `\cdot` + `Tab`.
 
@@ -71,7 +74,7 @@ Consider operators `+`, `*` and `⋅`, the first two of them seem rather basic i
 
 # ╔═╡ 7514d88c-d0fa-45e5-947d-10fe0ce47f7d
 md"""
-## methods()
+# methods()
 
 `Julia` functions have a feature called _multiple dispatch_, which means that the method depends on the name __AND__ the input.
 Full range of existing methods for certain function name is given by the `methods()` command. 
@@ -82,7 +85,7 @@ The great Julia feature is that the links to the source code where the respectiv
 
 # ╔═╡ 611770e1-4b5b-47a6-be3a-e0806990796d
 md"""
-### The `"+"` operator
+## The `"+"` operator
 """
 
 # ╔═╡ 9c208420-7cdf-11eb-2b99-e32e66b46e85
@@ -128,7 +131,7 @@ xb+yb, +(xb,yb)
 
 # ╔═╡ 74d98ae5-0641-4eea-9f8c-8e663a405f32
 md"""
-#### Manipulating dates
+## Manipulating dates
 
 We see that one of the `+` methods is adding days to time: 
 
@@ -151,7 +154,7 @@ More information about the two types can be obtained by `methods(Dates.Date)` an
 
 # ╔═╡ 7e6013ea-1e66-4a81-86a8-a69e22cde29a
 md"""
-#### Adding tridiagonal matrices
+## Adding tridiagonal matrices
 
 In the above output of `methods(+)`,  we see that we can add tridiagonal matrices:
 ```
@@ -194,8 +197,8 @@ This worked as expected, the result is again a `Tridiagonal`. We can access each
 println(T₃.dl, T₃.d, T₃.du)
 
 # ╔═╡ 98142e4f-c703-4ea9-b893-5e2c831afa42
-	md"""
-### `@which`
+md"""
+## `@which`
 
 Let us take a closer look at what happens. The `@which` command gives the link to the part of the code which is actually invoked. The argument should be only function, without assignment.
 """
@@ -226,7 +229,7 @@ The next function with the same name is invoked when the input vectors have diff
 
 # ╔═╡ 88ee9b5a-a1f1-49a1-b6cf-64ebac21634a
 md"""
-### `size()` and `Matrix()`
+# `size()` and `Matrix()`
 
 For each matrix type we need to define the function which returns the size of a matrix, and the function which converts the matrix of a given type to a full array. These function are listed after the second `Tridiagonal()` function.
 """
@@ -242,7 +245,7 @@ Matrix(T₄)
 
 # ╔═╡ bd0a3a98-4311-41b0-9209-5e09c4ecd9ad
 md"""
-### `sizeof()` 
+## `sizeof()` 
 
 Of course, using special types can leasd to much more efficient programs. For example, for `Tridiagonal` type, onlt four diagonals are stored, in comparison to storing full matrix when $n^2$ elements are stored. The storage used is obtained by the `sizeof()` function.
 """
@@ -263,7 +266,7 @@ sizeof(T₁)
 
 # ╔═╡ 7622b55d-49ba-4f21-8d85-4bfb95f0fe37
 md"""
-### `struct` is immutable
+# `struct` is immutable
 
 This means that we can change individual elements of defined parts, but not the parts as a whole (an alternative is to use the `type` construtor). For example: 
 """
@@ -278,7 +281,7 @@ end
 
 # ╔═╡ ec7be6ff-07ff-4b6d-bf00-2c48a1535582
 md"""
-### `methodswith()`
+# `methodswith()`
 
 This is the reverse of `methods()` - which methods exist for the given type. For example, what can we do with `Tridiagonal` matrices, or with `Dates.Day`:
 """
@@ -291,7 +294,7 @@ This is the reverse of `methods()` - which methods exist for the given type. For
 
 # ╔═╡ 9397e3da-f0b7-43da-9fd5-341a679e46c5
 md"""
-### The `"*"` operator
+## The `"*"` operator
 """
 
 # ╔═╡ 32050704-3017-4995-a054-5180f6e6e8d0
@@ -315,7 +318,7 @@ T₁*T₂*T₁
 
 # ╔═╡ 8b29ea27-05ef-4b5e-8123-80667c385b70
 md"""
-### The "$\cdot$" operator
+## The ⋅ operator
 """
 
 # ╔═╡ 391b705d-0b2d-42b9-86a6-94416d2135cf
@@ -339,7 +342,7 @@ end
 
 # ╔═╡ b48fd083-d317-4195-8500-c8fa5c5ac4ed
 md"""
-## `varinfo()`
+# `varinfo()`
 
 The command `varinfo()` reveals the content of the specified package or module. It can be invoked either with the package name, or with the package name and a regular expression.
 """
@@ -366,7 +369,7 @@ Notice that `Dates` and `LinearAlgebra` are modules themselves.
 
 # ╔═╡ a7de4d00-7c4a-11eb-1c76-cd159c6fdf9c
 md"
-## `code_llvm()` and `code_native()`
+# `code_llvm()` and `code_native()`
 
 It is easy to see the LLVM or assebler code which is executed. The code is displayed in the console.
 "
@@ -386,12 +389,105 @@ f(a,b)=2a+b^2
 # ╔═╡ 0ba1da00-7c4b-11eb-0abc-c395efc9700e
 @code_native f(1,2+2.0im)
 
+# ╔═╡ 00000000-0000-0000-0000-000000000001
+PLUTO_PROJECT_TOML_CONTENTS = """
+[deps]
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+
+[compat]
+PlutoUI = "~0.7.10"
+"""
+
+# ╔═╡ 00000000-0000-0000-0000-000000000002
+PLUTO_MANIFEST_TOML_CONTENTS = """
+# This file is machine-generated - editing it directly is not advised
+
+[[Base64]]
+uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
+
+[[Dates]]
+deps = ["Printf"]
+uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
+
+[[HypertextLiteral]]
+git-tree-sha1 = "72053798e1be56026b81d4e2682dbe58922e5ec9"
+uuid = "ac1192a8-f4b3-4bfe-ba22-af5b92cd3ab2"
+version = "0.9.0"
+
+[[InteractiveUtils]]
+deps = ["Markdown"]
+uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
+
+[[JSON]]
+deps = ["Dates", "Mmap", "Parsers", "Unicode"]
+git-tree-sha1 = "8076680b162ada2a031f707ac7b4953e30667a37"
+uuid = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+version = "0.21.2"
+
+[[Libdl]]
+uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
+
+[[LinearAlgebra]]
+deps = ["Libdl"]
+uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+
+[[Logging]]
+uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
+
+[[Markdown]]
+deps = ["Base64"]
+uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
+
+[[Mmap]]
+uuid = "a63ad114-7e13-5084-954f-fe012c677804"
+
+[[Parsers]]
+deps = ["Dates"]
+git-tree-sha1 = "438d35d2d95ae2c5e8780b330592b6de8494e779"
+uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
+version = "2.0.3"
+
+[[PlutoUI]]
+deps = ["Base64", "Dates", "HypertextLiteral", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "Suppressor"]
+git-tree-sha1 = "26b4d16873562469a0a1e6ae41d90dec9e51286d"
+uuid = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
+version = "0.7.10"
+
+[[Printf]]
+deps = ["Unicode"]
+uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+
+[[Random]]
+deps = ["Serialization"]
+uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+
+[[Reexport]]
+git-tree-sha1 = "45e428421666073eab6f2da5c9d310d99bb12f9b"
+uuid = "189a3867-3050-52da-a836-e630ba90ab69"
+version = "1.2.2"
+
+[[Serialization]]
+uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
+
+[[Suppressor]]
+git-tree-sha1 = "a819d77f31f83e5792a76081eee1ea6342ab8787"
+uuid = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
+version = "0.2.0"
+
+[[Unicode]]
+uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
+"""
+
 # ╔═╡ Cell order:
+# ╠═2db004b0-7c45-11eb-2c3a-3f0e111cf63a
+# ╠═5ea33223-4dad-4869-8724-93b7cb91771f
 # ╟─8ccdfcf9-d5d1-4b69-a854-15f2715bfafa
 # ╟─4440847c-db90-44a5-be48-08c5794ee5b7
 # ╠═7a55f84e-1439-45ec-b428-5976cac084cd
 # ╟─7514d88c-d0fa-45e5-947d-10fe0ce47f7d
-# ╟─611770e1-4b5b-47a6-be3a-e0806990796d
+# ╠═611770e1-4b5b-47a6-be3a-e0806990796d
 # ╠═9c208420-7cdf-11eb-2b99-e32e66b46e85
 # ╠═bfb87460-7cdf-11eb-38ca-0961560c093b
 # ╟─cb3e314e-68e0-4fc0-8ece-c5c8bc279f55
@@ -406,7 +502,6 @@ f(a,b)=2a+b^2
 # ╠═c9a0df42-1368-4e5d-a21d-d924f7ffbb75
 # ╟─79ca20e7-446e-4264-ae24-c46fbb4b15c1
 # ╟─7e6013ea-1e66-4a81-86a8-a69e22cde29a
-# ╠═2db004b0-7c45-11eb-2c3a-3f0e111cf63a
 # ╠═8591bb73-12e5-474e-b24b-7acfab2e3c5f
 # ╟─8c0b2316-26fa-4748-b047-3d2c6bf7acc0
 # ╠═4163dd6e-7b5c-42f4-a9f4-c1e1a7faecba
@@ -455,3 +550,5 @@ f(a,b)=2a+b^2
 # ╠═ef51c630-7c4a-11eb-3331-49602357198f
 # ╠═0521934e-7c4b-11eb-37f3-631715a07f3a
 # ╠═0ba1da00-7c4b-11eb-0abc-c395efc9700e
+# ╟─00000000-0000-0000-0000-000000000001
+# ╟─00000000-0000-0000-0000-000000000002

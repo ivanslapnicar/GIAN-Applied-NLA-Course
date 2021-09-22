@@ -4,8 +4,15 @@
 using Markdown
 using InteractiveUtils
 
+# ╔═╡ e7af1703-0873-4b3f-8b8f-a8a2c874bcb1
+begin
+	using PlutoUI, LinearAlgebra, Distributions, SparseArrays
+	import Random
+end
+
 # ╔═╡ cf46a0fe-43a4-4b6a-b4f8-a0c5fb4e9f03
-# For binder, enable this cell ...
+# For binder, uncomment this cell ...
+#=
 begin
 	import Pkg
     Pkg.activate(mktempdir())
@@ -15,18 +22,10 @@ begin
 		Pkg.PackageSpec(name="SparseArrays")
     ])
 end
-
-# ╔═╡ e7af1703-0873-4b3f-8b8f-a8a2c874bcb1
-begin
-	using PlutoUI, LinearAlgebra, Distributions, SparseArrays
-	import Random
-end
+=#
 
 # ╔═╡ cfaedd73-8e4c-4481-99d0-c04eafd79fe9
-TableOfContents(title="📚 Table of Contents", aside=true)
-
-# ╔═╡ f7c33c4f-b493-4d6b-84dd-d2a5087ffeb4
-5*60,5*80
+TableOfContents(title="📚 Table of Contents",aside=true)
 
 # ╔═╡ 00839532-0da0-4cbf-8093-01310a3799d0
 md"""
@@ -103,7 +102,7 @@ end
 # ╔═╡ 31305f95-1a9d-4981-bdff-bd8f8edc3802
 begin
 	# Uniform
-	r=400
+	r=1000
 	iᵣ=rand(1:n,r)
 	p=1/n
 	@time M=A[:,iᵣ]*B[iᵣ,:]/(r*p)
@@ -176,7 +175,6 @@ end
 # ╠═cf46a0fe-43a4-4b6a-b4f8-a0c5fb4e9f03
 # ╠═e7af1703-0873-4b3f-8b8f-a8a2c874bcb1
 # ╠═cfaedd73-8e4c-4481-99d0-c04eafd79fe9
-# ╠═f7c33c4f-b493-4d6b-84dd-d2a5087ffeb4
 # ╟─00839532-0da0-4cbf-8093-01310a3799d0
 # ╟─a6f4632f-5d64-4efb-a72f-706235cb3957
 # ╟─25a893eb-2c23-40dc-8e24-f45ed8253697

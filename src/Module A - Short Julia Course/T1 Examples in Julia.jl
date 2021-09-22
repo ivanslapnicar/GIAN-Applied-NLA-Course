@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.12.21
+# v0.16.1
 
 using Markdown
 using InteractiveUtils
@@ -15,7 +15,7 @@ end
 
 # ╔═╡ 3f890c7b-44ad-426a-bf26-32ff17fa8ec4
 md"""
-# Tutorial 1 - Examples in Julia
+# Examples in Julia - Tutorial 1
 """
 
 # ╔═╡ 5bc2c872-fded-4bc8-8044-9eda1822c505

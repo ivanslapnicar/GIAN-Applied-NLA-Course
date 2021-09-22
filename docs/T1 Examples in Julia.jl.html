@@ -1,170 +1,75 @@
 <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta name="viewport" content="width=device-width" />
-                <title>⚡ Pluto.jl ⚡</title>
-                <meta charset="utf-8" />
+<html lang="en">
 
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonsp/Pluto.jl@0.12.21/frontend/editor.css" type="text/css" />
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonsp/Pluto.jl@0.12.21/frontend/treeview.css" type="text/css" />
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonsp/Pluto.jl@0.12.21/frontend/hide-ui.css" type="text/css" />
-                <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.58.1/lib/codemirror.min.css" type="text/css" />
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>⚡ Pluto.jl ⚡</title>
+    <meta charset="utf-8" />
+    <script>
+        console.log("Pluto.jl, by Fons van der Plas (https://github.com/fonsp) and Mikołaj Bochenski (https://github.com/malyvsen) 🌈")
+    </script>
+    <meta name="author" content="Fons van der Plas; Mikołaj Bochenski" />
+    <link rel="license" href="https://github.com/fonsp/Pluto.jl/blob/main/LICENSE" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" type="image/png" sizes="16x16" href="https://cdn.jsdelivr.net/gh/fonsp/Pluto.jl@0.16.1/frontend/img/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="https://cdn.jsdelivr.net/gh/fonsp/Pluto.jl@0.16.1/frontend/img/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="96x96" href="https://cdn.jsdelivr.net/gh/fonsp/Pluto.jl@0.16.1/frontend/img/favicon-96x96.png" />
+    <meta name="description" content="Pluto.jl notebooks" />
+    <link rel="pluto-logo-big" href="https://cdn.jsdelivr.net/gh/fonsp/Pluto.jl@0.16.1/frontend/img/logo.svg" />
+    <link rel="pluto-logo-small" href="https://cdn.jsdelivr.net/gh/fonsp/Pluto.jl@0.16.1/frontend/img/favicon_unsaturated.svg" />
 
-                <style id="MJX-SVG-styles">
-mjx-container[jax="SVG"] {
-  direction: ltr;
-}
+    <link rel="pluto-sw" href="https://cdn.jsdelivr.net/gh/fonsp/Pluto.jl@0.16.1/frontend/sw.js" />
+    <script>
+        navigator.serviceWorker?.register(document.head.querySelector("link[rel='pluto-sw']").getAttribute("href"), { scope: "./" }).catch(console.warn)
+    </script>
 
-mjx-container[jax="SVG"] > svg {
-  overflow: visible;
-}
+    <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.20/lodash.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/@observablehq/stdlib@3.3.1/dist/stdlib.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/iframe-resizer@4.2.11/js/iframeResizer.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.60.0/lib/codemirror.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.60.0/mode/julia/julia.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.60.0/addon/mode/loadmode.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.60.0/mode/meta.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.60.0/addon/hint/show-hint.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.60.0/addon/display/placeholder.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.60.0/addon/edit/matchbrackets.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.60.0/addon/runmode/runmode.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/codemirror@5.60.0/addon/comment/comment.min.js" defer></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/codemirror@5.60.0/addon/edit/closebrackets.min.js" defer></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/codemirror@5.60.0/addon/search/searchcursor.min.js" defer></script> -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.60.0/lib/codemirror.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.60.0/addon/hint/show-hint.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/ansi_up@5.0.1/ansi_up.min.js" defer></script>
 
-mjx-container[jax="SVG"] > svg a {
-  fill: blue;
-  stroke: blue;
-}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonsp/Pluto.jl@0.16.1/frontend/editor.css" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonsp/Pluto.jl@0.16.1/frontend/hide-ui.css" type="text/css" media="all" data-pluto-file="hide-ui">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonsp/Pluto.jl@0.16.1/frontend/binder.css" type="text/css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fonsp/Pluto.jl@0.16.1/frontend/treeview.css" type="text/css" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/gh/fonsp/Pluto.jl@0.16.1/frontend/juliamono.css" as="style">
+    <link rel="preload" href="https://cdn.jsdelivr.net/gh/fonsp/Pluto.jl@0.16.1/frontend/vollkorn.css" as="style">
 
-mjx-assistive-mml {
-  position: absolute !important;
-  top: 0px;
-  left: 0px;
-  clip: rect(1px, 1px, 1px, 1px);
-  padding: 1px 0px 0px 0px !important;
-  border: 0px !important;
-  display: block !important;
-  width: auto !important;
-  overflow: hidden !important;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -khtml-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
+    <!-- The instant feedback form at the bottom of the page uses Google Firestore to save feedback. -->
+    <script src="https://cdn.jsdelivr.net/npm/firebase@7.13.1/firebase-app.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/firebase@7.13.1/firebase-firestore.js" defer></script>
 
-mjx-assistive-mml[display="block"] {
-  width: 100% !important;
-}
+    <script data-pluto-file="launch-parameters">
+window.pluto_notebookfile = "data:text/julia;charset=utf-8;base64,IyMjIEEgUGx1dG8uamwgbm90ZWJvb2sgIyMjCiMgdjAuMTYuMQoKdXNpbmcgTWFya2Rvd24KdXNpbmcgSW50ZXJhY3RpdmVVdGlscwoKIyBUaGlzIFBsdXRvIG5vdGVib29rIHVzZXMgQGJpbmQgZm9yIGludGVyYWN0aXZpdHkuIFdoZW4gcnVubmluZyB0aGlzIG5vdGVib29rIG91dHNpZGUgb2YgUGx1dG8sIHRoZSBmb2xsb3dpbmcgJ21vY2sgdmVyc2lvbicgb2YgQGJpbmQgZ2l2ZXMgYm91bmQgdmFyaWFibGVzIGEgZGVmYXVsdCB2YWx1ZSAoaW5zdGVhZCBvZiBhbiBlcnJvcikuCm1hY3JvIGJpbmQoZGVmLCBlbGVtZW50KQogICAgcXVvdGUKICAgICAgICBsb2NhbCBlbCA9ICQoZXNjKGVsZW1lbnQpKQogICAgICAgIGdsb2JhbCAkKGVzYyhkZWYpKSA9IENvcmUuYXBwbGljYWJsZShCYXNlLmdldCwgZWwpID8gQmFzZS5nZXQoZWwpIDogbWlzc2luZwogICAgICAgIGVsCiAgICBlbmQKZW5kCgojIOKVlOKVkOKVoSAzZjg5MGM3Yi00NGFkLTQyNmEtYmYyNi0zMmZmMTdmYThlYzQKbWQiIiIKIyBFeGFtcGxlcyBpbiBKdWxpYSAtIFR1dG9yaWFsIDEKIiIiCgojIOKVlOKVkOKVoSA1YmMyYzg3Mi1mZGVkLTRiYzgtODA0NC05ZWRhMTgyMmM1MDUKbWQiIiIKIyMgQXNzaWdubWVudCAxCgpVc2luZyB0aGUgcGFja2FnZSBgUG9seW5vbWlhbHMuamxgLCB3cml0ZSB0aGUgZnVuY3Rpb24gd2hpY2ggaW1wbGVtZW50cyAKW0dyYWVmZmUncyBtZXRob2RdKGh0dHBzOi8vZW4ud2lraXBlZGlhLm9yZy93aWtpL0dyYWVmZmUlMjdzX21ldGhvZCkKKHNlZSBhbHNvIFtoZXJlXShodHRwOi8vbWF0aHdvcmxkLndvbGZyYW0uY29tL0dyYWVmZmVzTWV0aG9kLmh0bWwpKQpmb3IgY29tcHV0aW5nIHJvb3RzIG9mIHBvbHlub21pYWxzIHdpdGggb25seSByZWFsIHJvb3RzIHdpdGggc2ltcGxlIG1vZHVsaS4KCkluIHRoZSBmdW5jdGlvbiwgdXNlIEp1bGlhJ3MgYEJpZ0Zsb2F0YCBudW1iZXJzIHRvIG92ZXJjb21lIHRoZSBtYWluIGRpc2FkdmFudGFnZSBvZiB0aGUgbWV0aG9kLiBXaGF0IGlzIHRoZSBudW1iZXIgb2Ygc2lnbmlmaWNhbnQgZGVjaW1hbCBkaWdpdHMsIGFuZCB0aGUgbGFyZ2VzdCBhbmQgdGhlIHNtYWxsZXN0IG51bWJlcj8KClRlc3QgdGhlIGZ1bmN0aW9uIG9uIHRoZSBbV2lsa2luc29uJ3MgcG9seW5vbWlhbF0oaHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvV2lsa2luc29uJTI3c19wb2x5bm9taWFsKSAkXG9tZWdhKHgpJCwgYW5kIHRoZSBbQ2hlYnlzaGV2IHBvbHlub21pYWxdKGh0dHBzOi8vZW4ud2lraXBlZGlhLm9yZy93aWtpL0NoZWJ5c2hldl9wb2x5bm9taWFscykgJFRfezUwfSh4KSQgCih0aGUgbGF0dGVyIG5lZWRzIHRvIGJlIHRyYW5zZm9ybWVkIGluIG9yZGVyIHRvIGFwcGx5IHRoZSBtZXRob2QpLgoKQ29tcGFyZSB5b3VyIHNvbHV0aW9ucyB3aXRoIHRoZSBleGFjdCBzb2x1dGlvbnMuCiIiIgoKIyDilZTilZDilaEgNWI1NDJhZDMtODQ3MS00YWRjLTljODktZDY0NzAwMGI4Y2EwCm1kIiIiCiMjIEFzc2lnbm1lbnQgMgoKV3JpdGUgdGhlIGZ1bmN0aW9uIHdoaWNoIGNvbXB1dGVzIHNpbXBsZSBMVSBmYWN0b3JpemF0aW9uICh3aXRob3V0IHBpdm90aW5nKSB3aGVyZSB0aGUgbWF0cml4IGlzIG92ZXJ3cml0dGVuIGJ5IHRoZSBmYWN0b3JzLgoKTWFrZSBzdXJlIHRoYXQgdGhlIGZ1bmN0aW9uIGFsc28gd29ya3Mgd2l0aCBibG9jay1tYXRyaWNlcy4gCgpDb21wYXJlIHRoZSBzcGVlZCBvbiBzdGFuZGFyZCBtYXRyaWNlcyBhbmQgYmxvY2stbWF0cmljZXMgd2l0aCB0aGUgYnVpbHQtaW4gTFUgZmFjdG9yaXphdGlvbiAod2hpY2ggYWxzbyB1c2VzIGJsb2NrIGFsZ29yaXRobSBBTkQgcGl2b3RpbmcpLiBDaGVjayB0aGUgYWNjdXJhY3kuCiIiIgoKIyDilZTilZDilaEgZGJkMGExNTAtMmFkMi00OWUzLWI1ODUtZDM0YmZjMmZmM2I4Cm1kIiIiCiMjIEFzc2lnbm1lbnQgMwoKVXNlIHRoZSBmdW5jdGlvbiBgZWlndmFscygpYCB0byBjb21wdXRlIHRoZSBlaWdlbnZhbHVlcyBvZiAkayQgcmFuZG9tIG1hdHJpY2VzICh3aXRoIHVuaWZvcm0gYW5kIG5vcm1hbCBkaXN0cmlidXRpb24gb2YgZWxlbWVudHMpIG9mIG9yZGVyICRuJC4KClBsb3QgdGhlIHJlc3VsdHMgdXNpbmcgdGhlIG1hY3JvIGBAYmluZGAgZnJvbSB0aGUgcGFja2FnZSBgUGx1dG9VSS5qbGAuClVzZSBgUGxvdHMuamxgIGZvciBwbG90dGluZy4KCkFyZSB0aGUgZWlnZW52YWx1ZXMgcmFuZG9tPyBDYW4geW91IGRlc2NyaWJlIHRoZWlyIGJlaGF2aW91cj8gQ2FuIHJhbmRvbSBtYXRyaWNlcyBiZSB1c2VkIHRvIHRlc3QgbnVtZXJpY2FsIGFsZ29yaXRobXM/CiIiIgoKIyDilZTilZDilaEgNGNkNDViYWYtNjdmNi00M2NjLWE5YmYtM2E4OTAwNmMzODE0CgoKIyDilZTilZDilaEgQ2VsbCBvcmRlcjoKIyDilZ/ilIAzZjg5MGM3Yi00NGFkLTQyNmEtYmYyNi0zMmZmMTdmYThlYzQKIyDilZ/ilIA1YmMyYzg3Mi1mZGVkLTRiYzgtODA0NC05ZWRhMTgyMmM1MDUKIyDilZ/ilIA1YjU0MmFkMy04NDcxLTRhZGMtOWM4OS1kNjQ3MDAwYjhjYTAKIyDilZ/ilIBkYmQwYTE1MC0yYWQyLTQ5ZTMtYjU4NS1kMzRiZmMyZmYzYjgKIyDilaDilZA0Y2Q0NWJhZi02N2Y2LTQzY2MtYTliZi0zYTg5MDA2YzM4MTQK";
+window.pluto_disable_ui = true;
+window.pluto_slider_server_url = undefined;
+window.pluto_binder_url = "https://mybinder.org/v2/gh/fonsp/pluto-on-binder/v0.16.1";
+window.pluto_statefile = "data:;base64,jKVib25kc4CsY2VsbF9yZXN1bHRzhdkkNGNkNDViYWYtNjdmNi00M2NjLWE5YmYtM2E4OTAwNmMzODE0iKZxdWV1ZWTCsXB1Ymxpc2hlZF9vYmplY3RzgKdydW5uaW5nwqZvdXRwdXSFpGJvZHmgsHBlcnNpc3RfanNfc3RhdGXCpG1pbWWqdGV4dC9wbGFpbrJsYXN0X3J1bl90aW1lc3RhbXDLQdhSxBPYcrCscm9vdGFzc2lnbmVlwKdjZWxsX2lk2SQ0Y2Q0NWJhZi02N2Y2LTQzY2MtYTliZi0zYTg5MDA2YzM4MTS5ZGVwZW5kc19vbl9kaXNhYmxlZF9jZWxsc8KncnVudGltZczIp2Vycm9yZWTC2SRkYmQwYTE1MC0yYWQyLTQ5ZTMtYjU4NS1kMzRiZmMyZmYzYjiIpnF1ZXVlZMKxcHVibGlzaGVkX29iamVjdHOAp3J1bm5pbmfCpm91dHB1dIWkYm9kedoCIjxkaXYgY2xhc3M9Im1hcmtkb3duIj48aDI+QXNzaWdubWVudCAzPC9oMj4KPHA+VXNlIHRoZSBmdW5jdGlvbiA8Y29kZT5laWd2YWxzJiM0MDsmIzQxOzwvY29kZT4gdG8gY29tcHV0ZSB0aGUgZWlnZW52YWx1ZXMgb2YgPHNwYW4gY2xhc3M9InRleCI+JGskPC9zcGFuPiByYW5kb20gbWF0cmljZXMgJiM0MDt3aXRoIHVuaWZvcm0gYW5kIG5vcm1hbCBkaXN0cmlidXRpb24gb2YgZWxlbWVudHMmIzQxOyBvZiBvcmRlciA8c3BhbiBjbGFzcz0idGV4Ij4kbiQ8L3NwYW4+LjwvcD4KPHA+UGxvdCB0aGUgcmVzdWx0cyB1c2luZyB0aGUgbWFjcm8gPGNvZGU+QGJpbmQ8L2NvZGU+IGZyb20gdGhlIHBhY2thZ2UgPGNvZGU+UGx1dG9VSS5qbDwvY29kZT4uIFVzZSA8Y29kZT5QbG90cy5qbDwvY29kZT4gZm9yIHBsb3R0aW5nLjwvcD4KPHA+QXJlIHRoZSBlaWdlbnZhbHVlcyByYW5kb20/IENhbiB5b3UgZGVzY3JpYmUgdGhlaXIgYmVoYXZpb3VyPyBDYW4gcmFuZG9tIG1hdHJpY2VzIGJlIHVzZWQgdG8gdGVzdCBudW1lcmljYWwgYWxnb3JpdGhtcz88L3A+CjwvZGl2PrBwZXJzaXN0X2pzX3N0YXRlwqRtaW1lqXRleHQvaHRtbLJsYXN0X3J1bl90aW1lc3RhbXDLQdhSxBPYEGKscm9vdGFzc2lnbmVlwKdjZWxsX2lk2SRkYmQwYTE1MC0yYWQyLTQ5ZTMtYjU4NS1kMzRiZmMyZmYzYji5ZGVwZW5kc19vbl9kaXNhYmxlZF9jZWxsc8KncnVudGltZc0lHKdlcnJvcmVkwtkkM2Y4OTBjN2ItNDRhZC00MjZhLWJmMjYtMzJmZjE3ZmE4ZWM0iKZxdWV1ZWTCsXB1Ymxpc2hlZF9vYmplY3RzgKdydW5uaW5nwqZvdXRwdXSFpGJvZHnZRDxkaXYgY2xhc3M9Im1hcmtkb3duIj48aDE+RXhhbXBsZXMgaW4gSnVsaWEgLSBUdXRvcmlhbCAxPC9oMT4KPC9kaXY+sHBlcnNpc3RfanNfc3RhdGXCpG1pbWWpdGV4dC9odG1ssmxhc3RfcnVuX3RpbWVzdGFtcMtB2FLEG7tT+Kxyb290YXNzaWduZWXAp2NlbGxfaWTZJDNmODkwYzdiLTQ0YWQtNDI2YS1iZjI2LTMyZmYxN2ZhOGVjNLlkZXBlbmRzX29uX2Rpc2FibGVkX2NlbGxzwqdydW50aW1lzSDQp2Vycm9yZWTC2SQ1YmMyYzg3Mi1mZGVkLTRiYzgtODA0NC05ZWRhMTgyMmM1MDWIpnF1ZXVlZMKxcHVibGlzaGVkX29iamVjdHOAp3J1bm5pbmfCpm91dHB1dIWkYm9kedoEJjxkaXYgY2xhc3M9Im1hcmtkb3duIj48aDI+QXNzaWdubWVudCAxPC9oMj4KPHA+VXNpbmcgdGhlIHBhY2thZ2UgPGNvZGU+UG9seW5vbWlhbHMuamw8L2NvZGU+LCB3cml0ZSB0aGUgZnVuY3Rpb24gd2hpY2ggaW1wbGVtZW50cyAgPGEgaHJlZj0iaHR0cHM6Ly9lbi53aWtpcGVkaWEub3JnL3dpa2kvR3JhZWZmZSYjMzc7MjdzX21ldGhvZCI+R3JhZWZmZSYjMzk7cyBtZXRob2Q8L2E+ICYjNDA7c2VlIGFsc28gPGEgaHJlZj0iaHR0cDovL21hdGh3b3JsZC53b2xmcmFtLmNvbS9HcmFlZmZlc01ldGhvZC5odG1sIj5oZXJlPC9hPiYjNDE7IGZvciBjb21wdXRpbmcgcm9vdHMgb2YgcG9seW5vbWlhbHMgd2l0aCBvbmx5IHJlYWwgcm9vdHMgd2l0aCBzaW1wbGUgbW9kdWxpLjwvcD4KPHA+SW4gdGhlIGZ1bmN0aW9uLCB1c2UgSnVsaWEmIzM5O3MgPGNvZGU+QmlnRmxvYXQ8L2NvZGU+IG51bWJlcnMgdG8gb3ZlcmNvbWUgdGhlIG1haW4gZGlzYWR2YW50YWdlIG9mIHRoZSBtZXRob2QuIFdoYXQgaXMgdGhlIG51bWJlciBvZiBzaWduaWZpY2FudCBkZWNpbWFsIGRpZ2l0cywgYW5kIHRoZSBsYXJnZXN0IGFuZCB0aGUgc21hbGxlc3QgbnVtYmVyPzwvcD4KPHA+VGVzdCB0aGUgZnVuY3Rpb24gb24gdGhlIDxhIGhyZWY9Imh0dHBzOi8vZW4ud2lraXBlZGlhLm9yZy93aWtpL1dpbGtpbnNvbiYjMzc7MjdzX3BvbHlub21pYWwiPldpbGtpbnNvbiYjMzk7cyBwb2x5bm9taWFsPC9hPiA8c3BhbiBjbGFzcz0idGV4Ij4kXG9tZWdhJiM0MDt4JiM0MTskPC9zcGFuPiwgYW5kIHRoZSA8YSBocmVmPSJodHRwczovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9DaGVieXNoZXZfcG9seW5vbWlhbHMiPkNoZWJ5c2hldiBwb2x5bm9taWFsPC9hPiA8c3BhbiBjbGFzcz0idGV4Ij4kVF8mIzEyMzs1MCYjMTI1OyYjNDA7eCYjNDE7JDwvc3Bhbj4gICYjNDA7dGhlIGxhdHRlciBuZWVkcyB0byBiZSB0cmFuc2Zvcm1lZCBpbiBvcmRlciB0byBhcHBseSB0aGUgbWV0aG9kJiM0MTsuPC9wPgo8cD5Db21wYXJlIHlvdXIgc29sdXRpb25zIHdpdGggdGhlIGV4YWN0IHNvbHV0aW9ucy48L3A+CjwvZGl2PrBwZXJzaXN0X2pzX3N0YXRlwqRtaW1lqXRleHQvaHRtbLJsYXN0X3J1bl90aW1lc3RhbXDLQdhSxBPXvnescm9vdGFzc2lnbmVlwKdjZWxsX2lk2SQ1YmMyYzg3Mi1mZGVkLTRiYzgtODA0NC05ZWRhMTgyMmM1MDW5ZGVwZW5kc19vbl9kaXNhYmxlZF9jZWxsc8KncnVudGltZc08jKdlcnJvcmVkwtkkNWI1NDJhZDMtODQ3MS00YWRjLTljODktZDY0NzAwMGI4Y2EwiKZxdWV1ZWTCsXB1Ymxpc2hlZF9vYmplY3RzgKdydW5uaW5nwqZvdXRwdXSFpGJvZHnaAbI8ZGl2IGNsYXNzPSJtYXJrZG93biI+PGgyPkFzc2lnbm1lbnQgMjwvaDI+CjxwPldyaXRlIHRoZSBmdW5jdGlvbiB3aGljaCBjb21wdXRlcyBzaW1wbGUgTFUgZmFjdG9yaXphdGlvbiAmIzQwO3dpdGhvdXQgcGl2b3RpbmcmIzQxOyB3aGVyZSB0aGUgbWF0cml4IGlzIG92ZXJ3cml0dGVuIGJ5IHRoZSBmYWN0b3JzLjwvcD4KPHA+TWFrZSBzdXJlIHRoYXQgdGhlIGZ1bmN0aW9uIGFsc28gd29ya3Mgd2l0aCBibG9jay1tYXRyaWNlcy4gPC9wPgo8cD5Db21wYXJlIHRoZSBzcGVlZCBvbiBzdGFuZGFyZCBtYXRyaWNlcyBhbmQgYmxvY2stbWF0cmljZXMgd2l0aCB0aGUgYnVpbHQtaW4gTFUgZmFjdG9yaXphdGlvbiAmIzQwO3doaWNoIGFsc28gdXNlcyBibG9jayBhbGdvcml0aG0gQU5EIHBpdm90aW5nJiM0MTsuIENoZWNrIHRoZSBhY2N1cmFjeS48L3A+CjwvZGl2PrBwZXJzaXN0X2pzX3N0YXRlwqRtaW1lqXRleHQvaHRtbLJsYXN0X3J1bl90aW1lc3RhbXDLQdhSxBPYEGKscm9vdGFzc2lnbmVlwKdjZWxsX2lk2SQ1YjU0MmFkMy04NDcxLTRhZGMtOWM4OS1kNjQ3MDAwYjhjYTC5ZGVwZW5kc19vbl9kaXNhYmxlZF9jZWxsc8KncnVudGltZc0WqKdlcnJvcmVkwrFjZWxsX2RlcGVuZGVuY2llc4XZJDRjZDQ1YmFmLTY3ZjYtNDNjYy1hOWJmLTNhODkwMDZjMzgxNIS0cHJlY2VkZW5jZV9oZXVyaXN0aWMIp2NlbGxfaWTZJDRjZDQ1YmFmLTY3ZjYtNDNjYy1hOWJmLTNhODkwMDZjMzgxNLRkb3duc3RyZWFtX2NlbGxzX21hcICydXBzdHJlYW1fY2VsbHNfbWFwgNkkZGJkMGExNTAtMmFkMi00OWUzLWI1ODUtZDM0YmZjMmZmM2I4hLRwcmVjZWRlbmNlX2hldXJpc3RpYwinY2VsbF9pZNkkZGJkMGExNTAtMmFkMi00OWUzLWI1ODUtZDM0YmZjMmZmM2I4tGRvd25zdHJlYW1fY2VsbHNfbWFwgLJ1cHN0cmVhbV9jZWxsc19tYXCCp0BtZF9zdHKQqGdldGluZGV4kNkkM2Y4OTBjN2ItNDRhZC00MjZhLWJmMjYtMzJmZjE3ZmE4ZWM0hLRwcmVjZWRlbmNlX2hldXJpc3RpYwinY2VsbF9pZNkkM2Y4OTBjN2ItNDRhZC00MjZhLWJmMjYtMzJmZjE3ZmE4ZWM0tGRvd25zdHJlYW1fY2VsbHNfbWFwgLJ1cHN0cmVhbV9jZWxsc19tYXCCp0BtZF9zdHKQqGdldGluZGV4kNkkNWJjMmM4NzItZmRlZC00YmM4LTgwNDQtOWVkYTE4MjJjNTA1hLRwcmVjZWRlbmNlX2hldXJpc3RpYwinY2VsbF9pZNkkNWJjMmM4NzItZmRlZC00YmM4LTgwNDQtOWVkYTE4MjJjNTA1tGRvd25zdHJlYW1fY2VsbHNfbWFwgLJ1cHN0cmVhbV9jZWxsc19tYXCCp0BtZF9zdHKQqGdldGluZGV4kNkkNWI1NDJhZDMtODQ3MS00YWRjLTljODktZDY0NzAwMGI4Y2EwhLRwcmVjZWRlbmNlX2hldXJpc3RpYwinY2VsbF9pZNkkNWI1NDJhZDMtODQ3MS00YWRjLTljODktZDY0NzAwMGI4Y2EwtGRvd25zdHJlYW1fY2VsbHNfbWFwgLJ1cHN0cmVhbV9jZWxsc19tYXCCp0BtZF9zdHKQqGdldGluZGV4kLRjZWxsX2V4ZWN1dGlvbl9vcmRlcpXZJDNmODkwYzdiLTQ0YWQtNDI2YS1iZjI2LTMyZmYxN2ZhOGVjNNkkNWJjMmM4NzItZmRlZC00YmM4LTgwNDQtOWVkYTE4MjJjNTA12SQ1YjU0MmFkMy04NDcxLTRhZGMtOWM4OS1kNjQ3MDAwYjhjYTDZJGRiZDBhMTUwLTJhZDItNDllMy1iNTg1LWQzNGJmYzJmZjNiONkkNGNkNDViYWYtNjdmNi00M2NjLWE5YmYtM2E4OTAwNmMzODE0qXNob3J0cGF0aLdUMSBFeGFtcGxlcyBpbiBKdWxpYS5qbK5wcm9jZXNzX3N0YXR1c6VyZWFkeaRwYXRo2XpDOlxVc2Vyc1xJdmFuX1NsYXBuaWNhclxEb2N1bWVudHNcR2l0SHViXEdJQU4tQXBwbGllZC1OTEEtQ291cnNlXHNyY1xNb2R1bGUgQSAtIFNob3J0IEp1bGlhIENvdXJzZVxUMSBFeGFtcGxlcyBpbiBKdWxpYS5qbKpjZWxsX29yZGVyldkkM2Y4OTBjN2ItNDRhZC00MjZhLWJmMjYtMzJmZjE3ZmE4ZWM02SQ1YmMyYzg3Mi1mZGVkLTRiYzgtODA0NC05ZWRhMTgyMmM1MDXZJDViNTQyYWQzLTg0NzEtNGFkYy05Yzg5LWQ2NDcwMDBiOGNhMNkkZGJkMGExNTAtMmFkMi00OWUzLWI1ODUtZDM0YmZjMmZmM2I42SQ0Y2Q0NWJhZi02N2Y2LTQzY2MtYTliZi0zYTg5MDA2YzM4MTSlbmJwa2eHsmluc3RhbGxlZF92ZXJzaW9uc4CwdGVybWluYWxfb3V0cHV0c4CnZW5hYmxlZMO3cmVzdGFydF9yZWNvbW1lbmRlZF9tc2fAtHJlc3RhcnRfcmVxdWlyZWRfbXNnwK1idXN5X3BhY2thZ2VzkKxpbnN0YW50aWF0ZWTDq2NlbGxfaW5wdXRzhdkkNGNkNDViYWYtNjdmNi00M2NjLWE5YmYtM2E4OTAwNmMzODE0hKdjZWxsX2lk2SQ0Y2Q0NWJhZi02N2Y2LTQzY2MtYTliZi0zYTg5MDA2YzM4MTSwcnVubmluZ19kaXNhYmxlZMKkY29kZaCrY29kZV9mb2xkZWTC2SRkYmQwYTE1MC0yYWQyLTQ5ZTMtYjU4NS1kMzRiZmMyZmYzYjiEp2NlbGxfaWTZJGRiZDBhMTUwLTJhZDItNDllMy1iNTg1LWQzNGJmYzJmZjNiOLBydW5uaW5nX2Rpc2FibGVkwqRjb2Rl2gGJbWQiIiIKIyMgQXNzaWdubWVudCAzCgpVc2UgdGhlIGZ1bmN0aW9uIGBlaWd2YWxzKClgIHRvIGNvbXB1dGUgdGhlIGVpZ2VudmFsdWVzIG9mICRrJCByYW5kb20gbWF0cmljZXMgKHdpdGggdW5pZm9ybSBhbmQgbm9ybWFsIGRpc3RyaWJ1dGlvbiBvZiBlbGVtZW50cykgb2Ygb3JkZXIgJG4kLgoKUGxvdCB0aGUgcmVzdWx0cyB1c2luZyB0aGUgbWFjcm8gYEBiaW5kYCBmcm9tIHRoZSBwYWNrYWdlIGBQbHV0b1VJLmpsYC4KVXNlIGBQbG90cy5qbGAgZm9yIHBsb3R0aW5nLgoKQXJlIHRoZSBlaWdlbnZhbHVlcyByYW5kb20/IENhbiB5b3UgZGVzY3JpYmUgdGhlaXIgYmVoYXZpb3VyPyBDYW4gcmFuZG9tIG1hdHJpY2VzIGJlIHVzZWQgdG8gdGVzdCBudW1lcmljYWwgYWxnb3JpdGhtcz8KIiIiq2NvZGVfZm9sZGVkw9kkM2Y4OTBjN2ItNDRhZC00MjZhLWJmMjYtMzJmZjE3ZmE4ZWM0hKdjZWxsX2lk2SQzZjg5MGM3Yi00NGFkLTQyNmEtYmYyNi0zMmZmMTdmYThlYzSwcnVubmluZ19kaXNhYmxlZMKkY29kZdkqbWQiIiIKIyBFeGFtcGxlcyBpbiBKdWxpYSAtIFR1dG9yaWFsIDEKIiIiq2NvZGVfZm9sZGVkw9kkNWJjMmM4NzItZmRlZC00YmM4LTgwNDQtOWVkYTE4MjJjNTA1hKdjZWxsX2lk2SQ1YmMyYzg3Mi1mZGVkLTRiYzgtODA0NC05ZWRhMTgyMmM1MDWwcnVubmluZ19kaXNhYmxlZMKkY29kZdoDQ21kIiIiCiMjIEFzc2lnbm1lbnQgMQoKVXNpbmcgdGhlIHBhY2thZ2UgYFBvbHlub21pYWxzLmpsYCwgd3JpdGUgdGhlIGZ1bmN0aW9uIHdoaWNoIGltcGxlbWVudHMgCltHcmFlZmZlJ3MgbWV0aG9kXShodHRwczovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9HcmFlZmZlJTI3c19tZXRob2QpCihzZWUgYWxzbyBbaGVyZV0oaHR0cDovL21hdGh3b3JsZC53b2xmcmFtLmNvbS9HcmFlZmZlc01ldGhvZC5odG1sKSkKZm9yIGNvbXB1dGluZyByb290cyBvZiBwb2x5bm9taWFscyB3aXRoIG9ubHkgcmVhbCByb290cyB3aXRoIHNpbXBsZSBtb2R1bGkuCgpJbiB0aGUgZnVuY3Rpb24sIHVzZSBKdWxpYSdzIGBCaWdGbG9hdGAgbnVtYmVycyB0byBvdmVyY29tZSB0aGUgbWFpbiBkaXNhZHZhbnRhZ2Ugb2YgdGhlIG1ldGhvZC4gV2hhdCBpcyB0aGUgbnVtYmVyIG9mIHNpZ25pZmljYW50IGRlY2ltYWwgZGlnaXRzLCBhbmQgdGhlIGxhcmdlc3QgYW5kIHRoZSBzbWFsbGVzdCBudW1iZXI/CgpUZXN0IHRoZSBmdW5jdGlvbiBvbiB0aGUgW1dpbGtpbnNvbidzIHBvbHlub21pYWxdKGh0dHBzOi8vZW4ud2lraXBlZGlhLm9yZy93aWtpL1dpbGtpbnNvbiUyN3NfcG9seW5vbWlhbCkgJFxvbWVnYSh4KSQsIGFuZCB0aGUgW0NoZWJ5c2hldiBwb2x5bm9taWFsXShodHRwczovL2VuLndpa2lwZWRpYS5vcmcvd2lraS9DaGVieXNoZXZfcG9seW5vbWlhbHMpICRUX3s1MH0oeCkkIAoodGhlIGxhdHRlciBuZWVkcyB0byBiZSB0cmFuc2Zvcm1lZCBpbiBvcmRlciB0byBhcHBseSB0aGUgbWV0aG9kKS4KCkNvbXBhcmUgeW91ciBzb2x1dGlvbnMgd2l0aCB0aGUgZXhhY3Qgc29sdXRpb25zLgoiIiKrY29kZV9mb2xkZWTD2SQ1YjU0MmFkMy04NDcxLTRhZGMtOWM4OS1kNjQ3MDAwYjhjYTCEp2NlbGxfaWTZJDViNTQyYWQzLTg0NzEtNGFkYy05Yzg5LWQ2NDcwMDBiOGNhMLBydW5uaW5nX2Rpc2FibGVkwqRjb2Rl2gF3bWQiIiIKIyMgQXNzaWdubWVudCAyCgpXcml0ZSB0aGUgZnVuY3Rpb24gd2hpY2ggY29tcHV0ZXMgc2ltcGxlIExVIGZhY3Rvcml6YXRpb24gKHdpdGhvdXQgcGl2b3RpbmcpIHdoZXJlIHRoZSBtYXRyaXggaXMgb3ZlcndyaXR0ZW4gYnkgdGhlIGZhY3RvcnMuCgpNYWtlIHN1cmUgdGhhdCB0aGUgZnVuY3Rpb24gYWxzbyB3b3JrcyB3aXRoIGJsb2NrLW1hdHJpY2VzLiAKCkNvbXBhcmUgdGhlIHNwZWVkIG9uIHN0YW5kYXJkIG1hdHJpY2VzIGFuZCBibG9jay1tYXRyaWNlcyB3aXRoIHRoZSBidWlsdC1pbiBMVSBmYWN0b3JpemF0aW9uICh3aGljaCBhbHNvIHVzZXMgYmxvY2sgYWxnb3JpdGhtIEFORCBwaXZvdGluZykuIENoZWNrIHRoZSBhY2N1cmFjeS4KIiIiq2NvZGVfZm9sZGVkw6tub3RlYm9va19pZNkkNjNhYWI5MjAtMWI5Ni0xMWVjLTE4ODctOTcyMzQ3NGUxMGM4q2luX3RlbXBfZGlywg==";
+</script>
+<!-- [automatically generated launch parameters can be inserted here] -->
 
-mjx-container[jax="SVG"][display="true"] {
-  display: block;
-  text-align: center;
-  margin: 1em 0;
-}
 
-mjx-container[jax="SVG"][display="true"][width="full"] {
-  display: flex;
-}
+    <script src="https://cdn.jsdelivr.net/gh/fonsp/Pluto.jl@0.16.1/frontend/editor.js" type="module" defer></script>
+    <script src="https://cdn.jsdelivr.net/gh/fonsp/Pluto.jl@0.16.1/frontend/warn_old_browsers.js"></script>
 
-mjx-container[jax="SVG"][justify="left"] {
-  text-align: left;
-}
+    <script src="https://cdn.jsdelivr.net/gh/fonsp/Pluto.jl@0.16.1/frontend/common/SetupMathJax.js"></script>
+    <script type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg-full.js" async></script>
 
-mjx-container[jax="SVG"][justify="right"] {
-  text-align: right;
-}
+</head>
 
-g[data-mml-node="merror"] > g {
-  fill: red;
-  stroke: red;
-}
+<body class="loading no-MαθJax"></body>
 
-g[data-mml-node="merror"] > rect[data-background] {
-  fill: yellow;
-  stroke: none;
-}
-
-g[data-mml-node="mtable"] > line[data-line] {
-  stroke-width: 70px;
-  fill: none;
-}
-
-g[data-mml-node="mtable"] > rect[data-frame] {
-  stroke-width: 70px;
-  fill: none;
-}
-
-g[data-mml-node="mtable"] > .mjx-dashed {
-  stroke-dasharray: 140;
-}
-
-g[data-mml-node="mtable"] > .mjx-dotted {
-  stroke-linecap: round;
-  stroke-dasharray: 0,140;
-}
-
-g[data-mml-node="mtable"] > g > svg {
-  overflow: visible;
-}
-
-[jax="SVG"] mjx-tool {
-  display: inline-block;
-  position: relative;
-  width: 0;
-  height: 0;
-}
-
-[jax="SVG"] mjx-tool > mjx-tip {
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-mjx-tool > mjx-tip {
-  display: inline-block;
-  padding: .2em;
-  border: 1px solid #888;
-  font-size: 70%;
-  background-color: #F8F8F8;
-  color: black;
-  box-shadow: 2px 2px 5px #AAAAAA;
-}
-
-g[data-mml-node="maction"][data-toggle] {
-  cursor: pointer;
-}
-
-mjx-status {
-  display: block;
-  position: fixed;
-  left: 1em;
-  bottom: 1em;
-  min-width: 25%;
-  padding: .2em .4em;
-  border: 1px solid #888;
-  font-size: 90%;
-  background-color: #F8F8F8;
-  color: black;
-}
-
-foreignObject[data-mjx-xml] {
-  font-family: initial;
-  line-height: normal;
-  overflow: visible;
-}
-
-.MathJax path {
-  stroke-width: 3;
-}
-</style>
-            </head>
-            <body>
-                <main><preamble><button class="runallchanged" title="Save and run all changed cells"><span></span></button></preamble><pluto-notebook id="7990b450-7c4b-11eb-3ad3-09aaa4b6d60b"><pluto-cell class="code_folded " id="3f890c7b-44ad-426a-bf26-32ff17fa8ec4"><pluto-shoulder draggable="true" title="Drag to move cell"><button class="foldcode" title="Show/hide code"><span></span></button></pluto-shoulder><pluto-trafficlight></pluto-trafficlight><button class="add_cell before" title="Add cell"><span></span></button><pluto-output class="rich_output " mime="text/html"><assignee></assignee><div><div class="markdown"><h1>Tutorial 1 - Examples in Julia</h1>
-</div></div></pluto-output><pluto-runarea><button class="runcell" title="Run"><span></span></button><span class="runtime">11.0&nbsp;μs</span></pluto-runarea><button class="add_cell after" title="Add cell"><span></span></button></pluto-cell><pluto-cell class="code_folded " id="5bc2c872-fded-4bc8-8044-9eda1822c505"><pluto-shoulder draggable="true" title="Drag to move cell"><button class="foldcode" title="Show/hide code"><span></span></button></pluto-shoulder><pluto-trafficlight></pluto-trafficlight><button class="add_cell before" title="Add cell"><span></span></button><pluto-output class="rich_output " mime="text/html"><assignee></assignee><div><div class="markdown"><h2>Assignment 1</h2>
-<p>Using the package <code>Polynomials.jl</code>, write the function which implements  <a href="https://en.wikipedia.org/wiki/Graeffe%27s_method">Graeffe's method</a> (see also <a href="http://mathworld.wolfram.com/GraeffesMethod.html">here</a>) for computing roots of polynomials with only real roots with simple moduli.</p>
-<p>In the function, use Julia's <code>BigFloat</code> numbers to overcome the main disadvantage of the method. What is the number of significant decimal digits, and the largest and the smallest number?</p>
-<p>Test the function on the <a href="https://en.wikipedia.org/wiki/Wilkinson%27s_polynomial">Wilkinson's polynomial</a> <span class="tex"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="SVG" role="presentation" style="position: relative;" tabindex="0" ctxtmenu_counter="0"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="4.462ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 1972 1000" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><g data-mml-node="math"><g data-mml-node="mi"><use xlink:href="#MJX-TEX-I-1D714"></use></g><g data-mml-node="mo" transform="translate(622, 0)"><use xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(1011, 0)"><use xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mo" transform="translate(1583, 0)"><use xlink:href="#MJX-TEX-N-29"></use></g></g></g></svg><mjx-assistive-mml role="presentation" unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>ω</mi><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span>, and the <a href="https://en.wikipedia.org/wiki/Chebyshev_polynomials">Chebyshev polynomial</a> <span class="tex"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="SVG" role="presentation" style="position: relative;" tabindex="0" ctxtmenu_counter="1"><svg style="vertical-align: -0.566ex;" xmlns="http://www.w3.org/2000/svg" width="6.088ex" height="2.262ex" role="img" focusable="false" viewBox="0 -750 2691.1 1000" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><g data-mml-node="math"><g data-mml-node="msub"><g data-mml-node="mi"><use xlink:href="#MJX-TEX-I-1D447"></use></g><g data-mml-node="TeXAtom" transform="translate(584, -150) scale(0.707)" data-mjx-texclass="ORD"><g data-mml-node="mn"><use xlink:href="#MJX-TEX-N-35"></use><use xlink:href="#MJX-TEX-N-30" transform="translate(500, 0)"></use></g></g></g><g data-mml-node="mo" transform="translate(1341.1, 0)"><use xlink:href="#MJX-TEX-N-28"></use></g><g data-mml-node="mi" transform="translate(1730.1, 0)"><use xlink:href="#MJX-TEX-I-1D465"></use></g><g data-mml-node="mo" transform="translate(2302.1, 0)"><use xlink:href="#MJX-TEX-N-29"></use></g></g></g></svg><mjx-assistive-mml role="presentation" unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>T</mi><mrow><mn>50</mn></mrow></msub><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo></math></mjx-assistive-mml></mjx-container></span>  (the latter needs to be transformed in order to apply the method).</p>
-<p>Compare your solutions with the exact solutions.</p>
-</div></div></pluto-output><pluto-runarea><button class="runcell" title="Run"><span></span></button><span class="runtime">12.8&nbsp;μs</span></pluto-runarea><button class="add_cell after" title="Add cell"><span></span></button></pluto-cell><pluto-cell class="code_folded " id="5b542ad3-8471-4adc-9c89-d647000b8ca0"><pluto-shoulder draggable="true" title="Drag to move cell"><button class="foldcode" title="Show/hide code"><span></span></button></pluto-shoulder><pluto-trafficlight></pluto-trafficlight><button class="add_cell before" title="Add cell"><span></span></button><pluto-output class="rich_output " mime="text/html"><assignee></assignee><div><div class="markdown"><h2>Assignment 2</h2>
-<p>Write the function which computes simple LU factorization (without pivoting) where the matrix is overwritten by the factors.</p>
-<p>Make sure that the function also works with block-matrices. </p>
-<p>Compare the speed on standard matrices and block-matrices with the built-in LU factorization (which also uses block algorithm AND pivoting). Check the accuracy.</p>
-</div></div></pluto-output><pluto-runarea><button class="runcell" title="Run"><span></span></button><span class="runtime">12.3&nbsp;μs</span></pluto-runarea><button class="add_cell after" title="Add cell"><span></span></button></pluto-cell><pluto-cell class="code_folded " id="dbd0a150-2ad2-49e3-b585-d34bfc2ff3b8"><pluto-shoulder draggable="true" title="Drag to move cell"><button class="foldcode" title="Show/hide code"><span></span></button></pluto-shoulder><pluto-trafficlight></pluto-trafficlight><button class="add_cell before" title="Add cell"><span></span></button><pluto-output class="rich_output " mime="text/html"><assignee></assignee><div><div class="markdown"><h2>Assignment 3</h2>
-<p>Use the function <code>eigvals()</code> to compute the eigenvalues of <span class="tex"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="SVG" role="presentation" style="position: relative;" tabindex="0" ctxtmenu_counter="4"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.179ex" height="1.595ex" role="img" focusable="false" viewBox="0 -694 521 705" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><g data-mml-node="math"><g data-mml-node="mi"><use xlink:href="#MJX-TEX-I-1D458"></use></g></g></g></svg><mjx-assistive-mml role="presentation" unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>k</mi></math></mjx-assistive-mml></mjx-container></span> random matrices (with uniform and normal distribution of elements) of order <span class="tex"><mjx-container class="MathJax CtxtMenu_Attached_0" jax="SVG" role="presentation" style="position: relative;" tabindex="0" ctxtmenu_counter="5"><svg style="vertical-align: -0.025ex;" xmlns="http://www.w3.org/2000/svg" width="1.357ex" height="1.025ex" role="img" focusable="false" viewBox="0 -442 600 453" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true"><g stroke="currentColor" fill="currentColor" stroke-width="0" transform="matrix(1 0 0 -1 0 0)"><g data-mml-node="math"><g data-mml-node="mi"><use xlink:href="#MJX-TEX-I-1D45B"></use></g></g></g></svg><mjx-assistive-mml role="presentation" unselectable="on" display="inline"><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math></mjx-assistive-mml></mjx-container></span>.</p>
-<p>Plot the results using the macro <code>@bind</code> from the package <code>PlutoUI.jl</code>. Use <code>Plots.jl</code> for plotting.</p>
-<p>Are the eigenvalues random? Can you describe their behaviour? Can random matrices be used to test numerical algorithms?</p>
-</div></div></pluto-output><pluto-runarea><button class="runcell" title="Run"><span></span></button><span class="runtime">12.0&nbsp;μs</span></pluto-runarea><button class="add_cell after" title="Add cell"><span></span></button></pluto-cell><pluto-cell class="" id="4cd45baf-67f6-43cc-a9bf-3a89006c3814"><pluto-shoulder draggable="true" title="Drag to move cell"><button class="foldcode" title="Show/hide code"><span></span></button></pluto-shoulder><pluto-trafficlight></pluto-trafficlight><button class="add_cell before" title="Add cell"><span></span></button><pluto-output class="scroll_y rich_output " mime="text/plain"><assignee></assignee><div></div></pluto-output><pluto-input><button class="delete_cell" title="Delete cell"><span></span></button><div class="CodeMirror cm-s-default CodeMirror-wrap CodeMirror-empty"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5px; left: 34px;"><textarea style="position: absolute; bottom: -1em; padding: 0px; width: 1px; height: 1em; outline: currentcolor none medium;" autocorrect="off" autocapitalize="none" spellcheck="false" tabindex="0" wrap="off"></textarea></div><div class="CodeMirror-vscrollbar" tabindex="-1" cm-not-content="true"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" tabindex="-1" cm-not-content="true"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1" draggable="true"><div class="CodeMirror-sizer" style="margin-left: 30px; margin-bottom: -17px; border-right-width: 33px; min-height: 23px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div style="position: relative; outline: currentcolor none medium;" role="presentation"><pre style="height: 0px; overflow: visible; direction: ltr;" class="CodeMirror-placeholder CodeMirror-line-like">Enter cell code...</pre><div class="CodeMirror-measure"><pre class="CodeMirror-line-like"><span>xxxxxxxxxx</span></pre><div class="CodeMirror-linenumber CodeMirror-gutter-elt"><div>1</div></div></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors"><div class="CodeMirror-cursor" style="left: 4px; top: 0px; height: 15px;">&nbsp;</div></div><div class="CodeMirror-code" role="presentation"><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" style="left: -30px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">1</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation"><span cm-text="">​</span></span></pre></div></div></div></div></div></div><div style="position: absolute; height: 33px; width: 1px; border-bottom: 0px solid transparent; top: 23px;"></div><div class="CodeMirror-gutters" style="height: 56px; left: 0px;"><div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 29px;"></div></div></div></div></pluto-input><pluto-runarea><button class="runcell" title="Run"><span></span></button><span class="runtime">200&nbsp;ns</span></pluto-runarea><button class="add_cell after" title="Add cell"><span></span></button></pluto-cell></pluto-notebook><dropruler></dropruler></main>
-                <svg style="display: none;" id="MJX-SVG-global-cache"><defs><path id="MJX-TEX-I-1D714" d="M495 384Q495 406 514 424T555 443Q574 443 589 425T604 364Q604 334 592 278T555 155T483 38T377 -11Q297 -11 267 66Q266 68 260 61Q201 -11 125 -11Q15 -11 15 139Q15 230 56 325T123 434Q135 441 147 436Q160 429 160 418Q160 406 140 379T94 306T62 208Q61 202 61 187Q61 124 85 100T143 76Q201 76 245 129L253 137V156Q258 297 317 297Q348 297 348 261Q348 243 338 213T318 158L308 135Q309 133 310 129T318 115T334 97T358 83T393 76Q456 76 501 148T546 274Q546 305 533 325T508 357T495 384Z"></path><path id="MJX-TEX-N-28" d="M94 250Q94 319 104 381T127 488T164 576T202 643T244 695T277 729T302 750H315H319Q333 750 333 741Q333 738 316 720T275 667T226 581T184 443T167 250T184 58T225 -81T274 -167T316 -220T333 -241Q333 -250 318 -250H315H302L274 -226Q180 -141 137 -14T94 250Z"></path><path id="MJX-TEX-I-1D465" d="M52 289Q59 331 106 386T222 442Q257 442 286 424T329 379Q371 442 430 442Q467 442 494 420T522 361Q522 332 508 314T481 292T458 288Q439 288 427 299T415 328Q415 374 465 391Q454 404 425 404Q412 404 406 402Q368 386 350 336Q290 115 290 78Q290 50 306 38T341 26Q378 26 414 59T463 140Q466 150 469 151T485 153H489Q504 153 504 145Q504 144 502 134Q486 77 440 33T333 -11Q263 -11 227 52Q186 -10 133 -10H127Q78 -10 57 16T35 71Q35 103 54 123T99 143Q142 143 142 101Q142 81 130 66T107 46T94 41L91 40Q91 39 97 36T113 29T132 26Q168 26 194 71Q203 87 217 139T245 247T261 313Q266 340 266 352Q266 380 251 392T217 404Q177 404 142 372T93 290Q91 281 88 280T72 278H58Q52 284 52 289Z"></path><path id="MJX-TEX-N-29" d="M60 749L64 750Q69 750 74 750H86L114 726Q208 641 251 514T294 250Q294 182 284 119T261 12T224 -76T186 -143T145 -194T113 -227T90 -246Q87 -249 86 -250H74Q66 -250 63 -250T58 -247T55 -238Q56 -237 66 -225Q221 -64 221 250T66 725Q56 737 55 738Q55 746 60 749Z"></path><path id="MJX-TEX-I-1D447" d="M40 437Q21 437 21 445Q21 450 37 501T71 602L88 651Q93 669 101 677H569H659Q691 677 697 676T704 667Q704 661 687 553T668 444Q668 437 649 437Q640 437 637 437T631 442L629 445Q629 451 635 490T641 551Q641 586 628 604T573 629Q568 630 515 631Q469 631 457 630T439 622Q438 621 368 343T298 60Q298 48 386 46Q418 46 427 45T436 36Q436 31 433 22Q429 4 424 1L422 0Q419 0 415 0Q410 0 363 1T228 2Q99 2 64 0H49Q43 6 43 9T45 27Q49 40 55 46H83H94Q174 46 189 55Q190 56 191 56Q196 59 201 76T241 233Q258 301 269 344Q339 619 339 625Q339 630 310 630H279Q212 630 191 624Q146 614 121 583T67 467Q60 445 57 441T43 437H40Z"></path><path id="MJX-TEX-N-35" d="M164 157Q164 133 148 117T109 101H102Q148 22 224 22Q294 22 326 82Q345 115 345 210Q345 313 318 349Q292 382 260 382H254Q176 382 136 314Q132 307 129 306T114 304Q97 304 95 310Q93 314 93 485V614Q93 664 98 664Q100 666 102 666Q103 666 123 658T178 642T253 634Q324 634 389 662Q397 666 402 666Q410 666 410 648V635Q328 538 205 538Q174 538 149 544L139 546V374Q158 388 169 396T205 412T256 420Q337 420 393 355T449 201Q449 109 385 44T229 -22Q148 -22 99 32T50 154Q50 178 61 192T84 210T107 214Q132 214 148 197T164 157Z"></path><path id="MJX-TEX-N-30" d="M96 585Q152 666 249 666Q297 666 345 640T423 548Q460 465 460 320Q460 165 417 83Q397 41 362 16T301 -15T250 -22Q224 -22 198 -16T137 16T82 83Q39 165 39 320Q39 494 96 585ZM321 597Q291 629 250 629Q208 629 178 597Q153 571 145 525T137 333Q137 175 145 125T181 46Q209 16 250 16Q290 16 318 46Q347 76 354 130T362 333Q362 478 354 524T321 597Z"></path><path id="MJX-TEX-I-1D458" d="M121 647Q121 657 125 670T137 683Q138 683 209 688T282 694Q294 694 294 686Q294 679 244 477Q194 279 194 272Q213 282 223 291Q247 309 292 354T362 415Q402 442 438 442Q468 442 485 423T503 369Q503 344 496 327T477 302T456 291T438 288Q418 288 406 299T394 328Q394 353 410 369T442 390L458 393Q446 405 434 405H430Q398 402 367 380T294 316T228 255Q230 254 243 252T267 246T293 238T320 224T342 206T359 180T365 147Q365 130 360 106T354 66Q354 26 381 26Q429 26 459 145Q461 153 479 153H483Q499 153 499 144Q499 139 496 130Q455 -11 378 -11Q333 -11 305 15T277 90Q277 108 280 121T283 145Q283 167 269 183T234 206T200 217T182 220H180Q168 178 159 139T145 81T136 44T129 20T122 7T111 -2Q98 -11 83 -11Q66 -11 57 -1T48 16Q48 26 85 176T158 471L195 616Q196 629 188 632T149 637H144Q134 637 131 637T124 640T121 647Z"></path><path id="MJX-TEX-I-1D45B" d="M21 287Q22 293 24 303T36 341T56 388T89 425T135 442Q171 442 195 424T225 390T231 369Q231 367 232 367L243 378Q304 442 382 442Q436 442 469 415T503 336T465 179T427 52Q427 26 444 26Q450 26 453 27Q482 32 505 65T540 145Q542 153 560 153Q580 153 580 145Q580 144 576 130Q568 101 554 73T508 17T439 -10Q392 -10 371 17T350 73Q350 92 386 193T423 345Q423 404 379 404H374Q288 404 229 303L222 291L189 157Q156 26 151 16Q138 -11 108 -11Q95 -11 87 -5T76 7T74 17Q74 30 112 180T152 343Q153 348 153 366Q153 405 129 405Q91 405 66 305Q60 285 60 284Q58 278 41 278H27Q21 284 21 287Z"></path></defs></svg>
-            </body>
-            </html>
-        
+</html>

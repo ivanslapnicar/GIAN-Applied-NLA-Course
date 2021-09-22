@@ -4,8 +4,16 @@
 using Markdown
 using InteractiveUtils
 
+# ╔═╡ e166839c-7451-471f-b10f-3cc8d3d751f3
+begin
+	using PlutoUI, Plots, LinearAlgebra, Statistics, DelimitedFiles, Clustering, DataFrames
+	import Random, CSV
+	plotly()
+end
+
 # ╔═╡ d6b500f1-5d54-4cdb-8d74-56e8a9ab367e
-# For binder, enable this cell ...
+# For binder, uncomment this cell ...
+#=
 begin
 	import Pkg
     Pkg.activate(mktempdir())
@@ -20,14 +28,7 @@ begin
 		Pkg.PackageSpec(name="DataFrames")
     ])
 end
-
-
-# ╔═╡ e166839c-7451-471f-b10f-3cc8d3d751f3
-begin
-	using PlutoUI, Plots, LinearAlgebra, Statistics, DelimitedFiles, Clustering, DataFrames
-	import Random, CSV
-	plotly()
-end
+=#
 
 # ╔═╡ c810e2a4-03a5-4d19-8717-3de25f013269
 TableOfContents(title="📚 Table of Contents", aside=true)
@@ -66,11 +67,9 @@ A __data matrix__ is a matrix $X\in\mathbb{R}^{m\times n}$, where each column co
 
 A __mean__ of a vector $x\in\mathbb{R}^{n}$ is $\mu(x)=\displaystyle \frac{x_1+x_2+\cdots x_n}{n}$.
 
-A __standard deviation__  of a vector $x$ is $\sigma(x)=\displaystyle \sqrt{\frac{\sum_{i=1}^n (x_i-\mu(x))^2}{n-1}}$.
-A __variance__ of a vector $x$ is $\mathop{\mathrm{var}}(x)=\sigma^2(x)$.
+A __standard deviation__  of a vector $x$ is $\sigma(x)=\displaystyle \sqrt{\frac{\sum_{i=1}^n (x_i-\mu(x))^2}{n-1}}$. A __variance__ of a vector $x$ is $\mathop{\mathrm{var}}(x)=\sigma^2(x)$.
 
-A __vector of means__ of a data matrix $X$ is a row-vector of means of the columns of $X$,
-$\mu(X)=\begin{bmatrix}\mu(X_{:,1}) & \mu(X_{:,2}) & \ldots & \mu(X_{:,n})\end{bmatrix}$. 
+A __vector of means__ of a data matrix $X$ is a row-vector of means of the columns of $X$, $\mu(X)=\begin{bmatrix}\mu(X_{:,1}) & \mu(X_{:,2}) & \ldots & \mu(X_{:,n})\end{bmatrix}$. 
 
 A __zero-mean centered data matrix__ is a matrix $\bar X$ obtained from a data matrix $X$ by subtracting from each column the mean of this column,
 
@@ -322,7 +321,7 @@ scatter(svdvals(D₂.-mean(D₂,dims=1)),leg=false,ms=2)
 
 # ╔═╡ d5713d68-6413-4873-9d40-d8a5134ceb3d
 begin
-	k₂=4
+	k₂=5
 	T²=PCA(D₂,k₂)
 	out₂=kmeans(T²',k₂)
 	Plot(out₂.assignments,T²,k₂)
@@ -355,7 +354,7 @@ scatter(svdvals(D₃.-mean(D₃,dims=1)),leg=false,ms=2)
 
 # ╔═╡ d6143ca0-ba0e-406a-8b3f-fbcd348777bb
 begin
-	k₃=4
+	k₃=10
 	T³=PCA(D₃,k₃)
 	out₃=kmeans(T³',k₃)
 	Plot(out₃.assignments,T³,k₃)

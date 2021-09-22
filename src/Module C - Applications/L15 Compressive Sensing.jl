@@ -6,8 +6,15 @@ using InteractiveUtils
 
 # ╔═╡ 53107773-07e7-4da5-9900-8ba5cefd7b68
 begin
-	# For binder uncomment the following lines
-	#=
+	using Plots, Clp, JuMP, Distributions, LinearAlgebra, TestImages
+	using SparseArrays, FFTW, Random, PlutoUI, Wavelets, Images
+	plotly()
+end
+
+# ╔═╡ c806af6e-fdda-4e4c-8768-9e9b07e286c6
+# On binder, remove the comments
+#=
+begin
 	import Pkg
     Pkg.activate(mktempdir())
     Pkg.add([
@@ -22,20 +29,8 @@ begin
 		Pkg.PackageSpec(name="Images"),
 		Pkg.PackageSpec(name="TestImages")
     ])
-	=#
-	using Plots
-	using Clp
-	using JuMP
-	using Distributions
-	using LinearAlgebra
-	using SparseArrays
-	using FFTW
-	using Random
-    using PlutoUI
-	using Wavelets
-	using Images
-	using TestImages
 end
+=#
 
 # ╔═╡ 32ab2dfc-4381-4388-80ff-bbdbda513180
 TableOfContents(title="📚 Table of Contents", aside=true)
@@ -71,7 +66,7 @@ For more details see
 * [E. Candès and M. Wakin, An Introduction To Compressive Sampling](https://authors.library.caltech.edu/10092/1/CANieeespm08.pdf),
 * [M. Davenport et al., Introduction to Compressed Sensing](http://www.ecs.umass.edu/~mduarte/images/IntroCS.pdf)
 * [O. Holtz, Compressive sensing: a paradigm shift in signal processing](http://arxiv.org/abs/0812.3137), 
-* [G. Kutyniok, Theory and Applications of Compressed Sensing](http://www.math.tu-berlin.de/fileadmin/i26_fg-kutyniok/Kutyniok/Papers/SurveyCompressedSensing_Revision.pdf)
+* [G. Kutyniok, Theory and Applications of Compressed Sensing](https://arxiv.org/abs/1203.3815)
 * and the extensive list of [Compressive Sensing Resources](http://dsp.rice.edu/cs).
 
 
@@ -161,8 +156,7 @@ $\delta_k = (k − 1)\mathcal{M}(A)$  for all $k < 1/\mathcal{M}(A)$.
 
 8. If $A$ satisfies RIP of order $2k$ with $\delta_{2k}<\sqrt{2}-1$, then the solution of $l_1$ problem is the solution of $l_0$ problem! 
 
-9. Checking whether the specific matrix has RIP is difficult. 
-If $m ≥ C \cdot k \log\left(\displaystyle\frac{n}{k}\right)$, where $C$ is some constant depending on each instance, the following classes of matrices satisfy RIP with $\delta_{2k}<\sqrt{2}-1$ with overwhelming probability(the matrices are normalised to have columns with unit norms):
+9. Checking whether the specific matrix has RIP is difficult. If $m ≥ C \cdot k \log\left(\displaystyle\frac{n}{k}\right)$, where $C$ is some constant depending on each instance, the following classes of matrices satisfy RIP with $\delta_{2k}<\sqrt{2}-1$ with overwhelming probability(the matrices are normalised to have columns with unit norms):
     
    1. Form $A$ by sampling at random $n$ column vectors on the unit sphere in $\mathbb{R}^m$.
    2. Form $A$ by sampling entries from the normal distribution with mean 0 and variance $1/ m$.
@@ -186,6 +180,12 @@ begin
 	b=rand(5)
 	x=A\b
 end
+
+# ╔═╡ f215166e-6a12-4859-920e-9856382c6f82
+A
+
+# ╔═╡ fcc27168-da40-446c-811e-4956ad27a11c
+b
 
 # ╔═╡ 17d946d6-458a-482c-9b28-d71c15c4027e
 begin
@@ -282,13 +282,13 @@ begin
 	# Dimension of the sparse vector
 	n=200 
 	# Dimension of the sampled vector
-	m=50
+	m=40
 	# Sparsity
 	k=12
 	# Generate random sparse vector
 	xₛ=sprand(n,k/n)
 	# Generate sampling matrix, "Random", "Normal", "Bernoulli", "Fourier"
-	kind="Fourier"
+	kind="Random"
 	Aₛ=SamplingMatrix(m,n,kind)
 	# Check incoherence
 	maximum(abs,Aₛ'*Aₛ-I),nnz(xₛ)
@@ -296,7 +296,7 @@ end
 
 # ╔═╡ c17eac6a-1ab5-406a-b063-95c91dd81e46
 # Sample x
-bₛ=Aₛ*xₛ;
+bₛ=Aₛ*xₛ
 
 # ╔═╡ acab203d-f158-4460-9452-7037895559bd
 xᵣ=recovery(Aₛ,bₛ)
@@ -312,8 +312,7 @@ end
 md"""
 # Recovery from noisy observations
 
-In the presence of noise in observation, we want to recover a vector $x$ from 
-$b=Ax + z$, where $z$ is a stochastic or deterministic unknown error term.
+In the presence of noise in observation, we want to recover a vector $x$ from $b=Ax + z$, where $z$ is a stochastic or deterministic unknown error term.
 
 ## Definition
 
@@ -338,8 +337,7 @@ where $x$ is the original signal.
 
 3. The $l_1$ problem is a convex programming problem and can be efficiently solved. The solution methods are beyond the scope of this course. 
 
-4. If $k$ is known in advance, $A$ satisfies RIP with $\delta_{3k}<1/15$, and $\|A\|_2<1$, the $k$-sparse aproximation of $x$ can be computed
-by the __Iterative Hard Thresholding__ algorithm:
+4. If $k$ is known in advance, $A$ satisfies RIP with $\delta_{3k}<1/15$, and $\|A\|_2<1$, the $k$-sparse aproximation of $x$ can be computed by the __Iterative Hard Thresholding__ algorithm:
     1. __Initialization:__ $x=0$.
     2. __Iteration:__ repeat until convergence $x=H_k(x+A^T(b-Ax))$.
 """
@@ -383,7 +381,8 @@ begin
 	# Generate random sparse vector
 	xₙ=10*sprand(nₙ,kₙ/nₙ)
 	# Generate sampling matrix
-	Aₙ=SamplingMatrix(mₙ,nₙ,"Normal");
+	Aₙ=SamplingMatrix(mₙ,nₙ,"Normal")
+	mₙ, nₙ
 end
 
 # ╔═╡ f4c0fff3-ab24-474d-8e28-3b77782d4588
@@ -466,7 +465,7 @@ begin
 end
 
 # ╔═╡ 668ccf49-ba28-4a6d-ab95-a2a4c876b57f
-colorview(Gray,real(xₜ))
+colorview(Gray,xₜ)
 
 # ╔═╡ 0c2f32af-0156-4e4a-a957-03032c10c4ce
 md"""
@@ -506,7 +505,7 @@ There are $k=6554$  $(3277)$ nonzero coefficients in a sparse wavelet representa
 
 Is there the sensing matrix which can be used to sample and recover `xsparse`?
 
-Actual algorithms are elaborate. For more details see [J. Romberg, Imaging via Compressive Sampling](http://dsp.rice.edu/files/cs/Imaging-via-CS.pdf), IEEE Signal Processing Magazine, 25(2) (2008) 14-20., and [Duarte et al.,Single-Pixel Imaging via Compressive Sampling](http://www.wisdom.weizmann.ac.il/~vision/courses/2010_2/papers/csCamera-SPMag-web.pdf).
+Actual algorithms are elaborate. For more details see [J. Romberg, Imaging via Compressive Sampling](https://authors.library.caltech.edu/10093/1/ROMieeespm08.pdf), IEEE Signal Processing Magazine, 25(2) (2008) 14-20., and [Duarte et al.,Single-Pixel Imaging via Compressive Sampling](http://www.wisdom.weizmann.ac.il/~vision/courses/2010_2/papers/csCamera-SPMag-web.pdf).
 """
 
 # ╔═╡ 27f33bc4-c6c9-43f1-8b82-df5b4f710ad4
@@ -536,6 +535,9 @@ begin
 	end
 end
 
+# ╔═╡ b108e499-5785-4f1a-ac15-098af656c134
+xrecover
+
 # ╔═╡ 12cb3942-6109-42a4-a8d8-aff3c261dff8
 imgrecover=idwt(xrecover, wlet, 2)
 
@@ -551,6 +553,7 @@ colorview(Gray,imgrecover)
 size(bᵢ)
 
 # ╔═╡ Cell order:
+# ╠═c806af6e-fdda-4e4c-8768-9e9b07e286c6
 # ╠═53107773-07e7-4da5-9900-8ba5cefd7b68
 # ╠═32ab2dfc-4381-4388-80ff-bbdbda513180
 # ╟─a5172a1d-a631-49b3-bc9a-21e98d4cf9e5
@@ -558,6 +561,8 @@ size(bᵢ)
 # ╟─ef27be74-2570-4dbf-9127-ca34aa3084b5
 # ╟─2d1d9c68-228e-48e7-88b5-d3f3e439065e
 # ╠═75d9b8f8-42c0-4a02-9683-878a351bb137
+# ╠═f215166e-6a12-4859-920e-9856382c6f82
+# ╠═fcc27168-da40-446c-811e-4956ad27a11c
 # ╠═17d946d6-458a-482c-9b28-d71c15c4027e
 # ╟─4ae0b6d2-2e9b-4b09-aaef-caa899824853
 # ╠═d498125b-54a0-401e-bd54-26a2b2d99ca5
@@ -603,6 +608,7 @@ size(bᵢ)
 # ╠═1203652e-ee44-4f7b-af4c-e08d091d1c84
 # ╠═c2ecb04a-f354-4a8e-b85b-83fd59e19d08
 # ╠═452464c2-eb0f-43e2-a833-ffa3c5724fd2
+# ╠═b108e499-5785-4f1a-ac15-098af656c134
 # ╠═12cb3942-6109-42a4-a8d8-aff3c261dff8
 # ╠═eabace10-2357-11eb-204a-d76ba271bd7e
 # ╠═eabe9ea2-2357-11eb-0ea1-c32d6a429aa1

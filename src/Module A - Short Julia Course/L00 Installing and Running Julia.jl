@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.12.21
+# v0.16.1
 
 using Markdown
 using InteractiveUtils
@@ -62,12 +62,12 @@ This opens Pluto window in your default browser. The first two commands need to 
 
 ## Remarks
 
-In Linux, packges are installed in the directory `$HOME/.julia/v1.5/`.
+In Linux, packges are installed in the directory `$HOME/.julia/packages/`.
 
-In Windows (10), you will have Julia icon which starts Julia command window.
+In Windows 10, you will have Julia icon which starts Julia command window.
 Julia is installed in the directory (`AppData` is a hidden directory):
 ```
-\Users\your_user_name\AppData\Local\Programs\Julia 1.5.3
+\Users\your_user_name\AppData\Local\Programs\Julia-1.6.2
 ```
 The packages are installed in the directory `\Users\your_user_name\.julia\packages`
 In Julia, current path and directory listing are obtained by Julia commands
