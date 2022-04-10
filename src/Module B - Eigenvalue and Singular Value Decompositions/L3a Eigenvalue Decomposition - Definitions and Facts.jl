@@ -269,7 +269,10 @@ begin
 end
 
 # ╔═╡ cd8fb666-d2f2-423c-ac39-405c842e97ba
-schur(A₀)
+S₀=schur(A₀)
+
+# ╔═╡ 0fe16884-eac0-496c-9ee4-9a40acb019fe
+eigvals(S₀.T[1:2,1:2])
 
 # ╔═╡ 7aa7ac89-837c-4ee8-b9f1-8ad0256f25e1
 md"""
@@ -842,6 +845,12 @@ begin
 	Cov=cov(y)
 end
 
+# ╔═╡ 070a4816-6fe3-4a29-b1ec-b68d1500f48d
+mean(y,dims=1)
+
+# ╔═╡ 15c93185-d758-426f-a94d-cba68a1c84a1
+y.-mean(y,dims=1)
+
 # ╔═╡ 688efeb3-07da-4d75-a35b-a79f9440da76
 # Covariance matrix is a Gram matrix
 (y.-mean(y,dims=1))'*(y.-mean(y,dims=1))/(size(y,1)-1)-Cov
@@ -927,7 +936,7 @@ SymPy = "24249f21-da20-56a4-8eb1-6a02cf4ae2e6"
 ToeplitzMatrices = "c751599d-da0a-543b-9d20-d0a503d91d24"
 
 [compat]
-Plots = "~1.27.3"
+Plots = "~1.27.4"
 PlutoUI = "~0.7.38"
 Polynomials = "~2.0.25"
 SpecialMatrices = "~2.0.0"
@@ -1301,9 +1310,9 @@ version = "1.3.0"
 
 [[deps.Latexify]]
 deps = ["Formatting", "InteractiveUtils", "LaTeXStrings", "MacroTools", "Markdown", "Printf", "Requires"]
-git-tree-sha1 = "4f00cc36fede3c04b8acf9b2e2763decfdcecfa6"
+git-tree-sha1 = "6f14549f7760d84b2db7a9b10b88cd3cc3025730"
 uuid = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
-version = "0.15.13"
+version = "0.15.14"
 
 [[deps.LazyArtifacts]]
 deps = ["Artifacts", "Pkg"]
@@ -1491,9 +1500,9 @@ version = "8.44.0+0"
 
 [[deps.Parsers]]
 deps = ["Dates"]
-git-tree-sha1 = "85b5da0fa43588c75bb1ff986493443f821c70b7"
+git-tree-sha1 = "621f4f3b4977325b9128d5fae7a8b4829a0c2222"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "2.2.3"
+version = "2.2.4"
 
 [[deps.Pixman_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1519,9 +1528,9 @@ version = "1.2.0"
 
 [[deps.Plots]]
 deps = ["Base64", "Contour", "Dates", "Downloads", "FFMPEG", "FixedPointNumbers", "GR", "GeometryBasics", "JSON", "Latexify", "LinearAlgebra", "Measures", "NaNMath", "Pkg", "PlotThemes", "PlotUtils", "Printf", "REPL", "Random", "RecipesBase", "RecipesPipeline", "Reexport", "Requires", "Scratch", "Showoff", "SparseArrays", "Statistics", "StatsBase", "UUIDs", "UnicodeFun", "Unzip"]
-git-tree-sha1 = "5f6e1309595e95db24342e56cd4dabd2159e0b79"
+git-tree-sha1 = "edec0846433f1c1941032385588fd57380b62b59"
 uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
-version = "1.27.3"
+version = "1.27.4"
 
 [[deps.PlutoUI]]
 deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "UUIDs"]
@@ -1983,6 +1992,7 @@ version = "0.9.1+5"
 # ╟─343c8f45-6226-4361-a149-5313a47c355c
 # ╠═41a05c50-f6df-4b93-bd8a-50412829105e
 # ╠═cd8fb666-d2f2-423c-ac39-405c842e97ba
+# ╠═0fe16884-eac0-496c-9ee4-9a40acb019fe
 # ╟─7aa7ac89-837c-4ee8-b9f1-8ad0256f25e1
 # ╠═c3724c4f-142b-4863-8c04-4a0c15411f40
 # ╠═792f632e-fdc2-4016-baaa-b366704f02fd
@@ -2070,6 +2080,8 @@ version = "0.9.1+5"
 # ╟─0528ccb5-04a8-4b8e-a0c8-d845ca716c64
 # ╠═9daeb277-5cbb-406e-b42f-c21ddaf4366f
 # ╠═69346220-2310-4015-b29b-5b7186791fa8
+# ╠═070a4816-6fe3-4a29-b1ec-b68d1500f48d
+# ╠═15c93185-d758-426f-a94d-cba68a1c84a1
 # ╠═688efeb3-07da-4d75-a35b-a79f9440da76
 # ╠═f28e0e9a-23c5-4114-a853-2da285a24641
 # ╠═867926b1-3d3e-4c7f-95cf-54ed6b54c112
