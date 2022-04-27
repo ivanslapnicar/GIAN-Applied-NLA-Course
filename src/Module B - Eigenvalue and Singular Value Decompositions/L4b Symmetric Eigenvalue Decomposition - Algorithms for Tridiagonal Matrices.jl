@@ -225,7 +225,7 @@ begin
 end
 
 # ╔═╡ 06c885f9-f73c-448e-9ba7-7664ba1ad105
-Matrix(T₂)
+T₂
 
 # ╔═╡ e2c2803c-e709-43c1-9b79-524bf6dc03e3
 X'*T₀*X
@@ -368,7 +368,7 @@ begin
 end
 
 # ╔═╡ 3a194020-2c77-4112-b102-f76ea10beda5
-@time eigen(T₃);
+@time eigvals(T₃);
 
 # ╔═╡ ab5fef7b-b2e5-41b7-a3e4-8cf8134aad7e
 @time stedc!('N',copy(T₃.dv),T₃.ev,Matrix{Float64}(I,n₃,n₃));

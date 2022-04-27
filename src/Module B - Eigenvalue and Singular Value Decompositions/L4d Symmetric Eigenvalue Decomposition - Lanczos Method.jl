@@ -4,25 +4,11 @@
 using Markdown
 using InteractiveUtils
 
-# ╔═╡ 12bae146-12e7-4a78-afac-f5c2d6b86b66
-begin
-	using PlutoUI
-	PlutoUI.TableOfContents(aside=true)
-end
-
 # ╔═╡ 7be5652e-3e5a-4199-a099-40f2da28053c
-using LinearAlgebra, Arpack, LinearMaps, SparseArrays
+using LinearAlgebra, Arpack, LinearMaps, SparseArrays, PlutoUI, Random
 
-# ╔═╡ 4b63c1d9-f043-448f-9e05-911f52d4227d
-begin
-	using Random
-	Random.seed!(421)
-	n=100
-	A=Matrix(Symmetric(rand(n,n)))
-	# Or: A = rand(5,5) |> t -> t + t'
-	x=rand(n)
-	k=10
-end
+# ╔═╡ 12bae146-12e7-4a78-afac-f5c2d6b86b66
+PlutoUI.TableOfContents(aside=true)
 
 # ╔═╡ f647d0dd-1fe4-42cf-b55c-38baa12f2db8
 md"""
@@ -139,6 +125,16 @@ function Lanczos(A::Array{T}, x::Vector{T}, k::Int) where T
     eigvals(Tr), X*eigvecs(Tr), X, μ
 end
 
+# ╔═╡ 4b63c1d9-f043-448f-9e05-911f52d4227d
+begin
+	Random.seed!(421)
+	n=100
+	A=Matrix(Symmetric(rand(n,n)))
+	# Or: A = rand(5,5) |> t -> t + t'
+	x=rand(n)
+	k=10
+end
+
 # ╔═╡ 219ce78b-8bd3-4df3-93df-c08fad30e33f
 λ,U,X,μ=Lanczos(A,x,10)
 
@@ -181,8 +177,11 @@ We see that `eigs()` computes `k` eigenvalues with largest modulus. What eigenva
 """
 
 # ╔═╡ 9ce7a012-723d-4184-8ef3-00f468e61281
-for i=1:k
-    println(minimum(abs,λeigen.-λ[i]))
+begin
+	println("Evals")
+	for i=1:k
+	    println(minimum(abs,λeigen.-λ[i]))
+	end
 end
 
 # ╔═╡ ed7d1400-e6d9-44e2-a633-7f6b3df74272
@@ -505,10 +504,10 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 """
 
 # ╔═╡ Cell order:
-# ╟─12bae146-12e7-4a78-afac-f5c2d6b86b66
+# ╠═7be5652e-3e5a-4199-a099-40f2da28053c
+# ╠═12bae146-12e7-4a78-afac-f5c2d6b86b66
 # ╟─f647d0dd-1fe4-42cf-b55c-38baa12f2db8
 # ╟─d5f270bd-94c1-4da6-a8e6-a53337488020
-# ╠═7be5652e-3e5a-4199-a099-40f2da28053c
 # ╠═97e0dbf8-b9be-4503-af5d-4cf6e86311eb
 # ╠═4b63c1d9-f043-448f-9e05-911f52d4227d
 # ╠═219ce78b-8bd3-4df3-93df-c08fad30e33f
