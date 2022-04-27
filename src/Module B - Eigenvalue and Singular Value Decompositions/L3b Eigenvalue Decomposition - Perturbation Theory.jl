@@ -375,9 +375,34 @@ $$\|\sin\Theta(X_1,Q)\|_F\leq \frac{\|R\|_F}{\eta}.$$
 # ╔═╡ 98fade4c-cdcb-495e-9328-96e86ca8e90e
 md"""
 ## Examples 
+"""
+
+# ╔═╡ fa855f4a-d483-4748-9ef7-6be7b3f2ca68
+md"
+### Geršgorin Theorem
+"
+
+# ╔═╡ 36491599-93a3-425d-99cf-dc91e6f848b7
+A₀=[3 2 1;-im 0 1; 1 1 2+3*im]
+
+# ╔═╡ 1464099d-2d74-481d-81e8-529b557a2bba
+begin
+	D₀=Diagonal(A₀)
+	F₀=A₀-D₀
+	C₀=D₀+F₀*0.1
+end
+
+# ╔═╡ 799f8868-e21d-481c-a879-0fc67c2bc2bc
+eigvals(C₀)
+
+# ╔═╡ 9f807c71-0d05-431f-87a2-3f832a2a8b3b
+eigvals(A₀)
+
+# ╔═╡ 0783301b-39d9-47d1-8535-639757c5ca91
+md"
 
 ### Nondiagonalizable matrix
-"""
+"
 
 # ╔═╡ 8f064645-cf1f-4226-add4-53bc72665bf6
 A₃=[-3 7 -1; 6 8 -2; 72 -28 19]
@@ -422,6 +447,9 @@ begin
 	Z₃.values[l]-X₃.values[l], Y₃.vectors[:,l]'*ΔA₃*X₃.vectors[:,l] /(Y₃.vectors[:,l]⋅X₃.vectors[:,l])
 end
 
+# ╔═╡ 772c9f37-76f2-4de8-b074-e8477cb6dcf1
+cond(Z₃.vectors)
+
 # ╔═╡ 4723a4f9-af98-4f2d-8628-0ffc58488e62
 md"""
 ### Jordan form
@@ -437,6 +465,9 @@ end
 # ╔═╡ b9770791-4fa6-4d3f-9688-ac79b7ae7f22
 # Accurately defined eigenvalues
 λ₄=eigvals(J)
+
+# ╔═╡ 18c030e0-7a89-4e6f-bdf1-c525f394e9d0
+λ₄[2]
 
 # ╔═╡ 8112bf44-3146-4b9f-953a-54de6f4c8c5b
 # Only one eigenvector
@@ -523,7 +554,7 @@ D₆
 begin
 	λ₆,U₆=eigen(A₆) 
 	μ₆=eigvals(A₆+ΔA₆)
-	[λ₆ μ₆]
+	[λ₆-μ₆]
 end
 
 # ╔═╡ ac3d3677-1160-4a79-a25f-8faa7fd89940
@@ -1075,7 +1106,13 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─909033d9-bb27-4f0e-b07d-574f7fcee700
 # ╟─7ef162c0-5c80-4e96-bcc3-125b302b1d5e
 # ╟─3c8f71a5-0c2f-43a0-bf71-db9df707f84e
-# ╟─98fade4c-cdcb-495e-9328-96e86ca8e90e
+# ╠═98fade4c-cdcb-495e-9328-96e86ca8e90e
+# ╟─fa855f4a-d483-4748-9ef7-6be7b3f2ca68
+# ╠═36491599-93a3-425d-99cf-dc91e6f848b7
+# ╠═1464099d-2d74-481d-81e8-529b557a2bba
+# ╠═799f8868-e21d-481c-a879-0fc67c2bc2bc
+# ╠═9f807c71-0d05-431f-87a2-3f832a2a8b3b
+# ╟─0783301b-39d9-47d1-8535-639757c5ca91
 # ╠═8f064645-cf1f-4226-add4-53bc72665bf6
 # ╠═568366c7-3eee-4948-a096-7bf87537412d
 # ╠═fe46c02b-74bd-4303-8314-3b6e96b9e51a
@@ -1085,10 +1122,12 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═6654b8d5-0c31-4a44-a16a-3f71e714ce31
 # ╠═3fbcbecd-6e69-49d0-94bf-06a4f6704858
 # ╠═210137a6-1b7b-4741-84d2-9d72e18cd999
-# ╟─e946019f-5e75-4195-8991-da371300e9a2
+# ╠═e946019f-5e75-4195-8991-da371300e9a2
+# ╠═772c9f37-76f2-4de8-b074-e8477cb6dcf1
 # ╟─4723a4f9-af98-4f2d-8628-0ffc58488e62
 # ╠═f3d63eb6-0174-458c-aeef-46ed6d62db7f
 # ╠═b9770791-4fa6-4d3f-9688-ac79b7ae7f22
+# ╠═18c030e0-7a89-4e6f-bdf1-c525f394e9d0
 # ╠═8112bf44-3146-4b9f-953a-54de6f4c8c5b
 # ╠═6b26afc1-e427-496e-b9a5-4618551aeede
 # ╠═b2a07659-cb08-4c53-99ac-32f817485062

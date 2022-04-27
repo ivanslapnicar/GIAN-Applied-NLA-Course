@@ -63,6 +63,27 @@ for some  __backward error__ $\delta x$.
 Algoritam is __stable__ is the above equality always holds for small $\delta x$.
 """
 
+# ╔═╡ 143d2bd9-6873-4ff1-ae84-37ee1dc53749
+B=rand(ComplexF64,5,5)
+
+# ╔═╡ 104e51a1-2d72-497d-8556-0f6ad97552d4
+begin
+	C=copy(B)
+	for i=1:50
+		Q,R=qr(C)
+		C=R*Q
+	end
+end
+
+# ╔═╡ 527035ab-9b51-497b-9cb9-4a5d7c82f725
+abs.(C)
+
+# ╔═╡ e7e45287-7e3a-4334-beee-a0cc45dd6275
+C[1,1]
+
+# ╔═╡ d59b2c3d-ac34-4b0c-9ecf-691141f5f3a1
+eigvals(B)
+
 # ╔═╡ 9993ff53-f07e-46cf-b871-a4b4a2806c24
 md"""
 
@@ -1014,6 +1035,11 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─44758c8b-25bd-47d4-b728-90b4e98b6baf
 # ╟─e355fccd-fb92-49d4-b978-c4f1680fbb8d
 # ╟─4fe7e0b0-bbd5-4746-9f78-ac4dd1abf4b6
+# ╠═143d2bd9-6873-4ff1-ae84-37ee1dc53749
+# ╠═104e51a1-2d72-497d-8556-0f6ad97552d4
+# ╠═527035ab-9b51-497b-9cb9-4a5d7c82f725
+# ╠═e7e45287-7e3a-4334-beee-a0cc45dd6275
+# ╠═d59b2c3d-ac34-4b0c-9ecf-691141f5f3a1
 # ╟─9993ff53-f07e-46cf-b871-a4b4a2806c24
 # ╟─2e05504e-3e54-437f-a736-9190be08c332
 # ╠═893a2edb-d744-4d7f-b81d-fcf916922b81
