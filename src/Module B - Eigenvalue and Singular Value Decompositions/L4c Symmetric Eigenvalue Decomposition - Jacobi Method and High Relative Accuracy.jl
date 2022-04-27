@@ -4,11 +4,14 @@
 using Markdown
 using InteractiveUtils
 
-# ╔═╡ 8911d755-8ad6-4eb2-82f0-44a403f2ef60
-begin
-	using LinearAlgebra, PlutoUI
-	PlutoUI.TableOfContents(aside=true)
-end
+# ╔═╡ 2c797491-f5aa-4fde-aa6e-8533a29ae008
+using LinearAlgebra, PlutoUI, Random
+
+# ╔═╡ 83e156d6-6745-433f-be54-f2b30b803394
+import LinearAlgebra.Givens
+
+# ╔═╡ 0c08032c-d90e-41df-a352-11f815dd7aac
+PlutoUI.TableOfContents(aside=true)
 
 # ╔═╡ 70c2fde9-110c-4f20-9324-0e0601934c2c
 md"""
@@ -171,7 +174,7 @@ function Jacobi(A::Array{T}) where T<:Real
                     t=sign(τ)/(abs(τ)+√(1+τ^2))
                     c=one(T)/√(one(T)+t^2)
                     s=c*t
-                    G=LinearAlgebra.Givens(i,j,c,s)
+                    G=Givens(i,j,c,s)
                     A=G'*A
                     A*=G
                     A[i,j]=zero(T)
@@ -191,11 +194,10 @@ function Jacobi(A::Array{T}) where T<:Real
 end
 
 # ╔═╡ cfd753ba-7102-4f84-8733-56b229d8a46d
- methodswith(LinearAlgebra.Givens);
+ methodswith(Givens)
 
 # ╔═╡ d1d5fea3-f5e2-4a73-9db7-6dc6f550a88f
 begin
-	import Random
 	Random.seed!(516)
 	n=4
 	A=Matrix(Symmetric(rand(n,n)))
@@ -262,7 +264,7 @@ function Jacobi₁(A₁::Array{T}) where T<:Real
                     t=sign(τ)/(abs(τ)+√(1+τ^2))
                     c=1/√(1+t^2)
                     s=c*t
-                    G=LinearAlgebra.Givens(i,j,c,s)
+                    G=Givens(i,j,c,s)
                     # A=G*A
                     lmul!(adjoint(G),A)
                     # A*=G
@@ -363,7 +365,7 @@ H=Diagonal(D)*Aₛ*Diagonal(D)
 
 # ╔═╡ 795c80a3-3573-454e-a945-adfb03a258e2
 # Now we scale again
-Hₛ=[H[i,j]/ √(H[i,i]*H[j,j]) for i=1:n₂, j=1:n₂]
+Hₛ=inv(√Diagonal(H))*H*inv(√Diagonal(H))
 
 # ╔═╡ 3baf9fc0-b0a3-4bc5-9112-a9ccd982f998
 cond(Hₛ),cond(H)
@@ -561,9 +563,9 @@ uuid = "4536629a-c528-5b80-bd46-f80d51c5b363"
 
 [[deps.Parsers]]
 deps = ["Dates"]
-git-tree-sha1 = "85b5da0fa43588c75bb1ff986493443f821c70b7"
+git-tree-sha1 = "1285416549ccfcdf0c50d4997a94331e88d68413"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "2.2.3"
+version = "2.3.1"
 
 [[deps.Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
@@ -646,7 +648,9 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 """
 
 # ╔═╡ Cell order:
-# ╟─8911d755-8ad6-4eb2-82f0-44a403f2ef60
+# ╠═2c797491-f5aa-4fde-aa6e-8533a29ae008
+# ╠═83e156d6-6745-433f-be54-f2b30b803394
+# ╠═0c08032c-d90e-41df-a352-11f815dd7aac
 # ╟─70c2fde9-110c-4f20-9324-0e0601934c2c
 # ╟─abc0c46c-ec25-4fcb-8a8f-cefeda20418d
 # ╟─1760ea70-45a2-426c-a9dd-23377711f3c9
