@@ -184,11 +184,11 @@ function Power(A::Matrix,x::Vector,tol::Real)
     y=A*x
     ν=x⋅y
     steps=1
-    while norm(y-ν*x)>tol
+    while norm(y-ν*x)>tol && steps<200
         x=y/norm(y)
         y=A*x
         ν=x⋅y
-        # println(ν)
+        # println(x)
         steps+=1
     end
     ν, y/norm(y), steps
@@ -207,12 +207,28 @@ end
 # ╔═╡ 2c3d8a7f-c986-4277-9470-c5abab058ee4
 eigvals(A)
 
+# ╔═╡ 5b8c1f0f-e396-40ee-8018-e0ea53af0b2a
+(18.7/23.27)^131
+
 # ╔═╡ 290024ee-b36d-4a71-8adf-d433a6daf6ad
 ν-eigvals(A)[6]
 
 # ╔═╡ 71107f6d-4c6e-4bc1-a27b-51a99a172b87
 # Speed of convergence
-(15.7/21)^92
+(18.7/23)^131
+
+# ╔═╡ df6a18ea-a3ef-42ea-85af-7636aa1afc51
+begin
+	D=Diagonal([5,-5,3,2,1])
+	Dq,Dr=qr(rand(5,5))
+	D=Dq'*D*Dq
+end
+
+# ╔═╡ d3535056-04e2-43db-9073-1e3704ea6d47
+eigvals(D)
+
+# ╔═╡ 11b95202-73be-4403-ba45-1dda9fe1e48b
+Power(D,ones(5),1e-10)
 
 # ╔═╡ b6db0848-4142-4d88-98ca-1cb415b92742
 # Eigenvector is fine
@@ -454,6 +470,9 @@ end
 
 # ╔═╡ 61c41ad7-df89-421f-a9a5-2a0ee606b9f6
 #?givens
+
+# ╔═╡ 04ee850c-a475-476c-803b-43d7132d2632
+methodswith(LinearAlgebra.Givens)
 
 # ╔═╡ 68f9bdd0-4059-424c-8ee8-cd46ab9ecc29
 T₁,X₁=TridiagG(float(A))
@@ -1048,8 +1067,12 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═5450fb80-ab1f-4212-ad6f-aa0483bf74d6
 # ╠═ab54ea2a-efbd-44d8-953e-cdd86b2e783d
 # ╠═2c3d8a7f-c986-4277-9470-c5abab058ee4
+# ╠═5b8c1f0f-e396-40ee-8018-e0ea53af0b2a
 # ╠═290024ee-b36d-4a71-8adf-d433a6daf6ad
 # ╠═71107f6d-4c6e-4bc1-a27b-51a99a172b87
+# ╠═df6a18ea-a3ef-42ea-85af-7636aa1afc51
+# ╠═d3535056-04e2-43db-9073-1e3704ea6d47
+# ╠═11b95202-73be-4403-ba45-1dda9fe1e48b
 # ╠═b6db0848-4142-4d88-98ca-1cb415b92742
 # ╠═e9285938-1fc7-41f7-b809-0785f925e72d
 # ╠═3e464ca7-d32c-4e72-96d3-07e48d0c9b34
@@ -1076,6 +1099,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─9a7a6c5a-d11e-46f7-8906-fcf907d2cd97
 # ╠═fcc9ff8b-1549-4782-89ca-13c0f867af00
 # ╠═61c41ad7-df89-421f-a9a5-2a0ee606b9f6
+# ╠═04ee850c-a475-476c-803b-43d7132d2632
 # ╠═68f9bdd0-4059-424c-8ee8-cd46ab9ecc29
 # ╠═4b53ee99-6b20-4153-af8e-79b13c1b4ee3
 # ╠═4a484bf9-001f-4ec6-a4cd-d6bf2fc5b617
