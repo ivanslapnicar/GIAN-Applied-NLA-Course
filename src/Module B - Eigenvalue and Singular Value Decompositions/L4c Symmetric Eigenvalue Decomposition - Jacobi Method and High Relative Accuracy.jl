@@ -159,7 +159,7 @@ function Jacobi(A::Array{T}) where T<:Real
     sweep=0
     pcurrent=0
     # First criterion is for standard accuracy, second one is for relative accuracy
-    while sweep<10 && norm(A-Diagonal(diag(A)))>tol
+    while sweep<10 && norm(A-Diagonal(A))>tol
     # while sweep<30 && pcurrent<p
         sweep+=1
         # Row-cyclic strategy
@@ -167,8 +167,8 @@ function Jacobi(A::Array{T}) where T<:Real
             for j = i+1 : n
                 # Check for the tolerance - the first criterion is standard,
                 # the second one is for relative accuracy for PD matrices               
-                # if A[i,j]!=zero(T)
-                if abs(A[i,j])>tol*√(abs(A[i,i]*A[j,j]))
+                if A[i,j]!=zero(T)
+                # if abs(A[i,j])>tol*√(abs(A[i,i]*A[j,j]))
                     # Compute c and s
                     τ=(A[j,j]-A[i,i])/(2*A[i,j])
                     t=sign(τ)/(abs(τ)+√(1+τ^2))
@@ -222,7 +222,7 @@ end
 # ╔═╡ 21ac1147-b940-4172-a57a-04e0fe74ccd7
 begin
 	# Now the standard QR method
-	λₛ,Uₛ=eigen(A₁)
+	@time λₛ,Uₛ=eigen(A₁)
 	norm(Uₛ'*Uₛ-I),norm(A₁*Uₛ-Uₛ*Diagonal(λₛ))
 end
 
@@ -372,7 +372,7 @@ cond(Hₛ),cond(H)
 
 # ╔═╡ 9e2588e1-379f-482b-afe5-e57f9d0ae001
 # Jacobi method
-λ₂,U₂=Jacobi(H)
+λ₂,U₂=Jacobi₁(H)
 
 # ╔═╡ 5dd05357-7bd0-4857-b562-4c46f06a502d
 # Orthogonality and relative residual 
@@ -388,7 +388,7 @@ norm(U₂'*U₂-I),norm(H*U₂-U₂*Diagonal(λ₂))/norm(H)
 
 # ╔═╡ 011b7cd7-8692-4a29-9e97-ea223d98c761
 # Check with BigFloat
-Jacobi(map(BigFloat,H))
+Jacobi₁(map(BigFloat,H))
 
 # ╔═╡ 1a57313f-d4c4-476c-92be-ad45be008edf
 λ₂[1]

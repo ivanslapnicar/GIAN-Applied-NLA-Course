@@ -247,6 +247,9 @@ md"
 ### Importing Divide & Conquer from LAPACK
 "
 
+# ╔═╡ 85b73c5c-62ed-435f-876e-3d726768168c
+
+
 # ╔═╡ cb7ac40c-b1fb-4b67-8a76-6c0df47fb270
 # See the list of imported LAPACK routines - D&C is not among them
 LAPACK.stebz!
@@ -353,7 +356,13 @@ function DivideConquer(T::SymTridiagonal{S}) where S
 end
 
 # ╔═╡ 1cdb29eb-b325-4352-8ad6-f23c9698a3c2
-DivideConquer(T)
+Λ₀,U₀=DivideConquer(T)
+
+# ╔═╡ 772f61aa-faa0-4ce3-a2f6-b1ac5b46630b
+Λ-Λ₀
+
+# ╔═╡ 43d8bd1f-7d97-4de6-bdcf-9b5d551000a8
+norm(U₀'*U₀-I)
 
 # ╔═╡ 4338efe4-e3a6-43ca-8466-b1d51450748d
 md"
@@ -368,10 +377,10 @@ begin
 end
 
 # ╔═╡ 3a194020-2c77-4112-b102-f76ea10beda5
-@time eigvals(T₃);
+@time eigen(T₃);
 
 # ╔═╡ ab5fef7b-b2e5-41b7-a3e4-8cf8134aad7e
-@time stedc!('N',copy(T₃.dv),T₃.ev,Matrix{Float64}(I,n₃,n₃));
+@time a,b=stedc!('I',copy(T₃.dv),T₃.ev,Matrix{Float64}(I,n₃,n₃))
 
 # ╔═╡ 487a91b4-6697-4e01-a711-2d0b20b63dbb
 md"""
@@ -657,6 +666,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═903e7308-e7be-4821-82e5-105aca75aca2
 # ╠═c000c311-8262-4cdf-ace6-13106a792aad
 # ╟─574c1653-a2c2-4365-a768-e447bab2d805
+# ╠═85b73c5c-62ed-435f-876e-3d726768168c
 # ╠═cb7ac40c-b1fb-4b67-8a76-6c0df47fb270
 # ╠═bc5ea97a-70ef-4a95-b59e-96790ba0346f
 # ╠═b6804e98-b5bc-4f42-a864-25018886dc65
@@ -665,6 +675,8 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═85eae2ff-8d8f-4567-95a5-4b87efb711fa
 # ╠═bd7472cd-2ede-4c57-af89-4a4325395a2f
 # ╠═1cdb29eb-b325-4352-8ad6-f23c9698a3c2
+# ╠═772f61aa-faa0-4ce3-a2f6-b1ac5b46630b
+# ╠═43d8bd1f-7d97-4de6-bdcf-9b5d551000a8
 # ╟─4338efe4-e3a6-43ca-8466-b1d51450748d
 # ╠═ab72f31d-6753-4728-a8f5-f66aaff618fd
 # ╠═3a194020-2c77-4112-b102-f76ea10beda5

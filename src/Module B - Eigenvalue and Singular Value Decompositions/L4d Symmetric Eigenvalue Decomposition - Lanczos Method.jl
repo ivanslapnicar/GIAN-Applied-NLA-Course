@@ -159,7 +159,7 @@ norm(U'*U-I)
 
 # ╔═╡ 218a2a21-e391-4a90-a96a-71bbb0d2f895
 # Full eigenvalue decomposition
-λeigen,Ueigen=eigen(A);
+λeigen,Ueigen=eigen(A)
 
 # ╔═╡ e23c1bc6-c4d8-4c5d-9a83-2b00c5d93b25
 # ?eigs
