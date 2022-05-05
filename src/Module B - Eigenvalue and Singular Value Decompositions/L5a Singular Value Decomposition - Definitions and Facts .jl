@@ -238,11 +238,14 @@ begin
 	m=5
 	n=3
 	q=min(m,n)
-	A₁=rand(ComplexF64,m,n)
+	A₁=randn(ComplexF64,m,n)
 end
 
 # ╔═╡ bd88592a-781f-46e7-a175-342b78906c45
 S₁=svd(A₁,full=true)
+
+# ╔═╡ 867af0c2-6ac1-4a06-99da-9e573e2069a4
+S₁.U
 
 # ╔═╡ f54a7c12-d175-45cf-b996-d13024910135
 norm(A₁-S₁.U[:,1:q]*Diagonal(S₁.S)*S₁.Vt), norm(S₁.U'*S₁.U-I), norm(S₁.Vt*S₁.V-I)
@@ -276,10 +279,10 @@ __Explain non-uniqueness of $U$ and $V$!__
 J=[zero(A*A') A; A' zero(A'*A)]
 
 # ╔═╡ 5d941c94-b186-49ba-9f03-1613a638ecb4
-λJ,UJ=eigen(J)
+Eⱼ=eigen(J)
 
 # ╔═╡ 9909c421-607d-4883-9b35-705290ce8bf3
-λJ
+Eⱼ.values
 
 # ╔═╡ dda804cf-71c1-4735-bfc7-a97453698c8f
  float(σ)
@@ -770,6 +773,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─abe3e648-65e6-423c-83de-673e96013670
 # ╠═64535706-eaba-4155-b593-12cba7366127
 # ╠═bd88592a-781f-46e7-a175-342b78906c45
+# ╠═867af0c2-6ac1-4a06-99da-9e573e2069a4
 # ╠═f54a7c12-d175-45cf-b996-d13024910135
 # ╠═b39c5987-d320-499a-816c-31608eb1d856
 # ╠═e7aa4857-76c0-42da-964a-cecd428ec70e

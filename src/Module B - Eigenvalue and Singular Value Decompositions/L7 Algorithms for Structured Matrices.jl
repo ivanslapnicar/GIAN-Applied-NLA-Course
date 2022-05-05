@@ -1,26 +1,22 @@
 ### A Pluto.jl notebook ###
-# v0.14.4
+# v0.17.3
 
 using Markdown
 using InteractiveUtils
 
 # ╔═╡ d01a9b4f-8b55-4607-abb6-717d227fcd48
 begin
-	using PlutoUI, LinearAlgebra
-	PlutoUI.TableOfContents(aside=true)
+    import Pkg
+    # activate a temporary environment
+    Pkg.activate(mktempdir())
+    Pkg.add([
+        Pkg.PackageSpec(name="Arrowhead", rev="master")
+    ])
+    using Plots, PlutoUI, LinearAlgebra, SpecialMatrices, Arrowhead
 end
 
-# ╔═╡ 479a40d9-b81e-442b-9962-f972b110a4dd
-# Pkg.checkout("SpecialMatrices")
-using SpecialMatrices
-
-# ╔═╡ 574e86bb-159c-4141-8d8a-21bdcc9b5304
-# Plot the eigenvalues (singular values) and left singular vectors
-using Plots
-
-# ╔═╡ 5eb73af5-f78a-4811-83a5-ac39063a4516
-# pkg> add Arrowhead#master
-using Arrowhead
+# ╔═╡ f24e6652-a36b-4f57-b0eb-03921a5616cc
+PlutoUI.TableOfContents(aside=true)
 
 # ╔═╡ 5d95dc2c-bf94-4b13-b9d5-b7b261e86cf6
 md"""
@@ -464,6 +460,9 @@ begin
 	spy(A)=heatmap(A, yflip=true, color=:bluesreds, aspectratio=1) 
 end
 
+# ╔═╡ 9ea83b4f-8cb7-4fca-af8f-10caa867c8d7
+U₂
+
 # ╔═╡ 9ee70a5d-59f7-460c-92af-8872966cec40
 spy(U₂)
 
@@ -769,7 +768,8 @@ norm(A₆*E₆.vectors-E₆.vectors*Diagonal(E₆.values)),
 norm(E₆.vectors'*E₆.vectors-I)
 
 # ╔═╡ Cell order:
-# ╟─d01a9b4f-8b55-4607-abb6-717d227fcd48
+# ╠═d01a9b4f-8b55-4607-abb6-717d227fcd48
+# ╠═f24e6652-a36b-4f57-b0eb-03921a5616cc
 # ╟─5d95dc2c-bf94-4b13-b9d5-b7b261e86cf6
 # ╟─e3e43840-d0a3-4cde-9b1e-5785759912b2
 # ╟─03f797ac-8764-4688-9e7e-e144cafb3b4c
@@ -791,7 +791,6 @@ norm(E₆.vectors'*E₆.vectors-I)
 # ╠═3e863b09-dc68-4560-adeb-e56ab22d9afd
 # ╠═a5555731-c229-43de-9d88-cc3b91d7db67
 # ╟─c3fcbaf1-b98f-401f-9244-aad632805ecb
-# ╠═479a40d9-b81e-442b-9962-f972b110a4dd
 # ╠═8d7e4960-9b04-4f5e-b2e6-acce80a6812f
 # ╠═80d64fc6-33e7-4069-a6f4-8e85369dad9f
 # ╠═804c4972-bf3d-4284-8426-b50b3ea5bb1b
@@ -820,15 +819,14 @@ norm(E₆.vectors'*E₆.vectors-I)
 # ╠═d4a86d03-0afe-4b1d-8828-52eae055aa9f
 # ╠═1dfe86bf-7553-444b-a94e-340acccf5375
 # ╠═cc123376-b657-4d8f-88e0-0f7577058c2b
-# ╠═574e86bb-159c-4141-8d8a-21bdcc9b5304
 # ╠═337ade70-accb-417b-b655-9640ed61b375
 # ╠═f7556414-693d-4d46-889b-ed6b091a235e
+# ╠═9ea83b4f-8cb7-4fca-af8f-10caa867c8d7
 # ╠═9ee70a5d-59f7-460c-92af-8872966cec40
 # ╟─abb64f41-6817-49e9-9d44-81ef0ce32934
 # ╟─b24b1c96-c73e-4c8e-83af-f35e2b9df304
 # ╟─5e068291-cb05-4fd5-acaa-8e5d766e375a
 # ╟─6d7f330f-3c88-44bd-aff9-65daa7f1ea1c
-# ╠═5eb73af5-f78a-4811-83a5-ac39063a4516
 # ╠═eea30449-2410-448d-885f-e27b7aa657c0
 # ╠═21f8e11a-09fe-49a9-91cd-b118876910a8
 # ╠═6d484719-e545-4742-9e46-515525af8244
