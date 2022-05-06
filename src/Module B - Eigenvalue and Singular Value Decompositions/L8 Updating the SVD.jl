@@ -1,17 +1,21 @@
 ### A Pluto.jl notebook ###
-# v0.14.4
+# v0.17.3
 
 using Markdown
 using InteractiveUtils
 
-# ╔═╡ 51c330f6-7675-475e-b0eb-0fc8486fd094
+# ╔═╡ c5dfc888-42a6-4fa5-b969-61ff6c9180fe
 begin
-	using PlutoUI
-	PlutoUI.TableOfContents(aside=true)
+    import Pkg
+    # activate a temporary environment
+    Pkg.activate(mktempdir())
+    Pkg.add([Pkg.PackageSpec(name="Arrowhead", rev="master")])
+	Pkg.add("PlutoUI")
+    using PlutoUI, LinearAlgebra, Arrowhead
 end
 
-# ╔═╡ 5c6ed844-279b-4576-a2fb-1c1d11fb62ee
-using Arrowhead, LinearAlgebra
+# ╔═╡ 51c330f6-7675-475e-b0eb-0fc8486fd094
+PlutoUI.TableOfContents(aside=true)
 
 # ╔═╡ c3caaf95-bef6-446d-b197-23ad1a7da450
 md"""
@@ -156,7 +160,7 @@ begin
 	Random.seed!(421)
 	A₁=rand(6,10)
 	a₁=rand(10)
-	S₁=svd(A₁);
+	S₁=svd(A₁)
 end
 
 # ╔═╡ e2ff1d44-7f3c-4100-80d3-df97579bc56c
@@ -309,11 +313,11 @@ begin
 end
 
 # ╔═╡ Cell order:
-# ╟─51c330f6-7675-475e-b0eb-0fc8486fd094
+# ╠═c5dfc888-42a6-4fa5-b969-61ff6c9180fe
+# ╠═51c330f6-7675-475e-b0eb-0fc8486fd094
 # ╟─c3caaf95-bef6-446d-b197-23ad1a7da450
 # ╟─e070e205-b8fb-4608-93c1-f5c5beb075c3
 # ╟─0ff9f1d6-1ebf-4a42-b51a-5a67f6192fe7
-# ╠═5c6ed844-279b-4576-a2fb-1c1d11fb62ee
 # ╠═1f7f9f7a-df70-40a3-aa06-b5621b729a0c
 # ╠═445cacab-3bb2-42f6-8d34-73c77ceecd0a
 # ╠═2d0c21e5-dc68-4434-94ca-f433355f0e5c
