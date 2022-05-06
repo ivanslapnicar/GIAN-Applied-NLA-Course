@@ -344,7 +344,7 @@ To illustrate Facts 1 to 3, we need an algorithm that computes the singular valu
 The algorithm actually used in the function `svdvals()` for `Bidiagonal` is the zero-shift bidiagonal QR algorithm, which attains the accuracy given by Fact 4: if all $1-\varepsilon \leq \alpha_i,\beta_j \leq 1+\varepsilon$, then
 
 $$
-(1-\varepsilon)^{2n-1} \leq (\alpha\beta)^{-1} \leq \alpha\beta \leq (1-\varepsilon)^{2n-1}.$$
+(1-\varepsilon)^{2n-1} \leq (\alpha\beta)^{-1} \leq \alpha\beta \leq (1+\varepsilon)^{2n-1}.$$
 
 In other words, $\varepsilon$ relative changes in diagonal and super-diagonal elements, cause at most $(2n-1)\varepsilon$ relative changes in the singular values.
 
@@ -364,9 +364,9 @@ begin
 	DL=ones(n₀)+(rand(n₀).-0.5)/δ
 	DR=ones(n₀)+(rand(n₀).-0.5)/δ
 	# The perturbed matrix
-	α=DL.*a.*DR
+	α₀=DL.*a.*DR
 	β₀=DL[1:end-1].*b.*DR[2:end]
-	B₀=Bidiagonal(α,β₀,'U')
+	B₀=Bidiagonal(α₀,β₀,'U')
 	# B-Diagonal(DL)*A*Diagonal(DR)
 	(A₀.dv-B₀.dv)./A₀.dv
 end
@@ -378,7 +378,7 @@ A₀
 cond(A₀)
 
 # ╔═╡ 748215b6-361e-4525-ac2a-f50c96b34047
-(a-α)./a, (b-β₀)./b
+(a-α₀)./a, (b-β₀)./b
 
 # ╔═╡ 831a98d8-5df0-49ea-89fd-8a3db0e21e1e
 @which svdvals(A₀)
