@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.17.3
+# v0.19.2
 
 using Markdown
 using InteractiveUtils
@@ -166,7 +166,7 @@ md"""
 
 # ╔═╡ 75d9b8f8-42c0-4a02-9683-878a351bb137
 begin
-	Random.seed!(678)
+	Random.seed!(679)
 	A=rand(5,8)
 	b=rand(5)
 	x=A\b
@@ -277,7 +277,7 @@ Sparsity k/n, k = $(@bind k Slider(12:4:50, default=12,show_value=true))
 
 # ╔═╡ 9d5e6751-9e3e-4b0a-8fd3-35a43e079ee7
 begin
-	Random.seed!(4308)
+	Random.seed!(321)
 	# Dimension of the sparse vector
 	n=200 
 	# Dimension of the sampled vector
@@ -406,7 +406,7 @@ begin
 end
 
 # ╔═╡ edb56b65-1ed2-4202-ad2d-02d7c4f026f1
-SparseMatrixCSC(xₙ);
+SparseMatrixCSC(xₙ)
 
 # ╔═╡ bd2cd42e-3dd4-453f-8046-d0292eae6896
 zₙ=recovery(Aₙ,bₙ)
@@ -422,7 +422,7 @@ begin
 	# Plot the solution
 	scatter(xₙ,title="Noisy Sparse Recovery",label="Original data")
 	scatter!(yₙ,label="Recovered data - IHT")
-	scatter!(zₙ,label="Recovered data - l₁ minimization",legend=true)
+	# scatter!(zₙ,label="Recovered data - l₁ minimization",legend=true)
 end
 
 # ╔═╡ cd074ea6-27b8-4f76-a025-6790b7a95ade
@@ -490,6 +490,9 @@ begin
 	xsparse=copy(xₜ)
 	xsparse[ind[kₜ+1:end]].=0;
 end
+
+# ╔═╡ 6e36585e-1cfe-4404-99d4-12f7b0a22430
+xs=sparse(xsparse)
 
 # ╔═╡ 9823947d-6a81-40a4-9d4c-7ade1ac864af
 nnz(sparse(xsparse))
@@ -593,7 +596,7 @@ Wavelets = "~0.9.3"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.7.0"
+julia_version = "1.7.2"
 manifest_format = "2.0"
 
 [[deps.AbstractFFTs]]
@@ -1198,9 +1201,9 @@ version = "0.5.0"
 
 [[deps.InlineStrings]]
 deps = ["Parsers"]
-git-tree-sha1 = "8d70835a3759cdd75881426fced1508bb7b7e1b6"
+git-tree-sha1 = "61feba885fac3a407465726d0c330b3055df897f"
 uuid = "842dd82b-1e85-43dc-bf29-5d0ee9dffc48"
-version = "1.1.1"
+version = "1.1.2"
 
 [[deps.IntegralArrays]]
 deps = ["ColorTypes", "FixedPointNumbers", "IntervalSets"]
@@ -1259,9 +1262,9 @@ version = "1.0.0"
 
 [[deps.JLD2]]
 deps = ["DataStructures", "FileIO", "MacroTools", "Mmap", "Pkg", "Printf", "Reexport", "TranscodingStreams", "UUIDs"]
-git-tree-sha1 = "09ef0c32a26f80b465d808a1ba1e85775a282c97"
+git-tree-sha1 = "bcb31db46795eeb64480c89d854615bc78a13289"
 uuid = "033835bb-8acc-5ee8-8aae-3f567f8a3819"
-version = "0.4.17"
+version = "0.4.19"
 
 [[deps.JLLWrappers]]
 deps = ["Preferences"]
@@ -1292,6 +1295,12 @@ deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
 git-tree-sha1 = "f6250b16881adf048549549fba48b1161acdac8c"
 uuid = "c1c5ebd0-6772-5130-a774-d5fcae4a789d"
 version = "3.100.1+0"
+
+[[deps.LERC_jll]]
+deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
+git-tree-sha1 = "bf36f528eec6634efc60d7ec062008f171071434"
+uuid = "88015f11-f218-50d7-93a8-a6af411a945d"
+version = "3.0.0+1"
 
 [[deps.LZO_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1370,10 +1379,10 @@ uuid = "4b2f31a3-9ecc-558c-b454-b3730dcb73e9"
 version = "2.35.0+0"
 
 [[deps.Libtiff_jll]]
-deps = ["Artifacts", "JLLWrappers", "JpegTurbo_jll", "Libdl", "Pkg", "Zlib_jll", "Zstd_jll"]
-git-tree-sha1 = "340e257aada13f95f98ee352d316c3bed37c8ab9"
+deps = ["Artifacts", "JLLWrappers", "JpegTurbo_jll", "LERC_jll", "Libdl", "Pkg", "Zlib_jll", "Zstd_jll"]
+git-tree-sha1 = "c9551dd26e31ab17b86cbd00c2ede019c08758eb"
 uuid = "89763e89-9b03-5906-acba-b20f662cd828"
-version = "4.3.0+0"
+version = "4.3.0+1"
 
 [[deps.Libuuid_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1485,9 +1494,9 @@ uuid = "d8a4904e-b15c-11e9-3269-09a3773c0cb0"
 version = "0.3.2"
 
 [[deps.NaNMath]]
-git-tree-sha1 = "f755f36b19a5116bb580de457cda0c140153f283"
+git-tree-sha1 = "b086b7ea07f8e38cf122f5016af580881ac914fe"
 uuid = "77ba4419-2d1f-58cd-9bb1-8ffee604a2e3"
-version = "0.3.6"
+version = "0.3.7"
 
 [[deps.NearestNeighbors]]
 deps = ["Distances", "StaticArrays"]
@@ -1603,9 +1612,9 @@ version = "0.12.3"
 
 [[deps.Parsers]]
 deps = ["Dates"]
-git-tree-sha1 = "92f91ba9e5941fc781fecf5494ac1da87bdac775"
+git-tree-sha1 = "0b5cfbb704034b5b4c1869e36634438a047df065"
 uuid = "69de0a69-1ddd-5017-9359-2bf0b02dc9f0"
-version = "2.2.0"
+version = "2.2.1"
 
 [[deps.Pixman_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1681,9 +1690,9 @@ version = "1.0.0"
 
 [[deps.Qt5Base_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Fontconfig_jll", "Glib_jll", "JLLWrappers", "Libdl", "Libglvnd_jll", "OpenSSL_jll", "Pkg", "Xorg_libXext_jll", "Xorg_libxcb_jll", "Xorg_xcb_util_image_jll", "Xorg_xcb_util_keysyms_jll", "Xorg_xcb_util_renderutil_jll", "Xorg_xcb_util_wm_jll", "Zlib_jll", "xkbcommon_jll"]
-git-tree-sha1 = "ad368663a5e20dbb8d6dc2fddeefe4dae0781ae8"
+git-tree-sha1 = "c6c0f690d0cc7caddb74cef7aa847b824a16b256"
 uuid = "ea2cea3b-5b76-57ae-a6ef-0a8af62496e1"
-version = "5.15.3+0"
+version = "5.15.3+1"
 
 [[deps.QuadGK]]
 deps = ["DataStructures", "LinearAlgebra"]
@@ -2253,6 +2262,7 @@ version = "0.9.1+5"
 # ╠═668ccf49-ba28-4a6d-ab95-a2a4c876b57f
 # ╟─0c2f32af-0156-4e4a-a957-03032c10c4ce
 # ╠═a2bff419-b8b7-44b7-834d-6104d187e31b
+# ╠═6e36585e-1cfe-4404-99d4-12f7b0a22430
 # ╠═9823947d-6a81-40a4-9d4c-7ade1ac864af
 # ╠═a7fe5690-7b50-4922-b8cc-0e3e672ac25f
 # ╠═b2470310-2356-11eb-249f-a90af0c70a78
