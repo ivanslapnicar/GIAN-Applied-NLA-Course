@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.17.3
+# v0.19.4
 
 using Markdown
 using InteractiveUtils
@@ -198,9 +198,9 @@ begin
 	# Scaled matrix
 	As=Matrix(Symmetric(B'*B))
 	# Scaling
-	D₀=exp.(50*(rand(n).-0.5))
+	D₀=Diagonal(exp.(50*(rand(n).-0.5)))
 	# Parentheses are necessary!
-	A=[As[i,j]*(D₀[i]*D₀[j]) for i=1:n, j=1:n]
+	A=Matrix(Symmetric(D₀*As*D₀))
 	issymmetric(A), cond(As), cond(A)
 end
 

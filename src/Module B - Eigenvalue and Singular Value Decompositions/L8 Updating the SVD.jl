@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.17.3
+# v0.19.4
 
 using Markdown
 using InteractiveUtils
@@ -10,7 +10,6 @@ begin
     # activate a temporary environment
     Pkg.activate(mktempdir())
     Pkg.add([Pkg.PackageSpec(name="Arrowhead", rev="master")])
-	Pkg.add("PlutoUI")
     using PlutoUI, LinearAlgebra, Arrowhead
 end
 
@@ -34,7 +33,7 @@ The reader should be able to recognise applications where SVD updating can be su
 
 # ╔═╡ e070e205-b8fb-4608-93c1-f5c5beb075c3
 md"""
-## Facts
+# Facts
 
 For more details see
 [M. Gu and S. C. Eisenstat, A Stable and Fast Algorithm for Updating the Singular Value Decomposition](http://www.cs.yale.edu/publications/techreports/tr966.pdf) and [M. Brand, Fast low-rank modifications of the thin singular value decomposition](http://www.sciencedirect.com/science/article/pii/S0024379505003812) and the references therein.
@@ -80,9 +79,9 @@ is the SVD of $\tilde A$.
 # ╔═╡ 0ff9f1d6-1ebf-4a42-b51a-5a67f6192fe7
 md"""
 
-## Examples
+# Examples
 
-### Adding row to a tall matrix
+## Adding row to a tall matrix
 
 If $m\geq n$, adding row does not increase the size of $\Sigma$.
 """
@@ -151,7 +150,7 @@ norm(Sa.U'*Sa.U-I), norm(Sa.Vt*Sa.V-I)
 
 # ╔═╡ bd35d5e4-b454-4a02-a026-ded3bdf76cdf
 md"""
-### Adding row to a flat matrix
+## Adding row to a flat matrix
 """
 
 # ╔═╡ 8f31ef4a-a5da-4837-9320-ec9578c5a277
@@ -182,7 +181,7 @@ norm(Sa₁.U'*Sa₁.U-I), norm(Sa₁.Vt*Sa₁.V-I)
 
 # ╔═╡ 9727df4c-52f5-4527-84e6-dfc02820d583
 md"""
-### Adding columns
+## Adding columns
 
 This can be viewed as adding rows to the transposed matrix, an elegant one-liner in Julia.
 """
@@ -255,8 +254,7 @@ end
 
 # ╔═╡ 22b4dea8-79a0-438a-a3e4-d7c725d47051
 md"""
-### Updating a low rank approximation
-
+## Updating a low rank approximation
 """
 
 # ╔═╡ 0a5298eb-ed33-443b-b9e4-c0a32b408605
