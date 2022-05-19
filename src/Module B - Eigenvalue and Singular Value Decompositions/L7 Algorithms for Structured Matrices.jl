@@ -201,39 +201,35 @@ begin
 	D₀=Diagonal(exp.(50*(rand(n).-0.5)))
 	# Parentheses are necessary!
 	A=Matrix(Symmetric(D₀*As*D₀))
-	issymmetric(A), cond(As), cond(A)
+	A=[As[i,j]*(D₀.diag[i]*D₀.diag[j])  for i=1:n, j=1:n]
+	issymmetric(A), issymmetric(As),cond(As), cond(A)
 end
+
+# ╔═╡ 5805e6a4-87fd-4879-8cb8-5dd03310279d
+A
 
 # ╔═╡ 66dedda0-24a0-48a0-9286-4ce688e5da72
 # ?cholesky;
 
 # ╔═╡ cc924252-137a-4241-b178-2eabf653ff71
 md"""
-We will not use the Cholesky factorization with complete pivoting. Instead, we will just sort the diagonal of $A$ in advance, which is sufficient for this example. 
-
-_Write the function for Cholesky factorization with complete pivoting as an excercise._
+We will use the Cholesky factorization with complete pivoting.
 """
 
-# ╔═╡ c41e4534-6b29-4cbe-9b17-2c69c89e5570
-# ?sortperm;
-
 # ╔═╡ bcee7b90-2dd4-47b0-a781-67d35962d5f2
-begin
-	p=sortperm(diag(A), rev=true)
-	L=cholesky(A[p,p])
-end
+L=cholesky(A,Val(true));
 
 # ╔═╡ f471d60f-1c70-4bd5-bb67-2bb17c18f3f8
 U,σ,V=JacobiR(Matrix(L.L));
 
 # ╔═╡ c474702a-8af8-4640-9f45-bca748ab3952
 begin
-	U₁=U[invperm(p),:]
+	U₁=U[invperm(L.p),:]
 	λ=σ.^2
 end
 
 # ╔═╡ 25143fe5-3965-468a-8cb1-7c3e8e8027ea
-U'*A[p,p]*U
+U'*A[L.p,L.p]*U
 
 # ╔═╡ 86dc734d-f45d-491f-9f80-7d958e642fbd
 # Due to large condition number, this is not
@@ -403,6 +399,9 @@ begin
 	C₂=Cauchy(collect(1:n₂), collect(0:n₂-1))
 end
 
+# ╔═╡ d1fd9b19-78c0-4d77-89db-9ba3d2aa826d
+H₂
+
 # ╔═╡ 72390bf0-c5d6-46de-b8d0-0bee2cbb0af7
 md"""
 We need a function to compute RRD from `GECP()`
@@ -450,7 +449,7 @@ norm(Matrix(C₂)*V₂-U₂*Diagonal(σ₂)), norm(U₂'*U₂-I), norm(V₂'*V�
 [sort(σ₂) sort(svdvals(C₂)) sort(eigvals(Matrix(C₂)))]
 
 # ╔═╡ 337ade70-accb-417b-b655-9640ed61b375
-plot(σ₂,yscale = :log10,legend=false, title="Singular values of Hilbert matrix")
+scatter(σ₂,yscale = :log10,legend=false, title="Singular values of Hilbert matrix")
 
 # ╔═╡ f7556414-693d-4d46-889b-ed6b091a235e
 begin
@@ -776,9 +775,9 @@ norm(E₆.vectors'*E₆.vectors-I)
 # ╟─f280b119-76a7-4ee8-b6fd-608d977af0c6
 # ╠═28c1a9e7-6c65-4184-b41b-b5cfd17645b5
 # ╠═bc8b94b7-7e20-4cd3-be68-7e9152fe6d7b
+# ╠═5805e6a4-87fd-4879-8cb8-5dd03310279d
 # ╠═66dedda0-24a0-48a0-9286-4ce688e5da72
 # ╟─cc924252-137a-4241-b178-2eabf653ff71
-# ╠═c41e4534-6b29-4cbe-9b17-2c69c89e5570
 # ╠═bcee7b90-2dd4-47b0-a781-67d35962d5f2
 # ╠═f471d60f-1c70-4bd5-bb67-2bb17c18f3f8
 # ╠═c474702a-8af8-4640-9f45-bca748ab3952
@@ -809,6 +808,7 @@ norm(E₆.vectors'*E₆.vectors-I)
 # ╠═8b844cf7-c574-45e9-b682-fa9cc6e9cb73
 # ╠═b3877ea1-d479-4d08-af8c-26e17de77106
 # ╠═9bff72d8-68b6-41b6-a954-ee39f90ec7b0
+# ╠═d1fd9b19-78c0-4d77-89db-9ba3d2aa826d
 # ╟─72390bf0-c5d6-46de-b8d0-0bee2cbb0af7
 # ╠═46656cee-2202-4eb9-9725-1e3e3af4df42
 # ╠═6b544eaf-858a-40e5-b59b-75cfa2237a6f

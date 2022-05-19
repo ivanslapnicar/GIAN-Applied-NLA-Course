@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.17.3
+# v0.19.4
 
 using Markdown
 using InteractiveUtils
@@ -140,9 +140,6 @@ L*ones(n)
 # ╔═╡ 86e5f00f-13ee-4867-b0cd-187f2c782a46
 Lₙ=NormalizedLaplacian(L)
 
-# ╔═╡ cf26dbe9-3c4f-4c95-88ef-f197f360d759
-Matrix(Lₙ)
-
 # ╔═╡ 8fcd2440-4013-4b37-a747-2c0c7f6d4aeb
 issymmetric(Lₙ)
 
@@ -241,7 +238,7 @@ edges between $V_1$ and $V_2$,
 
 $$\mathop{\mathrm{cut}}(\pi)\equiv \mathop{\mathrm{cut}}(V_1,V_2)=\sum\limits_{{\displaystyle i\in V_{1} \atop \displaystyle j\in V_{2}}}W_{ij}.$$
 
-__Weight__ of vertex $i\in V$ is the sum of the weights of all egdges emanating from $i$,
+__Weight__ of vertex $i\in V$ is the sum of the weights of all edges emanating from $i$,
 $\omega(i)=\sum\limits_{j=1}^{n}W_{ij}$.
 
 __Weight__ of a subset $\bar V\subset V$ is the sum of the weights of all vertices in $\bar V$,
@@ -479,7 +476,7 @@ This is the same partitioning as obtained by `kmeans()`. Let us try Gaussian ker
 
 # ╔═╡ bb9d4d98-3aff-439e-b8a3-8347cf345839
 begin
-	σ=1.1 # 0.1
+	σ=1.0 # 0.1
 	W₂=exp.(-pairwise(SqEuclidean(),X)/σ^2)-I
 	L₂=Laplacian(W₂)
 	E₂=eigs(L₂,nev=2,which=:SM, v0=ones(m))
@@ -487,6 +484,9 @@ begin
 	C₂[findall(E₂[2][:,2].>0)].=2
 	plotKpartresult(C₂,X)
 end
+
+# ╔═╡ 1a96c144-4a77-47bc-a112-d2f61941d412
+W₂
 
 # ╔═╡ 012fa54a-5171-4980-a0ba-474a22c25981
 md"""
@@ -1464,7 +1464,6 @@ version = "0.9.1+5"
 # ╠═ecb2a46e-f9dc-4e57-812f-0a2788afb202
 # ╠═6b9b0013-e707-4831-869a-0e20b1369484
 # ╠═86e5f00f-13ee-4867-b0cd-187f2c782a46
-# ╠═cf26dbe9-3c4f-4c95-88ef-f197f360d759
 # ╠═8fcd2440-4013-4b37-a747-2c0c7f6d4aeb
 # ╠═0c8d3572-3436-446f-952a-b19d0370ab38
 # ╠═1437aadc-1c26-4eff-bb22-9cf9c15e1f5f
@@ -1494,6 +1493,7 @@ version = "0.9.1+5"
 # ╠═46de28bc-73ed-495c-a2e0-f565c1ce5651
 # ╟─e004e4bf-ca04-4b41-947b-9f1ecd058abb
 # ╠═bb9d4d98-3aff-439e-b8a3-8347cf345839
+# ╠═1a96c144-4a77-47bc-a112-d2f61941d412
 # ╟─012fa54a-5171-4980-a0ba-474a22c25981
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
