@@ -182,7 +182,7 @@ L
 E=eigen(Matrix(L))
 
 # ╔═╡ 3144236b-95e3-42ea-88d5-64522b44417f
-scatter(E.vectors[:,2],E.vectors[:,3],label=false,title="Clusters of rows")
+scatter([Tuple(E.vectors[j,2:3]) for j in 1:n],label=false,title="Clusters of rows")
 
 # ╔═╡ c5444c4c-291d-47e2-ab27-ea8f40556bd0
 transpose(E.vectors[:,1:3])
@@ -203,7 +203,7 @@ begin
 end
 
 # ╔═╡ bf599fc7-2e00-4a82-ab6c-e55975c273b0
-scatter(Eₙ.vectors[:,2],Eₙ.vectors[:,3],label=false,title="Clusters of rows")
+scatter([Tuple(Eₙ.vectors[j,2:3]) for j in 1:n],label=false,title="Clusters of rows")
 
 # ╔═╡ 9adefd1a-f9de-460f-b156-d9067220c340
 Y
