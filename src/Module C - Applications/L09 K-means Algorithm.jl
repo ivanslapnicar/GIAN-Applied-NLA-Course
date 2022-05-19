@@ -116,6 +116,15 @@ S_{B}&=\sum_{i=1}^k|C_{i}|(c_{i}-c)(c_{i}-c)^{T} =
 
 """
 
+# ╔═╡ 89685aa2-f773-4a72-b1c0-ec45bb7d1e1f
+begin
+	# W#e need this for mean() to work with tuples
+	import Base: /,+, zero
+	/(a::Tuple,b::Number)=a./b
+	+(a::Tuple,b::Tuple)=a.+b
+	zero(a::Tuple)=zero.(a)
+end
+
 # ╔═╡ 86d55833-ee5a-4f73-b0bf-e8b6e6d65617
 function myKmeans(X::Vector{T}, k::Int) where T
     # X is Array of Arrays
@@ -125,10 +134,10 @@ function myKmeans(X::Vector{T}, k::Int) where T
     c=X[randperm(m)[1:k]]
     # This is just to start the while loop
     cnew=copy(c)
-    cnew[1]=cnew[1].+(1.0,1.0)
+    cnew[1]=cnew[1].+1.0
     # Loop
     iterations=0
-    while cnew!=c
+    while cnew!=c && iterations < 51
         iterations+=1
         cnew=copy(c)
         # Assignment
@@ -137,7 +146,7 @@ function myKmeans(X::Vector{T}, k::Int) where T
         end
         # Update
         for j=1:k
-          c[j]=(mean([x[1] for x in X[C.==j]]),mean([x[2] for x in X[C.==j]]))
+          c[j]=mean([x for x in X[C.==j]])
         end
     end
     C,c,iterations
@@ -157,19 +166,23 @@ We generate $k$ random clusters around points with integer coordinates.
 begin
 	# Generate points as Tuple()
 	k=5
+	n=2
 	Random.seed!(1235)
-	centers= [Tuple(rand(-5:5,2)) for i=1:k]
+	centers= [Tuple(rand(-5:5,n)) for i=1:k]
 	# Number of points in cluster
 	sizes=rand(10:50,k)
 	csizes=cumsum(sizes)
 	# X is array of arrays
-	X=Vector{Tuple{Float64,Float64}}(undef,sum(sizes))
-	X[1:csizes[1]]=[centers[1].+Tuple((rand(2).-0.5)/2) for i=1:sizes[1]]
+	X=Vector{NTuple{n,Float64}}(undef,sum(sizes))
+	X[1:csizes[1]]=[centers[1].+Tuple((rand(n).-0.5)/2) for i=1:sizes[1]]
 	for j=2:k
-		X[csizes[j-1]+1:csizes[j]]=[centers[j].+Tuple((rand(2).-0.5)/2) for i=1:sizes[j]]
+		X[csizes[j-1]+1:csizes[j]]=[centers[j].+Tuple((rand(n).-0.5)/2) for i=1:sizes[j]]
 	end
 	centers, sizes, X
 end
+
+# ╔═╡ 7d26ccfa-0b62-4a3c-bd64-45866d92af49
+typeof(centers)
 
 # ╔═╡ fceab134-0921-459b-8d91-952a44abb07b
 begin
@@ -222,17 +235,16 @@ seeding_algorithm(s::Symbol) =
 # ╔═╡ f9af8a75-48fd-4e82-b43e-61867bead6f9
 methods(kmeans)
 
-# ╔═╡ b205f443-5f54-4204-921b-49f1341edb4b
+# ╔═╡ 2581fcba-1884-4c19-aafa-e2232d1c279d
 X
 
-# ╔═╡ 7e869699-8eb1-4e38-905d-a9448d037841
-begin
-	Xₘ=transpose([[x[1] for x in X] [x[2] for x in X]])
-	output=kmeans(Matrix(Xₘ),k,init=:kmpp)
-end
+# ╔═╡ 0a8e2541-e6d2-4393-a935-95ce01266ec9
+# For kmeans() we need matrix with points as columns
+Xₘ=hcat(collect.(X)...)
 
-# ╔═╡ 2581fcba-1884-4c19-aafa-e2232d1c279d
-Xₘ
+# ╔═╡ 7e869699-8eb1-4e38-905d-a9448d037841
+# kmenas()
+output=kmeans(Matrix(Xₘ),k,init=:kmpp)
 
 # ╔═╡ 73a86c0d-d89e-4121-8e2c-d3b292f16939
 typeof(output)
@@ -253,10 +265,10 @@ function plotKmeansresult(out::KmeansResult,X::AbstractArray)
     scatter(aspect_ratio=1)
     # Clusters
     for j=1:k
-        scatter!(X[1,findall(out.assignments.==j)], X[2,findall(out.assignments.==j)], label="Cluster $j")
+        scatter!([Tuple(X[:,x]) for x in findall(out.assignments.==j)], label="Cluster $j")
     end
     # Means
-    scatter!(out.centers[1,:], out.centers[2,:], markershape=:hexagon,ms=6,color=:red,label="Centers")
+    scatter!([Tuple(out.centers[:,j]) for j=1:k], markershape=:hexagon,ms=6,color=:red,label="Centers")
 end
 
 # ╔═╡ 8e5b89ce-e6b5-4473-bd98-a2285331418c
@@ -1192,16 +1204,18 @@ version = "0.9.1+5"
 # ╟─26640b90-1f69-11eb-029e-4dc3a825f639
 # ╟─48914840-1f69-11eb-30a9-3943767bc261
 # ╟─2b76953c-edf2-41cf-9d75-7efb2d6a58f1
+# ╠═89685aa2-f773-4a72-b1c0-ec45bb7d1e1f
 # ╠═86d55833-ee5a-4f73-b0bf-e8b6e6d65617
 # ╟─e15fa4cf-930a-4065-b839-c2ec944afcfa
 # ╠═bacdc83d-1acd-46df-8d06-3e0279978a33
+# ╠═7d26ccfa-0b62-4a3c-bd64-45866d92af49
 # ╠═fceab134-0921-459b-8d91-952a44abb07b
 # ╠═f559b870-608a-426e-a23b-b66ef6d4b47f
 # ╠═8e5b89ce-e6b5-4473-bd98-a2285331418c
 # ╟─310a4957-cc58-424b-845c-3ebaf7db77f3
 # ╠═f9af8a75-48fd-4e82-b43e-61867bead6f9
 # ╠═2581fcba-1884-4c19-aafa-e2232d1c279d
-# ╠═b205f443-5f54-4204-921b-49f1341edb4b
+# ╠═0a8e2541-e6d2-4393-a935-95ce01266ec9
 # ╠═7e869699-8eb1-4e38-905d-a9448d037841
 # ╠═73a86c0d-d89e-4121-8e2c-d3b292f16939
 # ╠═4f8152ee-ce86-4df6-81d2-be2df33df980
