@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.14.7
+# v0.19.4
 
 using Markdown
 using InteractiveUtils
@@ -7,33 +7,35 @@ using InteractiveUtils
 # This Pluto notebook uses @bind for interactivity. When running this notebook outside of Pluto, the following 'mock version' of @bind gives bound variables a default value (instead of an error).
 macro bind(def, element)
     quote
+        local iv = try Base.loaded_modules[Base.PkgId(Base.UUID("6e696c72-6542-2067-7265-42206c756150"), "AbstractPlutoDingetjes")].Bonds.initial_value catch; b -> missing; end
         local el = $(esc(element))
-        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : missing
+        global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : iv(el)
         el
     end
 end
 
 # ╔═╡ 00980e71-789d-4930-bd5a-b49bf6ef59e0
 begin
-	using PlutoUI
-	PlutoUI.TableOfContents(aside=true)
+    import Pkg
+    # activate a temporary environment
+    Pkg.activate(mktempdir())
+    Pkg.add([
+        Pkg.PackageSpec(name="SpecialMatrices", rev="withToeplitz")
+		Pkg.PackageSpec(name="Plots")
+		Pkg.PackageSpec(name="PlutoUI")
+		Pkg.PackageSpec(name="WAV")
+		Pkg.PackageSpec(name="Arpack")
+		Pkg.PackageSpec(name="FFTW")
+		Pkg.PackageSpec(name="LinearMaps")
+    ])
+	using Plots, SpecialMatrices, PlutoUI, Random, LinearAlgebra, WAV, Arpack, FFTW, LinearMaps
 end
 
-# ╔═╡ 2b83a78d-6e87-4417-93dc-416751fb9d4d
-# Install with ] add SpecialMatrices#withToeplitz
-using Plots, SpecialMatrices, LinearAlgebra
+# ╔═╡ 85d738ac-aa73-42d6-a9c6-c64815da371b
+plotly()
 
-# ╔═╡ ad66c567-a293-4375-a294-bdb593c065fd
-using FFTW
-
-# ╔═╡ 02e5af9c-14d9-4d2e-ad50-0e73aed1e111
-using LinearMaps
-
-# ╔═╡ 944a0269-6d52-4472-9a50-933012e2fc7c
-using Arpack
-
-# ╔═╡ a0c08d02-078b-46c9-a746-b9770dd9df02
-using WAV
+# ╔═╡ 5b8f2611-cdf9-4761-8768-4b014f02b842
+PlutoUI.TableOfContents(aside=true)
 
 # ╔═╡ 9e73d94e-c26e-4513-8142-1058738f103b
 md"""
@@ -115,9 +117,6 @@ md"""
 ## Example - Signal with three mono-components
 """
 
-# ╔═╡ 2e6d75f8-43a4-47b1-87e6-be95d6ee1f6e
-plotly()
-
 # ╔═╡ 545776f8-e826-430b-8744-05a53ef708b6
 begin
 	# Small Hankel matrix
@@ -195,6 +194,9 @@ begin
 	H₁=Hankel(x₁)
 	eigvals(Matrix(H₁)), norm(Hcomp[1]-H₁)
 end
+
+# ╔═╡ 16f56d88-d9e4-4ad5-9431-3a993408d26d
+Hcomp[1]
 
 # ╔═╡ 2d0f04ca-fb8d-4dc9-81e6-1f2600fb0fab
 begin
@@ -327,7 +329,6 @@ rotl90(Toeplitz([1,2,3,4,5,6,7,8,9]))
 # ╔═╡ b9c3585a-e4cb-45a0-a864-a1739f4a47ed
 begin
 	# Fact 2
-	import Random
 	Random.seed!(467)
 	n₀=6
 	a₀=rand(-8:8,n₀)
@@ -616,12 +617,12 @@ end
 # ╔═╡ b0ac9727-2842-43a5-acee-f2ea74a1115e
 @time λₐ,Uₐ=eigs(Aₐ, nev=40, which=:LM)
 
-# ╔═╡ ef8de8e6-ad76-4d67-a9ef-5b99dafe411d
-begin
-	# Count the eigenvalue pairs (+-) larger than the 10% of the maximum
-	τ=0.1
-	Lₐ=round(Int,(sum(abs.(λₐ).>(τ*maximum(abs,λₐ)))/2))
-end
+# ╔═╡ 25375eed-4226-42e2-ae65-f1418443732a
+# Count the eigenvalue pairs (+-) larger than the 10% of the maximum
+τ=0.1
+
+# ╔═╡ a630247b-0505-43ff-b94a-468ef8887728
+Lₐ=round(Int,(sum(abs.(λₐ).>(τ*maximum(abs,λₐ)))/2))
 
 # ╔═╡ 1b3e2e57-7c3f-4365-8616-e4b46b046102
 md"""
@@ -783,17 +784,16 @@ wavplay(sum([xcompₐ[i] for i=1:Lₐ]),Fs)
 wavwrite(sum([xcompₐ[i] for i=1:Lₐ]),"files/compsum.wav",Fs=Fs)
 
 # ╔═╡ Cell order:
-# ╟─00980e71-789d-4930-bd5a-b49bf6ef59e0
+# ╠═00980e71-789d-4930-bd5a-b49bf6ef59e0
+# ╠═85d738ac-aa73-42d6-a9c6-c64815da371b
+# ╠═5b8f2611-cdf9-4761-8768-4b014f02b842
 # ╟─9e73d94e-c26e-4513-8142-1058738f103b
 # ╟─d1b6461e-6e87-4cab-af2d-f28e09c336ac
 # ╟─9ad716ab-57d8-4b17-b40c-93f6e14903b2
-# ╠═2b83a78d-6e87-4417-93dc-416751fb9d4d
-# ╠═2e6d75f8-43a4-47b1-87e6-be95d6ee1f6e
 # ╠═545776f8-e826-430b-8744-05a53ef708b6
 # ╠═2206c20c-9e67-49a4-bc26-b203477b872f
 # ╠═a781a4c1-d0b1-4bab-a08b-724697d617f9
 # ╠═a03492f5-c172-46f3-839f-4d7417015acb
-# ╠═ad66c567-a293-4375-a294-bdb593c065fd
 # ╠═e6ad6e6e-b0ba-42d4-8677-f1149aed08bc
 # ╠═e0054a3b-2e14-4bb8-81b0-6763e963dfaa
 # ╠═7b8eeeb2-bae5-46ed-9dee-0a8efb2d31c9
@@ -801,6 +801,7 @@ wavwrite(sum([xcompₐ[i] for i=1:Lₐ]),"files/compsum.wav",Fs=Fs)
 # ╠═407c19d9-d67f-4e98-a8e6-8bb26c24e46f
 # ╠═2369b267-cfbc-4092-9822-24582c10af13
 # ╠═4a35f8fa-33d8-481f-8423-d5af7e32dc8f
+# ╠═16f56d88-d9e4-4ad5-9431-3a993408d26d
 # ╠═2d0f04ca-fb8d-4dc9-81e6-1f2600fb0fab
 # ╠═79db0e46-1685-4c90-b51c-b158eac11f03
 # ╟─97b56eb0-df22-4877-8320-6440a1806c10
@@ -832,17 +833,14 @@ wavwrite(sum([xcompₐ[i] for i=1:Lₐ]),"files/compsum.wav",Fs=Fs)
 # ╠═825e7090-8196-4165-853c-57237f5e05c9
 # ╠═8f361246-8941-47a6-98c1-2b92dea2c74b
 # ╟─84d96895-e4ad-4bf4-8df7-6e81b983bb3e
-# ╠═02e5af9c-14d9-4d2e-ad50-0e73aed1e111
 # ╠═cc41548c-674a-4f67-bdf7-95ce16a6a5d8
 # ╠═40e51d70-0e20-48c8-9156-b1475870a604
 # ╠═eb1daded-ad36-41d3-9088-a9f8cf6bf63f
 # ╠═eef3c2ad-3619-49b1-a612-63c234314dfd
 # ╠═aac0a39f-0c49-4009-974e-852c7e8e2b17
-# ╠═944a0269-6d52-4472-9a50-933012e2fc7c
 # ╠═38b8e9f0-2546-4113-83b7-85599faa6992
 # ╟─146871c4-e014-4ee4-9933-1d21c2504635
 # ╟─e47f1bd9-89b5-4f67-96bf-d6b4a50a721c
-# ╠═a0c08d02-078b-46c9-a746-b9770dd9df02
 # ╠═309e82f8-2ea4-4de8-a27b-92844948c579
 # ╠═0499ad09-e8a8-41e8-99f3-4ca309ceb9d9
 # ╠═e3399220-d1f9-48c1-9863-edd307ca7d4e
@@ -866,7 +864,8 @@ wavwrite(sum([xcompₐ[i] for i=1:Lₐ]),"files/compsum.wav",Fs=Fs)
 # ╠═d539f8c0-2f35-4a88-9646-07aedff40bda
 # ╠═9575d673-a0e5-47d1-b109-9be6ee241623
 # ╠═b0ac9727-2842-43a5-acee-f2ea74a1115e
-# ╠═ef8de8e6-ad76-4d67-a9ef-5b99dafe411d
+# ╠═25375eed-4226-42e2-ae65-f1418443732a
+# ╠═a630247b-0505-43ff-b94a-468ef8887728
 # ╟─1b3e2e57-7c3f-4365-8616-e4b46b046102
 # ╠═93248879-4486-4059-a363-6c7b6a0015d8
 # ╠═251b6304-4314-479e-aa8a-d9e573d29c69
