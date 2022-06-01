@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.2
+# v0.19.6
 
 using Markdown
 using InteractiveUtils
@@ -31,20 +31,19 @@ md"""
 # Compressive Sensing
 
 The task is to extract images or signals accurately and even exactly from a number of
-samples which is far smaller than the desired resolution of the image/signal, e.g., the
+samples that is far smaller than the desired resolution of the image/signal, e.g., the
 number of pixels in the image. This new technique draws from results in several fields
 
 Suppose we are given a sparse signal.
 
-__Can we recover the signal with small number of measurements 
-(far smaller than the desired resolution of the signal)?__
+>  __Can we recover the sparse signal with a small number of measurements (far smaller than the desired resolution of the signal)?__
 
-The answer is __YES, for some signals and carefully selected measurements using $l_1$ minimization.__
+> The answer is __YES, for some signals and carefully selected measurements using $l_1$ minimization.__
 
 
 __Prerequisites__
 
-The reader should be familiar to elementary concepts about signals, with linear algebra concepts, and linear programming.
+The reader should be familiar with elementary concepts about signals, linear algebra concepts, and linear programming.
 
 __Competences__ 
 
@@ -239,10 +238,15 @@ function SamplingMatrix(m::Int,n::Int,kind::String)
         # Elegant way of computing the Fourier matrix
         F=fft(Matrix(I,n,n),1)
         # Select m/2 random rows
-        ind=Random.randperm(n)[1:div(m,2)]
-        Fm=F[ind,:]
+        rp=Random.randperm(n)
+		ind₁=rp[1:div(m,2)]
+		if iseven(m)
+			ind₂=ind₁
+		else
+			ind₂=rp[1:div(m,2)+1]
+		end
+        A=[real(F[ind₁,:]);imag(F[ind₂,:])]
         # We need to work with real matrices
-        A=[real(Fm); imag(Fm)]
     else
         return "Error"
     end
@@ -277,7 +281,7 @@ Sparsity k/n, k = $(@bind k Slider(12:4:50, default=12,show_value=true))
 
 # ╔═╡ 9d5e6751-9e3e-4b0a-8fd3-35a43e079ee7
 begin
-	Random.seed!(321)
+	# Random.seed!(321)
 	# Dimension of the sparse vector
 	n=200 
 	# Dimension of the sampled vector
@@ -342,7 +346,7 @@ where $x$ is the original signal.
 """
 
 # ╔═╡ 022cecdf-945c-4fa9-a26e-a13b11068ca7
-# Iterative Hard Thresholding 
+# Hard Thresholding operator 
 function H(x::Vector,k::Int)
     y=copy(x)
     ind=sortperm(abs.(y),rev=true)
@@ -351,6 +355,7 @@ function H(x::Vector,k::Int)
 end
 
 # ╔═╡ b275c776-47c4-4ed8-ba9d-c4ce1926d540
+# Iterative Hard Thresholding 
 function IHT(A::Matrix, b::Vector,k::Int)
     # Tolerance
     τ=1e-12
@@ -396,6 +401,9 @@ begin
 	mₙ, nₙ
 end
 
+# ╔═╡ d29caa97-18ab-4546-b0a7-3c8e293e9325
+size(Aₙ)
+
 # ╔═╡ f4c0fff3-ab24-474d-8e28-3b77782d4588
 begin
 	# Sample xₙ
@@ -422,7 +430,7 @@ begin
 	# Plot the solution
 	scatter(xₙ,title="Noisy Sparse Recovery",label="Original data")
 	scatter!(yₙ,label="Recovered data - IHT")
-	# scatter!(zₙ,label="Recovered data - l₁ minimization",legend=true)
+	scatter!(zₙ,label="Recovered data - l1 minimization",legend=true)
 end
 
 # ╔═╡ cd074ea6-27b8-4f76-a025-6790b7a95ade
@@ -2243,6 +2251,7 @@ version = "0.9.1+5"
 # ╠═b275c776-47c4-4ed8-ba9d-c4ce1926d540
 # ╟─75621541-7741-4b23-92b4-56fda45ad6cf
 # ╠═a2326335-6737-49e4-af42-55a114c66a35
+# ╠═d29caa97-18ab-4546-b0a7-3c8e293e9325
 # ╠═f4c0fff3-ab24-474d-8e28-3b77782d4588
 # ╠═6477a3bd-2a9a-45e9-a59e-1ffdd8c21890
 # ╠═edb56b65-1ed2-4202-ad2d-02d7c4f026f1
