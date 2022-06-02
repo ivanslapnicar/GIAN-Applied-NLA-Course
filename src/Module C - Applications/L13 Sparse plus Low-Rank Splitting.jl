@@ -136,6 +136,9 @@ exactly recovers $L$ and $S$.
         3. _Updating_: $Y=Y+\mu(A-L-S)$
 """
 
+# ╔═╡ 0c7bdf55-eda6-41e3-840e-74bb53538a14
+norm(A₀),norm(A₀[:])
+
 # ╔═╡ 8f347422-2782-48ca-b165-f97219ab8677
 function PCPAD(A::Array{T}) where T
     # Initialize
@@ -146,7 +149,7 @@ function PCPAD(A::Array{T}) where T
     Y=zero(A)
     L=zero(A)
     T₁=zero(A)
-    μ=(m*n)/(4*(norm(A[:],1)))
+    μ=(m*n)/(4*(norm(A,1)))
     μ₁=one(T)/μ
     λ=one(T)/√(max(m,n))
     λμ₁=λ*μ₁
@@ -171,6 +174,12 @@ end
 
 # ╔═╡ 0b8f097f-2327-467f-a1d5-481711773ae2
 rank(L₀),norm(A₀-L₀-S₀)
+
+# ╔═╡ 00097603-061e-41f7-951a-2753478e53bb
+L₀
+
+# ╔═╡ be1458c6-dd3a-4500-87f9-7b33a7dc76aa
+S₀
 
 # ╔═╡ e33dbeb8-cae9-418b-9e89-1e6563bd58a7
 md"
@@ -504,9 +513,9 @@ version = "0.2.2"
 
 [[deps.ChainRulesCore]]
 deps = ["Compat", "LinearAlgebra", "SparseArrays"]
-git-tree-sha1 = "9950387274246d08af38f6eef8cb5480862a435f"
+git-tree-sha1 = "9489214b993cd42d17f44c36e359bf6a7c919abf"
 uuid = "d360d2e6-b24c-11e9-a2a3-2a2ae2dbcce4"
-version = "1.14.0"
+version = "1.15.0"
 
 [[deps.ChangesOfVariables]]
 deps = ["ChainRulesCore", "LinearAlgebra", "Test"]
@@ -522,15 +531,15 @@ version = "0.14.2"
 
 [[deps.ColorTypes]]
 deps = ["FixedPointNumbers", "Random"]
-git-tree-sha1 = "a985dc37e357a3b22b260a5def99f3530fb415d3"
+git-tree-sha1 = "0f4e115f6f34bbe43c19751c90a38b2f380637b9"
 uuid = "3da002f7-5984-5a60-b8a6-cbb66c0b333f"
-version = "0.11.2"
+version = "0.11.3"
 
 [[deps.ColorVectorSpace]]
 deps = ["ColorTypes", "FixedPointNumbers", "LinearAlgebra", "SpecialFunctions", "Statistics", "TensorCore"]
-git-tree-sha1 = "3f1f500312161f1ae067abe07d13b40f78f32e07"
+git-tree-sha1 = "d08c20eef1f2cbc6e60fd3612ac4340b89fea322"
 uuid = "c3611d14-8923-5661-9e6a-0046d554d3a4"
-version = "0.9.8"
+version = "0.9.9"
 
 [[deps.Colors]]
 deps = ["ColorTypes", "FixedPointNumbers", "Reexport"]
@@ -540,9 +549,9 @@ version = "0.12.8"
 
 [[deps.Compat]]
 deps = ["Base64", "Dates", "DelimitedFiles", "Distributed", "InteractiveUtils", "LibGit2", "Libdl", "LinearAlgebra", "Markdown", "Mmap", "Pkg", "Printf", "REPL", "Random", "SHA", "Serialization", "SharedArrays", "Sockets", "SparseArrays", "Statistics", "Test", "UUIDs", "Unicode"]
-git-tree-sha1 = "b153278a25dd42c65abbf4e62344f9d22e59191b"
+git-tree-sha1 = "87e84b2293559571802f97dd9c94cfd6be52c5e5"
 uuid = "34da2185-b29b-5c13-b0c7-acf172513d20"
-version = "3.43.0"
+version = "3.44.0"
 
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
@@ -571,9 +580,9 @@ version = "1.10.0"
 
 [[deps.DataStructures]]
 deps = ["Compat", "InteractiveUtils", "OrderedCollections"]
-git-tree-sha1 = "cc1a8e22627f33c789ab60b36a9132ac050bbf75"
+git-tree-sha1 = "d1fff3a548102f48987a52a2e0d114fa97d730f0"
 uuid = "864edb3b-99cc-5e75-8d2d-829cb0a9cfe8"
-version = "0.18.12"
+version = "0.18.13"
 
 [[deps.Dates]]
 deps = ["Printf"]
@@ -653,9 +662,9 @@ version = "1.1.1"
 
 [[deps.Graphs]]
 deps = ["ArnoldiMethod", "Compat", "DataStructures", "Distributed", "Inflate", "LinearAlgebra", "Random", "SharedArrays", "SimpleTraits", "SparseArrays", "Statistics"]
-git-tree-sha1 = "57c021de207e234108a6f1454003120a1bf350c4"
+git-tree-sha1 = "4888af84657011a65afc7a564918d281612f983a"
 uuid = "86223c79-3864-5bf0-83f7-82e725a168b6"
-version = "1.6.0"
+version = "1.7.0"
 
 [[deps.Hyperscript]]
 deps = ["Test"]
@@ -985,9 +994,9 @@ uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
 
 [[deps.OffsetArrays]]
 deps = ["Adapt"]
-git-tree-sha1 = "e6c5f47ba51b734a4e264d7183b6750aec459fa0"
+git-tree-sha1 = "9cf6b82f7f337c01eac9995be43d11483dee5d7b"
 uuid = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
-version = "1.11.1"
+version = "1.12.0"
 
 [[deps.OpenBLAS_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Libdl"]
@@ -1313,9 +1322,12 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═701fdeda-d5e3-4686-b57d-0c0dadba7c91
 # ╠═78fda2e8-1fbf-4aa1-bc4a-a05c262a410a
 # ╟─a29511fa-1deb-4bea-97aa-326bd366f6ab
+# ╠═0c7bdf55-eda6-41e3-840e-74bb53538a14
 # ╠═8f347422-2782-48ca-b165-f97219ab8677
 # ╠═db4778a0-7948-43cc-b63a-3b2d2a924228
 # ╠═0b8f097f-2327-467f-a1d5-481711773ae2
+# ╠═00097603-061e-41f7-951a-2753478e53bb
+# ╠═be1458c6-dd3a-4500-87f9-7b33a7dc76aa
 # ╟─e33dbeb8-cae9-418b-9e89-1e6563bd58a7
 # ╠═e52bd27c-6263-4b65-9a60-5ddb31626881
 # ╠═e0d1f2ca-ea96-4ae8-a3bd-cfabe92978d5

@@ -346,6 +346,9 @@ begin
 	λ₀,eigvals(Matrix(C₀))
 end
 
+# ╔═╡ 8a1efef7-8903-426c-b8d6-a99bc5288981
+C₀
+
 # ╔═╡ 41b7458c-dc6c-4774-8991-f74519a850ed
 # Residual
 norm(Matrix(C₀)*U₀-U₀*Diagonal(λ₀))
@@ -818,6 +821,7 @@ wavwrite(sum([xcompₐ[i] for i=1:Lₐ]),"files/compsum.wav",Fs=Fs)
 # ╠═9dbdb70b-758d-49e7-b0b1-74fb339a9a8d
 # ╠═b9c3585a-e4cb-45a0-a864-a1739f4a47ed
 # ╠═94171cfa-1e8e-4aba-a5b8-faad0104cf80
+# ╠═8a1efef7-8903-426c-b8d6-a99bc5288981
 # ╠═41b7458c-dc6c-4774-8991-f74519a850ed
 # ╠═e7e58aaf-af48-4eac-a875-b64c569e435c
 # ╠═955fa4c1-50a8-4b61-be12-b4adb557ea82
