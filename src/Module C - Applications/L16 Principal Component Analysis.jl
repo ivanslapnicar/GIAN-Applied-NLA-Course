@@ -260,7 +260,7 @@ scatter(svdvals(D₁.-mean(D₁,dims=1)),leg=false,ms=2)
 # ╔═╡ 83660bc1-8116-476e-9c88-0ea176120875
 begin
 	# PCA on D₁, keep 20 singular values
-	k₁=20
+	k₁=10
 	T=PCA(D₁,k₁)
 end
 

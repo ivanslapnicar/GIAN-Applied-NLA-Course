@@ -15,7 +15,10 @@ macro bind(def, element)
 end
 
 # ╔═╡ 53107773-07e7-4da5-9900-8ba5cefd7b68
-using Plots, Clp, JuMP, Distributions, LinearAlgebra, TestImages
+begin
+	import Pkg; Pkg.build("Plots")
+	using Plots, Clp, JuMP, Distributions, LinearAlgebra, TestImages
+end
 
 # ╔═╡ 3745b123-a9f1-459b-a4f7-86ad23f0cce6
 using SparseArrays, FFTW, Random, PlutoUI, Wavelets, Images
@@ -187,6 +190,8 @@ end
 md"""
 ### Small linear programming example
 
+The $l_1$ minimization problem is solved using the package [JuMP.jl](https://github.com/JuliaOpt/JuMP.jl) with the linear programming solver from the package [Clp.jl](https://github.com/JuliaOpt/Clp.jl).
+
 $$\begin{split}\min_{x,y}\, &-x\\
 s.t.\quad          &2x + y \leq 1.5\\
 & x \geq 0,\quad  y \geq 0\end{split}$$
@@ -218,8 +223,6 @@ md"""
 
 We recover randomly generated sparse signals "measured" with rows of the matrix $A$. 
 The experiment is performed for types of matrices from Fact 9.
-
-The $l_1$ minimization problem is solved using the package [JuMP.jl](https://github.com/JuliaOpt/JuMP.jl) with the linear programming solver from the package [Clp.jl](https://github.com/JuliaOpt/Clp.jl).
 
 Random matrices are generated using the package [Distributions.jl](https://github.com/JuliaStats/Distributions.jl).
 """
@@ -387,7 +390,7 @@ Sparsity k/n, k = $(@bind kₙ Slider(3:15, default=3,show_value=true))
 
 # ╔═╡ a2326335-6737-49e4-af42-55a114c66a35
 begin
-	Random.seed!(421)
+	# Random.seed!(421)
 	# Dimension of the sparse vector
 	nₙ=300
 	# Sparsity - kₙ is small compared to nₙ
@@ -451,8 +454,8 @@ The `tif` version of the image "Lena" has `65_798` bytes, the `png` version has 
 TestImages.remotefiles
 
 # ╔═╡ 01fff994-6b74-45e9-ab65-b52c6339fe45
-img=testimage("lena_gray_256.tif")
-# img=map(Gray,load("./files/RDuarte.png"))
+# img=testimage("lena_gray_256.tif")
+img=map(Gray,load("./files/RDuarte.png"))
 
 # ╔═╡ 9c0a1f14-f63d-4387-905d-809d9ffbf63a
 typeof(img)
@@ -483,6 +486,9 @@ end
 
 # ╔═╡ 668ccf49-ba28-4a6d-ab95-a2a4c876b57f
 colorview(Gray,xₜ)
+
+# ╔═╡ 10d8f2a2-7474-40b2-a39a-aefc9995dea3
+xₜ
 
 # ╔═╡ 0c2f32af-0156-4e4a-a957-03032c10c4ce
 md"""
@@ -581,6 +587,7 @@ FFTW = "7a1cc6ca-52ef-59f5-83cd-3a7055c09341"
 Images = "916415d5-f1e6-5110-898d-aaa5f9f070e0"
 JuMP = "4076af6c-e467-56ae-b986-b466b2749572"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 PlutoUI = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
@@ -2269,6 +2276,7 @@ version = "0.9.1+5"
 # ╠═5dd3690b-6957-49f2-95db-4d8ab223acf7
 # ╠═49c5d771-f06b-4cdb-982a-057639b3d22e
 # ╠═668ccf49-ba28-4a6d-ab95-a2a4c876b57f
+# ╠═10d8f2a2-7474-40b2-a39a-aefc9995dea3
 # ╟─0c2f32af-0156-4e4a-a957-03032c10c4ce
 # ╠═a2bff419-b8b7-44b7-834d-6104d187e31b
 # ╠═6e36585e-1cfe-4404-99d4-12f7b0a22430
