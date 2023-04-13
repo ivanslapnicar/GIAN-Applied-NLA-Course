@@ -571,7 +571,7 @@ md"""
 # ╔═╡ 43ee6302-cd9e-472e-8c25-9c079d90bd1c
 begin
 	# Generating Hermitian matrix
-	Random.seed!(432)
+	Random.seed!(431)
 	nₕ=6
 	Aₕ=rand(ComplexF64,nₕ,nₕ)
 	Aₕ=Aₕ+adjoint(Aₕ)
@@ -746,6 +746,15 @@ begin
 	Aₚ=Aₚ*Aₚ'
 end
 
+# ╔═╡ a587ec16-fbb5-4b79-b5c8-9986f62a451e
+Z=eigen(Aₚ)
+
+# ╔═╡ 6a4a1377-ec2c-4043-9246-6d371c85a482
+exp(Aₚ)
+
+# ╔═╡ 1fe5b23c-2ee8-473d-9876-283ad9862f43
+Z.vectors*Diagonal(exp.(Z.values))*Z.vectors'
+
 # ╔═╡ fb844ff8-1696-45a8-97a9-a08ae0ace55b
 ishermitian(Aₚ)
 
@@ -761,7 +770,7 @@ begin
 	# Matrix function - square root
 	λₚ,Uₚ=eigen(Aₚ)
 	A2=Uₚ*√Diagonal(λₚ)*Uₚ'
-	Aₚ-A2^2
+	norm(Aₚ-A2^2)
 end
 
 # ╔═╡ 8a4c37e0-a442-46da-929c-24cdc8280313
@@ -802,7 +811,7 @@ How does function `rank()` work?
 s₅=svdvals(A₅)
 
 # ╔═╡ 7056a7af-f3cf-4fa6-aa4e-b891b6444aa6
-s₅[1]*eps()
+s₅[1]*eps()*n
 
 # ╔═╡ f4b34f27-082b-4bbe-8ee0-c1066de09a9b
 # Cholesky factorization can fail
@@ -834,7 +843,10 @@ y.-mean(y,dims=1)
 
 # ╔═╡ 688efeb3-07da-4d75-a35b-a79f9440da76
 # Covariance matrix is a Gram matrix
-(y.-mean(y,dims=1))'*(y.-mean(y,dims=1))/(size(y,1)-1)-Cov
+Cov₁=(y.-mean(y,dims=1))'*(y.-mean(y,dims=1))/(size(y,1)-1)
+
+# ╔═╡ eb371182-ea27-4334-8cde-3fd8bf810148
+norm(Cov-Cov₁)
 
 # ╔═╡ f28e0e9a-23c5-4114-a853-2da285a24641
 # Correlation matrix 
@@ -853,8 +865,22 @@ eigvals(Cov)
 # ╔═╡ 808904ca-b1d9-4eca-ae40-bcd53451fa83
 eigvals(Cor)
 
+# ╔═╡ c35bd54f-0f0f-4979-b842-a800eca12a6a
+md"
+Let us check the case when there are mor obervations than data:
+"
+
+# ╔═╡ 24fc1b19-97b4-4535-9276-c9db11549fff
+z=Matrix(transpose(y))
+
 # ╔═╡ 34001f70-e2db-4529-a315-caf38ecb87b0
-Covₜ=cov(y')
+Covₜ=cov(z)
+
+# ╔═╡ aee1f31c-4650-4ead-b25e-8a728419b18c
+Cov₂=(z.-mean(z,dims=1))'*(z.-mean(z,dims=1))/(size(z,1)-1)
+
+# ╔═╡ ee1c130c-9cb1-46f3-8416-d1997d118f4d
+norm(Covₜ-Cov₂)
 
 # ╔═╡ 80a7d977-99e7-4d51-9cc9-4e6b7c410a6a
 eigvals(Covₜ)
@@ -891,7 +917,7 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.8.5"
 manifest_format = "2.0"
-project_hash = "a7825069507da14f287773ea87fb8197ecb1d2ef"
+project_hash = "e9443138597cccf0a5a79156bff88223717b02f2"
 
 [[deps.AbstractFFTs]]
 deps = ["ChainRulesCore", "LinearAlgebra"]
@@ -1481,6 +1507,9 @@ version = "17.4.0+0"
 # ╟─53637040-356d-4310-970e-6a9b9c1260c9
 # ╟─5082d501-8e0f-45ec-8927-ad1a0be51ae3
 # ╠═e00702a4-2ad5-4dee-8d0c-7d15c4ffdeb8
+# ╠═a587ec16-fbb5-4b79-b5c8-9986f62a451e
+# ╠═6a4a1377-ec2c-4043-9246-6d371c85a482
+# ╠═1fe5b23c-2ee8-473d-9876-283ad9862f43
 # ╠═fb844ff8-1696-45a8-97a9-a08ae0ace55b
 # ╠═c6d47f33-1c78-4568-a0f6-e9d1deb669ca
 # ╠═ada85c66-6268-4664-a458-4213d7d7111f
@@ -1502,12 +1531,17 @@ version = "17.4.0+0"
 # ╠═070a4816-6fe3-4a29-b1ec-b68d1500f48d
 # ╠═15c93185-d758-426f-a94d-cba68a1c84a1
 # ╠═688efeb3-07da-4d75-a35b-a79f9440da76
+# ╠═eb371182-ea27-4334-8cde-3fd8bf810148
 # ╠═f28e0e9a-23c5-4114-a853-2da285a24641
 # ╠═867926b1-3d3e-4c7f-95cf-54ed6b54c112
 # ╠═c5fe8288-4650-4a38-a322-38780978095d
 # ╠═f6be3df8-6368-4535-8085-537a80dd3ae0
 # ╠═808904ca-b1d9-4eca-ae40-bcd53451fa83
+# ╟─c35bd54f-0f0f-4979-b842-a800eca12a6a
+# ╠═24fc1b19-97b4-4535-9276-c9db11549fff
 # ╠═34001f70-e2db-4529-a315-caf38ecb87b0
+# ╠═aee1f31c-4650-4ead-b25e-8a728419b18c
+# ╠═ee1c130c-9cb1-46f3-8416-d1997d118f4d
 # ╠═80a7d977-99e7-4d51-9cc9-4e6b7c410a6a
 # ╠═c74eb635-2948-4db3-bd53-c7d7a5b2a454
 # ╠═cc0422bf-2e9b-463a-9b1a-468b09bb370e

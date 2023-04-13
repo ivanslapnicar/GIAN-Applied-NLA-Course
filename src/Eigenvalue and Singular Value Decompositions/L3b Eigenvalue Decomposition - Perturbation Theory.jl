@@ -138,7 +138,7 @@ $$\|AU\|_2=\|A\|_2,\quad \|AU\|_F=\|A\|_F,\quad
 \|UA\|_2=\|A\|_2,\quad  \|UA\|_F=\|A\|_F.$$
 
 17. For $A$ square, $\rho(A)\leq\|A\|$.
-18. For $A$ square, $A^k\to 0$ iff $>\rho(A)<1$.
+18. For $A$ square, $A^k\to 0$ iff $\rho(A)<1$.
 """
 
 # ╔═╡ 8261b5ce-9315-11eb-2378-af63c3eb4c02
@@ -376,6 +376,12 @@ $$\|\sin\Theta(X_1,Q)\|_F\leq \frac{\|R\|_F}{\eta}.$$
 md"""
 ## Examples 
 """
+
+# ╔═╡ 3ddbd87f-0cbd-4522-99ec-97d595cfae56
+Z=[5 0.1 0.1; 0.1 6 -0.1;0.1 0.1 7]
+
+# ╔═╡ 8f58c0db-252a-41af-9ea2-bc781735d7fb
+eigvals(Z)
 
 # ╔═╡ fa855f4a-d483-4748-9ef7-6be7b3f2ca68
 md"
@@ -1128,7 +1134,9 @@ version = "17.4.0+0"
 # ╟─909033d9-bb27-4f0e-b07d-574f7fcee700
 # ╟─7ef162c0-5c80-4e96-bcc3-125b302b1d5e
 # ╟─3c8f71a5-0c2f-43a0-bf71-db9df707f84e
-# ╠═98fade4c-cdcb-495e-9328-96e86ca8e90e
+# ╟─98fade4c-cdcb-495e-9328-96e86ca8e90e
+# ╠═3ddbd87f-0cbd-4522-99ec-97d595cfae56
+# ╠═8f58c0db-252a-41af-9ea2-bc781735d7fb
 # ╟─fa855f4a-d483-4748-9ef7-6be7b3f2ca68
 # ╠═36491599-93a3-425d-99cf-dc91e6f848b7
 # ╠═1464099d-2d74-481d-81e8-529b557a2bba
