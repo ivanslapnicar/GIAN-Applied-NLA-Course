@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.17.3
+# v0.19.23
 
 using Markdown
 using InteractiveUtils
@@ -224,6 +224,9 @@ begin
 	X=cat(X₁,X₂,dims=(1,2))
 end
 
+# ╔═╡ 7cbc4972-f604-4d1f-865d-0d9c5439b437
+T₁
+
 # ╔═╡ 06c885f9-f73c-448e-9ba7-7664ba1ad105
 T₂
 
@@ -246,9 +249,6 @@ eigvals(T₀)
 md"
 ### Importing Divide & Conquer from LAPACK
 "
-
-# ╔═╡ 85b73c5c-62ed-435f-876e-3d726768168c
-
 
 # ╔═╡ cb7ac40c-b1fb-4b67-8a76-6c0df47fb270
 # See the list of imported LAPACK routines - D&C is not among them
@@ -320,6 +320,9 @@ end
 
 # ╔═╡ 79a282fc-a91d-486b-8620-6fad38f00e0b
 norm(Λ-μ)
+
+# ╔═╡ 8c988e82-1c05-4e3a-a30f-277cb462cd5e
+norm(Q'*Q-I)
 
 # ╔═╡ 85eae2ff-8d8f-4567-95a5-4b87efb711fa
 Q'*T*Q
@@ -431,8 +434,9 @@ PlutoUI = "~0.7.38"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.7.2"
+julia_version = "1.8.5"
 manifest_format = "2.0"
+project_hash = "23a7138a3fc77fba614979696a6f861d251c9afb"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
@@ -442,6 +446,7 @@ version = "1.1.4"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
+version = "1.1.1"
 
 [[deps.Artifacts]]
 uuid = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
@@ -458,14 +463,19 @@ version = "0.11.0"
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
+version = "1.0.1+0"
 
 [[deps.Dates]]
 deps = ["Printf"]
 uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
 
 [[deps.Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
+version = "1.6.0"
+
+[[deps.FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[deps.FixedPointNumbers]]
 deps = ["Statistics"]
@@ -503,10 +513,12 @@ version = "0.21.3"
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
 uuid = "b27032c2-a3e7-50c8-80cd-2d36dbcbfd21"
+version = "0.6.3"
 
 [[deps.LibCURL_jll]]
 deps = ["Artifacts", "LibSSH2_jll", "Libdl", "MbedTLS_jll", "Zlib_jll", "nghttp2_jll"]
 uuid = "deac9b47-8bc7-5906-a0fe-35ac56dc84c0"
+version = "7.84.0+0"
 
 [[deps.LibGit2]]
 deps = ["Base64", "NetworkOptions", "Printf", "SHA"]
@@ -515,6 +527,7 @@ uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
 [[deps.LibSSH2_jll]]
 deps = ["Artifacts", "Libdl", "MbedTLS_jll"]
 uuid = "29816b5a-b9ab-546f-933c-edad1886dfa8"
+version = "1.10.2+0"
 
 [[deps.Libdl]]
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
@@ -533,19 +546,23 @@ uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
 [[deps.MbedTLS_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "c8ffd9c3-330d-5841-b78e-0817d7145fa1"
+version = "2.28.0+0"
 
 [[deps.Mmap]]
 uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [[deps.MozillaCACerts_jll]]
 uuid = "14a3606d-f60d-562e-9121-12d972cd8159"
+version = "2022.2.1"
 
 [[deps.NetworkOptions]]
 uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
+version = "1.2.0"
 
 [[deps.OpenBLAS_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Libdl"]
 uuid = "4536629a-c528-5b80-bd46-f80d51c5b363"
+version = "0.3.20+0"
 
 [[deps.Parsers]]
 deps = ["Dates"]
@@ -556,6 +573,7 @@ version = "2.2.3"
 [[deps.Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+version = "1.8.0"
 
 [[deps.PlutoUI]]
 deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "UUIDs"]
@@ -582,6 +600,7 @@ version = "1.2.2"
 
 [[deps.SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+version = "0.7.0"
 
 [[deps.Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
@@ -600,10 +619,12 @@ uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 [[deps.TOML]]
 deps = ["Dates"]
 uuid = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+version = "1.0.0"
 
 [[deps.Tar]]
 deps = ["ArgTools", "SHA"]
 uuid = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
+version = "1.10.1"
 
 [[deps.Test]]
 deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]
@@ -619,22 +640,26 @@ uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 [[deps.Zlib_jll]]
 deps = ["Libdl"]
 uuid = "83775a58-1f1d-513f-b197-d71354ab007a"
+version = "1.2.12+3"
 
 [[deps.libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl", "OpenBLAS_jll"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
+version = "5.1.1+0"
 
 [[deps.nghttp2_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850ede-7688-5339-a07c-302acd2aaf8d"
+version = "1.48.0+0"
 
 [[deps.p7zip_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
+version = "17.4.0+0"
 """
 
 # ╔═╡ Cell order:
-# ╟─56fea874-cdd8-46c2-babf-10c5bd6440d2
+# ╠═56fea874-cdd8-46c2-babf-10c5bd6440d2
 # ╟─fee10c7e-f1f4-41d4-86a9-c980b5b9b8a5
 # ╟─dd5b2908-1dc7-4e2a-8b11-c5686a120c36
 # ╟─219aea92-5737-42f5-8bed-a214a287851c
@@ -658,6 +683,7 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╟─131ae1b7-a946-4e3f-b260-d037ee7ee6ce
 # ╠═e1288577-8a5b-4b21-8533-68be1619a5e6
 # ╠═a13052ab-297a-4e5a-8654-e65e1fde2e41
+# ╠═7cbc4972-f604-4d1f-865d-0d9c5439b437
 # ╠═04206e97-57c2-41fe-938f-9108cab56740
 # ╠═06c885f9-f73c-448e-9ba7-7664ba1ad105
 # ╠═e2c2803c-e709-43c1-9b79-524bf6dc03e3
@@ -666,12 +692,12 @@ uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
 # ╠═903e7308-e7be-4821-82e5-105aca75aca2
 # ╠═c000c311-8262-4cdf-ace6-13106a792aad
 # ╟─574c1653-a2c2-4365-a768-e447bab2d805
-# ╠═85b73c5c-62ed-435f-876e-3d726768168c
 # ╠═cb7ac40c-b1fb-4b67-8a76-6c0df47fb270
 # ╠═bc5ea97a-70ef-4a95-b59e-96790ba0346f
 # ╠═b6804e98-b5bc-4f42-a864-25018886dc65
 # ╠═93aadb04-e1bd-4031-aef4-6246141a9fc3
 # ╠═79a282fc-a91d-486b-8620-6fad38f00e0b
+# ╠═8c988e82-1c05-4e3a-a30f-277cb462cd5e
 # ╠═85eae2ff-8d8f-4567-95a5-4b87efb711fa
 # ╠═bd7472cd-2ede-4c57-af89-4a4325395a2f
 # ╠═1cdb29eb-b325-4352-8ad6-f23c9698a3c2

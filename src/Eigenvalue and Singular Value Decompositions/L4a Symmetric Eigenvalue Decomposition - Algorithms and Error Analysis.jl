@@ -184,7 +184,7 @@ function Power(A::Matrix,x::Vector,tol::Real)
     y=A*x
     ν=x⋅y
     steps=1
-    while norm(y-ν*x)>tol && steps<200
+    while norm(y-ν*x)>tol && steps<500
         x=y/norm(y)
         y=A*x
         ν=x⋅y
@@ -204,8 +204,17 @@ end
 # ╔═╡ ab54ea2a-efbd-44d8-953e-cdd86b2e783d
 ν,x,steps=Power(A,ones(n),1e-10)
 
+# ╔═╡ 7e0320e6-1d38-4ce4-85fb-e3c7c7022420
+qx,rx=qr(x)
+
+# ╔═╡ 6e49df99-931c-47ea-8f4f-efe4a5273fd3
+qx'*A*qx
+
 # ╔═╡ 2c3d8a7f-c986-4277-9470-c5abab058ee4
 eigvals(A)
+
+# ╔═╡ 302316e7-df55-4c65-9593-93d04fdb239f
+(21.0721/22.1025)^500
 
 # ╔═╡ 5b8c1f0f-e396-40ee-8018-e0ea53af0b2a
 (18.7/23.27)^131
@@ -216,6 +225,24 @@ eigvals(A)
 # ╔═╡ 71107f6d-4c6e-4bc1-a27b-51a99a172b87
 # Speed of convergence
 (18.7/23)^131
+
+# ╔═╡ c1de7100-40f0-4775-857b-856c24dc8be1
+function InvIter(A::Matrix,x::Vector,μ::Real,tol::Real)
+    y=(A-μ*I)\x
+    ν=x⋅y
+    steps=1
+    while norm(y-ν*x)>tol && steps<501
+        x=y/norm(y)
+        y=(A-μ*I)\x
+        ν=x⋅y
+        # println(x)
+        steps+=1
+    end
+    1/ν+μ, y/norm(y), steps
+end
+
+# ╔═╡ 2ca58fc6-4691-4c40-9fb2-8ef3636ea0d3
+InvIter(A,ones(n),12.0,1e-10)
 
 # ╔═╡ df6a18ea-a3ef-42ea-85af-7636aa1afc51
 begin
@@ -268,7 +295,10 @@ function PowerMethod(A::Matrix{T}, tol::Real) where T
 end
 
 # ╔═╡ a9a8b682-e673-4fbe-84a1-138cb1220808
-PowerMethod(A,1e-10)
+l=PowerMethod(A,1e-10)
+
+# ╔═╡ ff4866d8-32cd-4d23-ac40-ec410eb56ced
+InvIter(A,ones(size(A,1)),-13.0018,1e-10)
 
 # ╔═╡ e4587338-6727-49f4-9036-831fdf3bf172
 # QR iteration
@@ -283,7 +313,7 @@ function QRIteration(A::Matrix, tol::Real)
 end
 
 # ╔═╡ edb2bd46-9c83-46b4-be8f-ffb02411a690
-QRIteration(A,1e-5)
+QRIteration(A,1e-10)
 
 # ╔═╡ 13366c0b-ae11-4bd5-8844-f33694bbd16c
 md"""
@@ -474,6 +504,9 @@ end
 # ╔═╡ 04ee850c-a475-476c-803b-43d7132d2632
 methodswith(LinearAlgebra.Givens)
 
+# ╔═╡ 8c21dd54-6a32-40a4-a576-0e837915cd02
+A
+
 # ╔═╡ 68f9bdd0-4059-424c-8ee8-cd46ab9ecc29
 T₁,X₁=TridiagG(float(A))
 
@@ -628,7 +661,7 @@ T
 md"""
 #  Computing the eigenvectors 
 
-Once the eigenvalues are computed, the eigeenvectors can be efficiently computed with inverse iterations.Inverse iterations for tridiagonal matrices are implemented in the LAPACK routine [DSTEIN](http://www.netlib.org/lapack/explore-html/d8/d35/dstein_8f.html).
+Once the eigenvalues are computed, the eigenvectors can be efficiently computed with inverse iterations.Inverse iterations for tridiagonal matrices are implemented in the LAPACK routine [DSTEIN](http://www.netlib.org/lapack/explore-html/d8/d35/dstein_8f.html).
 """
 
 # ╔═╡ ae5e4cb9-562a-4bf2-bf6f-6b4c3e8d10d4
@@ -1088,10 +1121,15 @@ version = "17.4.0+0"
 # ╠═3994bd3e-c2b2-486c-924f-c38896760bff
 # ╠═5450fb80-ab1f-4212-ad6f-aa0483bf74d6
 # ╠═ab54ea2a-efbd-44d8-953e-cdd86b2e783d
+# ╠═7e0320e6-1d38-4ce4-85fb-e3c7c7022420
+# ╠═6e49df99-931c-47ea-8f4f-efe4a5273fd3
 # ╠═2c3d8a7f-c986-4277-9470-c5abab058ee4
+# ╠═302316e7-df55-4c65-9593-93d04fdb239f
 # ╠═5b8c1f0f-e396-40ee-8018-e0ea53af0b2a
 # ╠═290024ee-b36d-4a71-8adf-d433a6daf6ad
 # ╠═71107f6d-4c6e-4bc1-a27b-51a99a172b87
+# ╠═c1de7100-40f0-4775-857b-856c24dc8be1
+# ╠═2ca58fc6-4691-4c40-9fb2-8ef3636ea0d3
 # ╠═df6a18ea-a3ef-42ea-85af-7636aa1afc51
 # ╠═d3535056-04e2-43db-9073-1e3704ea6d47
 # ╠═11b95202-73be-4403-ba45-1dda9fe1e48b
@@ -1102,6 +1140,7 @@ version = "17.4.0+0"
 # ╠═2dc7c262-098d-4433-ab17-8e8d3ca00bd7
 # ╠═e4f1b71f-2809-4136-8e56-aa9389d4d674
 # ╠═a9a8b682-e673-4fbe-84a1-138cb1220808
+# ╠═ff4866d8-32cd-4d23-ac40-ec410eb56ced
 # ╠═e4587338-6727-49f4-9036-831fdf3bf172
 # ╠═edb2bd46-9c83-46b4-be8f-ffb02411a690
 # ╟─13366c0b-ae11-4bd5-8844-f33694bbd16c
@@ -1122,6 +1161,7 @@ version = "17.4.0+0"
 # ╠═fcc9ff8b-1549-4782-89ca-13c0f867af00
 # ╠═61c41ad7-df89-421f-a9a5-2a0ee606b9f6
 # ╠═04ee850c-a475-476c-803b-43d7132d2632
+# ╠═8c21dd54-6a32-40a4-a576-0e837915cd02
 # ╠═68f9bdd0-4059-424c-8ee8-cd46ab9ecc29
 # ╠═4b53ee99-6b20-4153-af8e-79b13c1b4ee3
 # ╠═4a484bf9-001f-4ec6-a4cd-d6bf2fc5b617
