@@ -15,9 +15,9 @@ Here are some links:
 The notebooks are using [Julia](http://julialang.org/) programming language. To start using Julia see the
 [Julia Course](https://github.com/ivanslapnicar/Julia-Course)
 
-The Pluto notebooks (ending in `.jl`) are updated to the new Julia versions.
+The Pluto notebooks (ending in `.jl`, found in the '/src' directory) are updated to the new Julia versions.
 
-The Jupyter notebooks (ending in `.ipyinb`) and PDF files are outdated, but are also provided.
+The original Jupyter notebooks (ending in `.ipynb`) and corresopomding PDF files are outdated, but are also provided.
 
 The notebooks are divided into two modules:
 
