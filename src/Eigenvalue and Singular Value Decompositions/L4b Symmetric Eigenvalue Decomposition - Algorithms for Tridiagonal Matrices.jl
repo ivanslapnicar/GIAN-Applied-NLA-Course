@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.23
+# v0.19.20
 
 using Markdown
 using InteractiveUtils
@@ -169,7 +169,18 @@ We assume that $T$ is unreduced, that is, $\alpha_i\neq 0$ for all $i$. Further,
 $$\hat T_1=T_1- \alpha_k e_k e_k^T,\qquad
 \hat T_2=T_2- \alpha_k e_1 e_1^T.$$
 
-In other words, $\hat T_1$ is equal to $T_1$ except that $T_{kk}$ is replaced by $T_{kk}-\alpha_k$, and $\hat T_2$ is equal to $T_2$ except that $T_{k+1,k+1}$ is replaced by $T_{k+1,k+1}-\alpha_k$. Let $\hat T_i= \hat U_i \hat \Lambda_i \hat U_i^T$, $i=1,2$, be the respective EVDs and let  $v=\begin{bmatrix} \hat U_1^T e_k   \\ \hat U_2^T e_1 \end{bmatrix}.$ ($v$ consists of the last column of $\hat U_1^T$ and the first column of $\hat U_2^T$). Set $\hat U=\hat U_1\oplus \hat U_2$ and $\hat \Lambda=\hat \Lambda_1 \oplus \hat \Lambda_2$. Then
+In other words, $\hat T_1$ is equal to $T_1$ except that $T_{kk}$ is replaced by $T_{kk}-\alpha_k$, and $\hat T_2$ is equal to $T_2$ except that $T_{k+1,k+1}$ is replaced by $T_{k+1,k+1}-\alpha_k$. 
+
+Let 
+
+$$\hat T_i= \hat U_i \hat \Lambda_i \hat U_i^T,\qquad i=1,2,$$ be the respective EVDs
+and let  
+
+$$
+v=\begin{bmatrix} \hat U_1^T e_k   \\ \hat U_2^T e_1 \end{bmatrix}$$ 
+In other words, $v$ consists of the last column of $\hat U_1^T$ and the first column of $\hat U_2^T$). 
+
+Set $\hat U=\hat U_1\oplus \hat U_2$ and $\hat \Lambda=\hat \Lambda_1 \oplus \hat \Lambda_2$. Then
 
 $$T=\begin{bmatrix}\hat U_1 & \\ & \hat U_2 \end{bmatrix}
 \left[\begin{bmatrix} \hat \Lambda_1 & \\ & \hat \Lambda_2 \end{bmatrix} + \alpha_k v v^T\right] 

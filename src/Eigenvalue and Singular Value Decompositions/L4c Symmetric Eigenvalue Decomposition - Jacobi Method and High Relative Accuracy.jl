@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.17.3
+# v0.19.20
 
 using Markdown
 using InteractiveUtils
@@ -120,9 +120,9 @@ $$
 Thus,
 
 $$
-\|A_{k+1}\|_{\mathrm{off}}^2\leq\left(1-\frac{2}{n(n-1)}\right)\|A_{k}\|_{\mathrm{off}}^2$$
+\|A_{k+1}\|_{\mathrm{off}}^2\leq\left(1-\frac{2}{n(n-1)}\right)\|A_{k}\|_{\mathrm{off}}^2,$$
 
-and the method converges.
+so $\| A_k\|_{\mathrm{off}}\to 0$.
 
 4. For the row cyclic and the column cyclic pivoting strategies, the method converges. The convergence is ultimately __quadratic__ in the sense that
 
@@ -228,13 +228,13 @@ end
 
 # ╔═╡ 3c7034f9-a477-470e-8d71-88e3bda9340b
 md"""
-`Jacobi()` is accurate but very slow. Notice the extremely high memory allocation.
+Jaconi's method is accurate but slow. The function `Jacobi()` is additionally slow due to high memory allocation.
 
 The two key elements to reducing the allocations are: 
 1. make sure variables don't change type within a function, and  
 2. reuse arrays in hot loops.
 
-Here we will simply use the in-place multiplication routines which are in Julia denoted by `!`.
+Using the in-place multiplication routines which are in Julia denoted by `!` speeds the computation up considerably.
 """
 
 # ╔═╡ 46c32fa9-e5a8-4f94-a314-115f7b234e7d
@@ -306,7 +306,7 @@ A_S=D^{-1} A D^{-1}, \quad D=\mathop{\mathrm{diag}}(\sqrt{A_{11}},\sqrt{A_{22}},
 $$
 \kappa_2(A_S)\leq  n \min\limits_{D=\mathrm{diag}} \kappa(DAD) \leq n\kappa_2(A).$$
 
-2. Let $A$ and $\tilde A=A+\Delta A$ both be positive definite, and let their eigenvalues have the same ordering. Then
+2. Let $A$ and $\tilde A=A+\Delta A$ both be positive definite and let their eigenvalues have the same ordering. Then
 
 $$
 \frac{|\lambda_i-\tilde\lambda_i|}{\lambda_i}\leq 
@@ -331,7 +331,9 @@ and some user defined tolerance $tol$ (usually $tol=n\varepsilon$), computes the
 $$
 \|\Delta A_S\|\leq \varepsilon\, O(\|A_S\|_2)\leq O(n)\varepsilon,$$
 
-_provided_ that $\kappa_2([A_k]_S)$  does not grow much during the iterations. There is overwhelming numerical evidence that the scaled condition does not grow much, and the growth can be monitored, as well.
+_provided_ that $\kappa_2([A_k]_S)$  does not grow much during the iterations. 
+
+> There is overwhelming numerical evidence that the scaled condition does not grow much, and the growth can be monitored, as well.
 
 The proofs of the above facts are in [J. Demmel and K. Veselić, Jacobi's method is more accurate than QR](http://www.netlib.org/lapack/lawnspdf/lawn15.pdf).  
 """
@@ -445,8 +447,9 @@ PlutoUI = "~0.7.38"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.7.2"
+julia_version = "1.8.5"
 manifest_format = "2.0"
+project_hash = "23a7138a3fc77fba614979696a6f861d251c9afb"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
@@ -456,6 +459,7 @@ version = "1.1.4"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
+version = "1.1.1"
 
 [[deps.Artifacts]]
 uuid = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
@@ -472,14 +476,19 @@ version = "0.11.0"
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
+version = "1.0.1+0"
 
 [[deps.Dates]]
 deps = ["Printf"]
 uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
 
 [[deps.Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
+version = "1.6.0"
+
+[[deps.FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[deps.FixedPointNumbers]]
 deps = ["Statistics"]
@@ -517,10 +526,12 @@ version = "0.21.3"
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
 uuid = "b27032c2-a3e7-50c8-80cd-2d36dbcbfd21"
+version = "0.6.3"
 
 [[deps.LibCURL_jll]]
 deps = ["Artifacts", "LibSSH2_jll", "Libdl", "MbedTLS_jll", "Zlib_jll", "nghttp2_jll"]
 uuid = "deac9b47-8bc7-5906-a0fe-35ac56dc84c0"
+version = "7.84.0+0"
 
 [[deps.LibGit2]]
 deps = ["Base64", "NetworkOptions", "Printf", "SHA"]
@@ -529,6 +540,7 @@ uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
 [[deps.LibSSH2_jll]]
 deps = ["Artifacts", "Libdl", "MbedTLS_jll"]
 uuid = "29816b5a-b9ab-546f-933c-edad1886dfa8"
+version = "1.10.2+0"
 
 [[deps.Libdl]]
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
@@ -547,19 +559,23 @@ uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
 [[deps.MbedTLS_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "c8ffd9c3-330d-5841-b78e-0817d7145fa1"
+version = "2.28.0+0"
 
 [[deps.Mmap]]
 uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [[deps.MozillaCACerts_jll]]
 uuid = "14a3606d-f60d-562e-9121-12d972cd8159"
+version = "2022.2.1"
 
 [[deps.NetworkOptions]]
 uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
+version = "1.2.0"
 
 [[deps.OpenBLAS_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Libdl"]
 uuid = "4536629a-c528-5b80-bd46-f80d51c5b363"
+version = "0.3.20+0"
 
 [[deps.Parsers]]
 deps = ["Dates"]
@@ -570,6 +586,7 @@ version = "2.3.1"
 [[deps.Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+version = "1.8.0"
 
 [[deps.PlutoUI]]
 deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "UUIDs"]
@@ -596,6 +613,7 @@ version = "1.2.2"
 
 [[deps.SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+version = "0.7.0"
 
 [[deps.Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
@@ -614,10 +632,12 @@ uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 [[deps.TOML]]
 deps = ["Dates"]
 uuid = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+version = "1.0.0"
 
 [[deps.Tar]]
 deps = ["ArgTools", "SHA"]
 uuid = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
+version = "1.10.1"
 
 [[deps.Test]]
 deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]
@@ -633,18 +653,22 @@ uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 [[deps.Zlib_jll]]
 deps = ["Libdl"]
 uuid = "83775a58-1f1d-513f-b197-d71354ab007a"
+version = "1.2.12+3"
 
 [[deps.libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl", "OpenBLAS_jll"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
+version = "5.1.1+0"
 
 [[deps.nghttp2_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850ede-7688-5339-a07c-302acd2aaf8d"
+version = "1.48.0+0"
 
 [[deps.p7zip_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
+version = "17.4.0+0"
 """
 
 # ╔═╡ Cell order:

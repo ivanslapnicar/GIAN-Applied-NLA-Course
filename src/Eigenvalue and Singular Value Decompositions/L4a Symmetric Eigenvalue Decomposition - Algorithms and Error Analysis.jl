@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.23
+# v0.19.20
 
 using Markdown
 using InteractiveUtils
@@ -139,13 +139,11 @@ md"""
 1. If $\lambda_1$ is the dominant eigenvalue, $x_0$ is not orthogonal to $U_{:1}$, and the norm is $2$-norm, then $\nu_k\to \lambda_1$ and $x_k\to U_{:1}$. In other words, the power method converges to the dominant eigenvalue and its eigenvector.
 
 2. The convergence is linear in the sense that 
-
 $$
 |\lambda_1-\nu_k|\approx \left|\frac{c_2}{c_1}\right| \left|
  \frac{\lambda_2}{\lambda_1}\right|^k,\qquad
 \|U_{:1}-x_k\|_2 =O\bigg(\bigg|
  \frac{\lambda_2}{\lambda_1}\bigg|^k\bigg)\!,$$
-
 where $c_i$ is the coefficient of the $i$-th eigenvector in the linear combination expressing the starting vector $x_0$.
  
 3. Since $\lambda_1$ is not available, the convergence is determined using residuals:  if $\| Ax_k-\nu_k x_k\|_2\leq tol$, where $tol$ is a user prescribed stopping criterion, then $|\lambda_1-\nu_k|\leq tol$.
@@ -385,7 +383,7 @@ A column-oriented version is possible as well, and the operation count in both c
 
 9. The backward error bounds for functions `Tridiag()` and `TridiagX()` are as follows: The computed matrix $\tilde T$ is equal to the matrix which would be obtained by exact tridiagonalization of some perturbed matrix $A+\Delta A$, where $\|\Delta A\|_2 \leq \psi \varepsilon \|A\|_2$ and $\psi$ is a slowly increasing function of $n$. The computed matrix $\tilde X$ satisfies $\tilde X=X+\Delta X$, where $\|\Delta X \|_2\leq \phi \varepsilon$ and $\phi$ is a slowly increasing function of $n$.
 
-10. Tridiagonalization using Givens rotations requires $\frac{(n-1)(n-2)}{2}$ plane rotations, which amounts to $4n^3$ operations if symmetry is properly exploited. The operation count is reduced to $8n^3/3$ if fast rotations are used. Fast rotations are obtained by factoring out absolutely larger of $c$ and $s$ from $G$.
+10. Tridiagonalization using Givens rotations requires $\displaystyle\frac{(n-1)(n-2)}{2}$ plane rotations, which amounts to $4n^3$ operations if symmetry is properly exploited. The operation count is reduced to $8n^3/3$ if fast rotations are used. Fast rotations are obtained by factoring out absolutely larger of $c$ and $s$ from $G$.
 
 11. Givens rotations in the function `TridiagG()`  can be performed in different orderings. For example, the elements in the first column and row can be annihilated by rotations in the planes $(n-1,n)$, $(n-2,n-1)$, $\ldots$, $(2,3)$. Givens rotations act more selectively than Householder reflectors, and are useful if $A$ has some special structure, for example, if $A$ is a banded matrix. 
 
@@ -450,8 +448,8 @@ H₁=cat([1],I-2*v₁*v₁'/(v₁⋅v₁),dims=(1,2))
 H₁*A*H₁
 
 # ╔═╡ b0256b1a-b748-44d0-991e-bc6d12f619e6
-# Extract X
 function TridiagX(H::Matrix)
+	# Extract X from the matrix returned by Tridiag()
     n=size(H,1)
 	T=Float64
     X = Matrix{T}(I,n,n)
@@ -483,8 +481,8 @@ md"
 "
 
 # ╔═╡ fcc9ff8b-1549-4782-89ca-13c0f867af00
-# Tridiagonalization using Givens rotations
 function TridiagG(A::Matrix)
+	# Tridiagonalization using Givens rotations
     n=size(A,1)
     X=Matrix{Float64}(I,n,n)
     for j = 1 : n-2
@@ -518,16 +516,23 @@ X₁'*X₁
 # Tridiagonalization
 X₁'*A*X₁
 
+# ╔═╡ 278d1e53-d815-470f-8908-3ddf08c09938
+md"
+There may be differences in signs: compare T (computed using Householder reflectors) and T₁ (computed using Givens rotations).
+"
+
 # ╔═╡ def69e92-5a19-434f-b584-4841a4049c27
-# There may be differences in signs
 T
+
+# ╔═╡ ac500be6-6160-4294-8748-70bbcaf9be1b
+T₁
 
 # ╔═╡ 50681bb6-6db0-4e07-b52d-94d3b6662526
 # One step of QR method
 Q,R=qr(Matrix(T))
 
 # ╔═╡ e024fae1-ceea-4f44-9692-00a203afdf3a
-# Triangularity and symmetricity is preserved
+# Triangulararity and symmetricity is preserved
 R*Q
 
 # ╔═╡ 6df580a7-0376-4264-9fa7-540d6bab6f9d
@@ -590,7 +595,7 @@ md"
 
 # ╔═╡ a0e1250f-c543-4186-8a3d-5a0ac8e1747a
 function TridEigQR(A₁::SymTridiagonal)
-    A=deepcopy(A₁)
+    A=copy(A₁)
     n=length(A.dv)
     T=Float64
     λ=Vector{T}(undef,n)
@@ -862,9 +867,6 @@ H₄.Q'*A₄*H₄.Q
 
 # ╔═╡ 3be5de14-d041-40c6-86a9-048eca55699d
 eigvals(Matrix(H₄.H))
-
-# ╔═╡ d10b422c-beef-4eb2-803a-229a4054c7f8
-
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -1165,7 +1167,9 @@ version = "17.4.0+0"
 # ╠═68f9bdd0-4059-424c-8ee8-cd46ab9ecc29
 # ╠═4b53ee99-6b20-4153-af8e-79b13c1b4ee3
 # ╠═4a484bf9-001f-4ec6-a4cd-d6bf2fc5b617
+# ╟─278d1e53-d815-470f-8908-3ddf08c09938
 # ╠═def69e92-5a19-434f-b584-4841a4049c27
+# ╠═ac500be6-6160-4294-8748-70bbcaf9be1b
 # ╠═50681bb6-6db0-4e07-b52d-94d3b6662526
 # ╠═e024fae1-ceea-4f44-9692-00a203afdf3a
 # ╟─6df580a7-0376-4264-9fa7-540d6bab6f9d
@@ -1203,6 +1207,5 @@ version = "17.4.0+0"
 # ╠═fd066fd1-0910-40b4-96e1-a703ec23e834
 # ╠═403ad3f2-d761-4361-98c9-a94dedcc73bd
 # ╠═3be5de14-d041-40c6-86a9-048eca55699d
-# ╠═d10b422c-beef-4eb2-803a-229a4054c7f8
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
