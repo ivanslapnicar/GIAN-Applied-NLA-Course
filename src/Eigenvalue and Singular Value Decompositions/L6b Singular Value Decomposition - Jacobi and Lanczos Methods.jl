@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.17.3
+# v0.19.20
 
 using Markdown
 using InteractiveUtils
@@ -22,7 +22,7 @@ md"""
 
 Since computing the SVD of $A$ can be seen as computing the EVD of the symmetric matrices $A^*A$, $AA^*$, or $\begin{bmatrix}0 & A \\ A^* & 0 \end{bmatrix}$, simple modifications of the corresponding EVD algorithms yield version for computing the SVD.
 
-For more details on one-sided Jacobi method, see [Z. Drmač, Computing Eigenvalues and Singular Values to High Relative Accuracy, pp. 59.1-59.21](https://www.routledge.com/Handbook-of-Linear-Algebra/Hogben/p/book/9781138199897) and the references therein.
+For more details on the one-sided Jacobi method, see [Z. Drmač, Computing Eigenvalues and Singular Values to High Relative Accuracy, pp. 59.1-59.21](https://www.routledge.com/Handbook-of-Linear-Algebra/Hogben/p/book/9781138199897) and the references therein.
 
 __Prerequisites__
 
@@ -30,7 +30,7 @@ The reader should be familiar with concepts of singular values and vectors, rela
 
 __Competences__
 
-The reader should be able to recognise matrices which warrant high relative accuracy and to apply Jacobi method to them. The reader should be able to recognise matrices to which Lanczos method can be efficiently applied and do so.
+The reader should be able to recognize matrices that warrant high relative accuracy and apply the Jacobi method to them. The reader should be able to recognize matrices to which the Lanczos method can be efficiently applied and do so.
 """
 
 # ╔═╡ 2eff5f1f-0989-4292-8f04-80983c1bd133
@@ -45,7 +45,7 @@ Let $A=BD$, where $D=\mathop{\mathrm{diag}} (\| A_{:,1}\|_2, \ldots, \|A_{:,n}\|
 
 ## Facts
 
-1. Let $\tilde U$, $\tilde V$ and $\tilde \Sigma$ be the approximations of $U$, $V$ and $\Sigma$, respectively, computed by a backward stable algorithm as $A+\Delta A=\tilde U\tilde \Sigma \tilde V^T$. Since the orthogonality of $\tilde U$ and $\tilde V$ cannot be guaranteed, this product in general does not represent and SVD. There exist nearby orthogonal matrices $\hat U$ and $\hat V$ such that $(I+E_1)(A+\Delta A)(I+E_2)=\hat U \tilde \Sigma \hat V^T$, where departures from orthogonalithy, $E_1$ and $E_2$, are small in norm.
+1. Let $\tilde U$, $\tilde V$ and $\tilde \Sigma$ be the approximations of $U$, $V$ and $\Sigma$, respectively, computed by a backward stable algorithm as $A+\Delta A=\tilde U\tilde \Sigma \tilde V^T$. Since the orthogonality of $\tilde U$ and $\tilde V$ cannot be guaranteed, this product, in general, does not represent an SVD. There exist nearby orthogonal matrices $\hat U$ and $\hat V$ such that $(I+E_1)(A+\Delta A)(I+E_2)=\hat U \tilde \Sigma \hat V^T$, where departures from orthogonalithy, $E_1$ and $E_2$, are small in norm.
 
 2. Standard algorithms compute the singular values with backward error $\| \Delta A\|\leq \phi\varepsilon \|A\|_2$, where $\varepsilon$ is machine precision and $\phi$ is a slowly growing function of $n$. The best error bound for the singular values is $|\sigma_j-\tilde \sigma_j|\leq \| \Delta A\|_2$, and the best relative error bound is
 
@@ -67,13 +67,13 @@ $$
 \| B^{\dagger} \| \leq \kappa_2(B) \leq \sqrt{n} \min_{S=\mathop{\mathrm{diag}}} 
 \kappa_2(A\cdot S)\leq \sqrt{n}\,\kappa_2(A).$$
 
-Therefore, numerical algorithm with column-wise small backward error computes singular values more accurately than an algorithm with small norm-wise backward error.
+Therefore, a numerical algorithm with a column-wise small backward error computes singular values more accurately than an algorithm with a small norm-wise backward error.
 
-5. In each step, one-sided Jacobi method computes the Jacobi rotation matrix from the pivot submatrix of the current Gram matrix $A^TA$. Afterwards, $A$ is multiplied with the computed rotation matrix from the right (only two columns are affected). Convergence of the Jacobi method for the symmetric matrix $A^TA$ to a diagonal matrix, implies that the matrix $A$ converges to the matrix $AV$ with orthogonal columns and $V^TV=I$. Then $AV=U\Sigma$, $\Sigma=\mathop{\mathrm{diag}}(\| A_{:,1}\|_2, \ldots, \| A_{:,n}\|_2)$, $U=AV\Sigma^{-1}$, and  $A=U\Sigma V^T$ is the SVD of $A$.
+5. In each step, the one-sided Jacobi method computes the Jacobi rotation matrix from the pivot submatrix of the current Gram matrix $A^TA$. Afterward, $A$ is multiplied with the computed rotation matrix from the right (only two columns are affected). Convergence of the Jacobi method for the symmetric matrix $A^TA$ to a diagonal matrix implies that the matrix $A$ converges to the matrix $AV$ with orthogonal columns and $V^TV=I$. Then $AV=U\Sigma$, $\Sigma=\mathop{\mathrm{diag}}(\| A_{:,1}\|_2, \ldots, \| A_{:,n}\|_2)$, $U=AV\Sigma^{-1}$, and  $A=U\Sigma V^T$ is the SVD of $A$.
 
 6. One-sided Jacobi method computes the SVD with error bound from Facts 2 and 3, provided that the condition of the intermittent scaled matrices does not grow much. There is overwhelming numerical evidence for this. Alternatively, if $A$ is square, the one-sided Jacobi method can be applied to the transposed matrix $A^T=DB^T$ and the same error bounds apply, but the condition of the scaled matrix  (_this time from the left_) does not change. This approach is slower.
 
-7. One-sided Jacobi method can be preconditioned by applying one QR factorization with full pivoting and one QR factorization withour pivoting to $A$, to obtain faster convergence, without sacrifying accuracy. This method is implemented in the LAPACK routine [DGESVJ](http://www.netlib.org/lapack/explore-html-3.3.1/d1/d5e/dgesvj_8f_source.html). _Writing the wrapper for `DGESVJ` is a tutorial assignment._
+7. One-sided Jacobi method can be preconditioned by applying one QR factorization with full pivoting and one QR factorization without pivoting to $A$, to obtain faster convergence, without sacrificing accuracy. This method is implemented in the LAPACK routine [DGESVJ](http://www.netlib.org/lapack/explore-html-3.3.1/d1/d5e/dgesvj_8f_source.html). _Writing the wrapper for `DGESVJ` is a tutorial assignment._
 
 """
 
@@ -116,7 +116,7 @@ function JacobiR(A₁::AbstractMatrix)
                     t=sign(τ)/(abs(τ)+√(1+τ^2))
                     c=1/sqrt(1+t^2)
                     s=c*t
-                    G=LinearAlgebra.Givens(i,j,c,s)
+                    G=Givens(i,j,c,s)
                     # A*=G'
                     rmul!(A,G)
                     # V*=G'
@@ -322,8 +322,9 @@ PlutoUI = "~0.7.38"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.7.2"
+julia_version = "1.8.5"
 manifest_format = "2.0"
+project_hash = "94e44db4580547e15056cac555f510f4ac936044"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
@@ -333,6 +334,7 @@ version = "1.1.4"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
+version = "1.1.1"
 
 [[deps.Arpack]]
 deps = ["Arpack_jll", "Libdl", "LinearAlgebra", "Logging"]
@@ -361,14 +363,19 @@ version = "0.11.0"
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
+version = "1.0.1+0"
 
 [[deps.Dates]]
 deps = ["Printf"]
 uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
 
 [[deps.Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
+version = "1.6.0"
+
+[[deps.FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[deps.FixedPointNumbers]]
 deps = ["Statistics"]
@@ -412,10 +419,12 @@ version = "0.21.3"
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
 uuid = "b27032c2-a3e7-50c8-80cd-2d36dbcbfd21"
+version = "0.6.3"
 
 [[deps.LibCURL_jll]]
 deps = ["Artifacts", "LibSSH2_jll", "Libdl", "MbedTLS_jll", "Zlib_jll", "nghttp2_jll"]
 uuid = "deac9b47-8bc7-5906-a0fe-35ac56dc84c0"
+version = "7.84.0+0"
 
 [[deps.LibGit2]]
 deps = ["Base64", "NetworkOptions", "Printf", "SHA"]
@@ -424,6 +433,7 @@ uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
 [[deps.LibSSH2_jll]]
 deps = ["Artifacts", "Libdl", "MbedTLS_jll"]
 uuid = "29816b5a-b9ab-546f-933c-edad1886dfa8"
+version = "1.10.2+0"
 
 [[deps.Libdl]]
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
@@ -442,19 +452,23 @@ uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
 [[deps.MbedTLS_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "c8ffd9c3-330d-5841-b78e-0817d7145fa1"
+version = "2.28.0+0"
 
 [[deps.Mmap]]
 uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [[deps.MozillaCACerts_jll]]
 uuid = "14a3606d-f60d-562e-9121-12d972cd8159"
+version = "2022.2.1"
 
 [[deps.NetworkOptions]]
 uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
+version = "1.2.0"
 
 [[deps.OpenBLAS_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Libdl"]
 uuid = "4536629a-c528-5b80-bd46-f80d51c5b363"
+version = "0.3.20+0"
 
 [[deps.Parsers]]
 deps = ["Dates"]
@@ -465,6 +479,7 @@ version = "2.3.1"
 [[deps.Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+version = "1.8.0"
 
 [[deps.PlutoUI]]
 deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "UUIDs"]
@@ -497,6 +512,7 @@ version = "1.2.2"
 
 [[deps.SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+version = "0.7.0"
 
 [[deps.Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
@@ -515,10 +531,12 @@ uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 [[deps.TOML]]
 deps = ["Dates"]
 uuid = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+version = "1.0.0"
 
 [[deps.Tar]]
 deps = ["ArgTools", "SHA"]
 uuid = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
+version = "1.10.1"
 
 [[deps.Test]]
 deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]
@@ -534,18 +552,22 @@ uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 [[deps.Zlib_jll]]
 deps = ["Libdl"]
 uuid = "83775a58-1f1d-513f-b197-d71354ab007a"
+version = "1.2.12+3"
 
 [[deps.libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl", "OpenBLAS_jll"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
+version = "5.1.1+0"
 
 [[deps.nghttp2_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850ede-7688-5339-a07c-302acd2aaf8d"
+version = "1.48.0+0"
 
 [[deps.p7zip_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
+version = "17.4.0+0"
 """
 
 # ╔═╡ Cell order:

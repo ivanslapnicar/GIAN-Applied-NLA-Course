@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.17.3
+# v0.19.20
 
 using Markdown
 using InteractiveUtils
@@ -27,7 +27,7 @@ The reader should be familiar with facts about the singular value decomposition 
  
 __Competences__
 
-The reader should be able to apply an adequate algorithm to a given problem, and to assess the accuracy of the solution.
+The reader should be able to apply an adequate algorithm to a given problem and assess the accuracy of the solution.
 """
 
 # ╔═╡ 64ca893a-a1ee-4172-bd20-cf4aca1c3d41
@@ -70,21 +70,21 @@ md"""
 
 ## Facts
 
-1. The reduction of $A$ to bidiagonal matrix can be performed by applying $\min\{m-1,n\}$ Householder reflections $H_L$ from the left and $n-2$ Householder reflections $H_R$ from the right. In the first step, $H_L$ is chosen to annihilate all elements of the first column below the diagonal, and $H_R$ is chosen to annihilate all elements of the first row right of the first super-diagonal. Applying this procedure recursively yields the bidiagonal matrix.
+1. The reduction of $A$ to bidiagonal matrix can be performed by applying $\min\{m-1,n\}$ Householder reflections $H_L$ from the left and $n-2$ Householder reflections $H_R$ from the right. In the first step, $H_L$ is chosen to annihilate all elements of the first column below the diagonal and $H_R$ is chosen to annihilate all elements of the first row right of the first super-diagonal. Applying this procedure recursively yields the bidiagonal matrix.
 
 2.  $H_L$ and $H_R$ do not depend on the normalization of the respective Householder vectors $v_L$ and $v_R$. With the normalization $[v_L]_1=[V_R]_1=1$, the vectors $v_L$ are stored in the lower-triangular part of $A$, and the vectors $v_R$ are stored in the upper-triangular part of $A$ above the super-diagonal. 
 
 3. The matrices $H_L$ and $H_R$ are not formed explicitly - given $v_L$ and $v_R$, $A$ is overwritten with $H_L A H_R$ in $O(mn)$ operations by using matrix-vector multiplication and rank-one updates.
 
-4. Instead of performing rank-one updates, $p$ transformations can be accumulated, and then applied. This __block algorithm__ is rich in matrix-matrix multiplications (roughly one half of the operations is performed using BLAS 3 routines), but it requires extra workspace.
+4. Instead of performing rank-one updates, $p$ transformations can be accumulated and then applied. This __block algorithm__ is rich in matrix-matrix multiplications (roughly one-half of the operations is performed using BLAS 3 routines), but it requires extra workspace.
 
-5. If the matrices $X$ and $Y$ are needed explicitly, they can be computed from the stored Householder vectors. In order to minimize the operation count, the computation starts from the smallest matrix and the size is gradually increased.
+5. If the matrices $X$ and $Y$ are needed explicitly, they can be computed from the stored Householder vectors. To minimize the operation count, the computation starts from the smallest matrix, and the size is gradually increased.
 
 6. The backward error bounds for the bidiagonalization are as follows: The computed matrix $\tilde B$ is equal to the matrix which would be obtained by exact bidiagonalization of some perturbed matrix $A+\Delta A$, where $\|\Delta A\|_2 \leq \psi \varepsilon \|A\|_2$ and $\psi$ is a slowly increasing function of $n$. The computed matrices $\tilde X$ and $\tilde Y$ satisfy $\tilde X=X+\Delta X$ and $\tilde Y=Y+\Delta Y$, where $\|\Delta X \|_2,\|\Delta Y\|_2\leq \phi \varepsilon$ and $\phi$ is a slowly increasing function of $n$.
 
 7. The bidiagonal reduction is implemented in the [LAPACK](http://www.netlib.org/lapack) subroutine [DGEBRD](http://www.netlib.org/lapack/explore-html/dd/d9a/group__double_g_ecomputational.html#ga9c735b94f840f927f8085fd23f3ee2e6). The computation of $X$ and $Y$ is implemented in the subroutine [DORGBR](http://www.netlib.org/lapack/lapack-3.1.1/html/dorgtr.f.html), which is not yet wrapped in Julia.
 
-8. Bidiagonalization can also be performed using Givens rotations. Givens rotations act more selectively than Householder reflectors, and are useful if $A$ has some special structure, for example, if $A$ is a banded matrix. Error bounds for function `BidiagG()` are the same as above, but with slightly different functions $\psi$ and $\phi$.
+8. Bidiagonalization can also be performed using Givens rotations. Givens rotations act more selectively than Householder reflectors and are useful if $A$ has some special structure, for example, if $A$ is a banded matrix. Error bounds for function `BidiagG()` are the same as above but with slightly different functions $\psi$ and $\phi$.
 """
 
 # ╔═╡ 875fce0a-1b1b-4332-a150-6ec5f20aa7dc
@@ -143,8 +143,8 @@ B=Bidiagonal(O[2],O[3][1:end-1],'U')
 [svdvals(A) svdvals(B)]
 
 # ╔═╡ 583548a3-b3ad-493f-8061-fae21138208a
-# Extract X
 function BidiagX(H::Matrix)
+	# Extract matrix X from the matrix computed by LAPACK.gebrd!()
     m,n=size(H)
     T=typeof(H[1,1])
     X = Matrix{T}(I,m,n)
@@ -160,8 +160,8 @@ function BidiagX(H::Matrix)
 end
 
 # ╔═╡ 75d77c3b-649e-4d20-a1cf-5cc4d1335896
-# Extract Y
 function BidiagY(H::AbstractMatrix)
+	# Extract matrix Y from the matrix computed by LAPACK.gebrd!()
     n,m=size(H)
     T=typeof(H[1,1])
     Y = Matrix{T}(I,n,n)
@@ -244,16 +244,16 @@ md"""
 
 Let $B$ be a real upper-bidiagonal matrix of order $n$ and let $B=W\Sigma Z^T$ be its SVD.
 
-All metods for computing the SVD of bidiagonal matrix are derived from the methods for computing the EVD of the tridiagonal matrix $T=B^T B$.
+All methods for computing the SVD of a bidiagonal matrix are derived from the methods for computing the EVD of the tridiagonal matrix $T=B^T B$.
 
 
 ## Facts
 
-1. The shift $\mu$ is the eigenvalue of the $2\times 2$ matrix $T_{n-1:n,n-1:n}$ which is closer to $T_{n,n}$. The first Givens rotation from the right is the one which annihilates the element $(1,2)$ of the shifted $2\times 2$ matrix $T_{1:2,1:2}-\mu I$. Applying this rotation to $B$ creates the bulge at the element $B_{2,1}$. This bulge is subsequently chased out by applying adequate Givens rotations alternating from the left and from the right. This is the __Golub-Kahan algorithm__.
+1. The shift $\mu$ is the eigenvalue of the $2\times 2$ matrix $T_{n-1:n,n-1:n}$ which is closer to $T_{n,n}$. The first Givens rotation from the right is the one which annihilates the element $(1,2)$ of the shifted $2\times 2$ matrix $T_{1:2,1:2}-\mu I$. Applying this rotation to $B$ creates the bulge at the element $B_{2,1}$. This bulge is subsequently chased out by applying adequate Givens rotations alternating from the left and the right. This is the __Golub-Kahan algorithm__.
 
-2. The computed SVD satisfes error bounds from the Fact 4 above.
+2. The computed SVD satisfies error bounds from Fact 4 above.
 
-3. The special variant of zero-shift QR algorithm (the __Demmel-Kahan algorithm__) computes the singular values with high relative accuracy. 
+3. The special variant of the zero-shift QR algorithm (the __Demmel-Kahan algorithm__) computes the singular values with high relative accuracy. 
 
 4. The tridiagonal divide-and-conquer method, bisection and inverse iteration, and MRRR method can also be adapted for bidiagonal matrices. 
 
@@ -278,7 +278,7 @@ W,σ,Z=svd(B)
 @which svdvals!(B)
 
 # ╔═╡ 2c1943df-95d8-43bb-bf6a-8fe13424a2c9
-σ-σ₁
+norm(σ-σ₁)
 
 # ╔═╡ 1a79b153-6560-45d7-8113-e39101d17460
 # ?LAPACK.bdsqr!
@@ -414,8 +414,9 @@ PlutoUI = "~0.7.38"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.7.2"
+julia_version = "1.8.5"
 manifest_format = "2.0"
+project_hash = "23a7138a3fc77fba614979696a6f861d251c9afb"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
@@ -425,6 +426,7 @@ version = "1.1.4"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
+version = "1.1.1"
 
 [[deps.Artifacts]]
 uuid = "56f22d72-fd6d-98f1-02f0-08ddc0907c33"
@@ -441,14 +443,19 @@ version = "0.11.0"
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
+version = "1.0.1+0"
 
 [[deps.Dates]]
 deps = ["Printf"]
 uuid = "ade2ca70-3891-5945-98fb-dc099432e06a"
 
 [[deps.Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
+version = "1.6.0"
+
+[[deps.FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[deps.FixedPointNumbers]]
 deps = ["Statistics"]
@@ -486,10 +493,12 @@ version = "0.21.3"
 [[deps.LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
 uuid = "b27032c2-a3e7-50c8-80cd-2d36dbcbfd21"
+version = "0.6.3"
 
 [[deps.LibCURL_jll]]
 deps = ["Artifacts", "LibSSH2_jll", "Libdl", "MbedTLS_jll", "Zlib_jll", "nghttp2_jll"]
 uuid = "deac9b47-8bc7-5906-a0fe-35ac56dc84c0"
+version = "7.84.0+0"
 
 [[deps.LibGit2]]
 deps = ["Base64", "NetworkOptions", "Printf", "SHA"]
@@ -498,6 +507,7 @@ uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
 [[deps.LibSSH2_jll]]
 deps = ["Artifacts", "Libdl", "MbedTLS_jll"]
 uuid = "29816b5a-b9ab-546f-933c-edad1886dfa8"
+version = "1.10.2+0"
 
 [[deps.Libdl]]
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
@@ -516,19 +526,23 @@ uuid = "d6f4376e-aef5-505a-96c1-9c027394607a"
 [[deps.MbedTLS_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "c8ffd9c3-330d-5841-b78e-0817d7145fa1"
+version = "2.28.0+0"
 
 [[deps.Mmap]]
 uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [[deps.MozillaCACerts_jll]]
 uuid = "14a3606d-f60d-562e-9121-12d972cd8159"
+version = "2022.2.1"
 
 [[deps.NetworkOptions]]
 uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
+version = "1.2.0"
 
 [[deps.OpenBLAS_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Libdl"]
 uuid = "4536629a-c528-5b80-bd46-f80d51c5b363"
+version = "0.3.20+0"
 
 [[deps.Parsers]]
 deps = ["Dates"]
@@ -539,6 +553,7 @@ version = "2.3.1"
 [[deps.Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+version = "1.8.0"
 
 [[deps.PlutoUI]]
 deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "Markdown", "Random", "Reexport", "UUIDs"]
@@ -565,6 +580,7 @@ version = "1.2.2"
 
 [[deps.SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+version = "0.7.0"
 
 [[deps.Serialization]]
 uuid = "9e88b42a-f829-5b0c-bbe9-9e923198166b"
@@ -583,10 +599,12 @@ uuid = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 [[deps.TOML]]
 deps = ["Dates"]
 uuid = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+version = "1.0.0"
 
 [[deps.Tar]]
 deps = ["ArgTools", "SHA"]
 uuid = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
+version = "1.10.1"
 
 [[deps.Test]]
 deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]
@@ -602,18 +620,22 @@ uuid = "4ec0a83e-493e-50e2-b9ac-8f72acf5a8f5"
 [[deps.Zlib_jll]]
 deps = ["Libdl"]
 uuid = "83775a58-1f1d-513f-b197-d71354ab007a"
+version = "1.2.12+3"
 
 [[deps.libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl", "OpenBLAS_jll"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
+version = "5.1.1+0"
 
 [[deps.nghttp2_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850ede-7688-5339-a07c-302acd2aaf8d"
+version = "1.48.0+0"
 
 [[deps.p7zip_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
+version = "17.4.0+0"
 """
 
 # ╔═╡ Cell order:

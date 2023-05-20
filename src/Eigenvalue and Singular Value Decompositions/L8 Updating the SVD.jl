@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.4
+# v0.19.20
 
 using Markdown
 using InteractiveUtils
@@ -20,7 +20,7 @@ PlutoUI.TableOfContents(aside=true)
 md"""
 # Updating the SVD
 
-In many applications which are based on the SVD, arrival of new data requires SVD of the new matrix. Instead of computing from scratch, existing SVD can be updated.
+In many applications which are based on the SVD, the arrival of new data requires the SVD of the new matrix. Instead of computing from scratch, existing SVD can be updated.
 
 __Prerequisites__
 
@@ -28,8 +28,11 @@ The reader should be familiar with concepts of singular values and singular vect
 
 __Competences__
 
-The reader should be able to recognise applications where SVD updating can be sucessfully applied and apply it.
+The reader should be able to recognize applications where SVD updating can be successfully applied and apply it.
 """
+
+# ╔═╡ f1451f8c-2bb7-4e28-884e-cbbd66edc963
+
 
 # ╔═╡ e070e205-b8fb-4608-93c1-f5c5beb075c3
 md"""
@@ -317,6 +320,7 @@ end
 # ╠═c5dfc888-42a6-4fa5-b969-61ff6c9180fe
 # ╠═51c330f6-7675-475e-b0eb-0fc8486fd094
 # ╟─c3caaf95-bef6-446d-b197-23ad1a7da450
+# ╠═f1451f8c-2bb7-4e28-884e-cbbd66edc963
 # ╟─e070e205-b8fb-4608-93c1-f5c5beb075c3
 # ╟─0ff9f1d6-1ebf-4a42-b51a-5a67f6192fe7
 # ╠═1f7f9f7a-df70-40a3-aa06-b5621b729a0c

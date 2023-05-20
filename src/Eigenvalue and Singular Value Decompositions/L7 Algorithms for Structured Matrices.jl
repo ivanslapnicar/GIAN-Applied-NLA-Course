@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.4
+# v0.19.20
 
 using Markdown
 using InteractiveUtils
@@ -11,8 +11,12 @@ begin
     Pkg.activate(mktempdir())
     Pkg.add([
         Pkg.PackageSpec(name="Arrowhead", rev="master")
+		Pkg.PackageSpec(name="Plots")
+		Pkg.PackageSpec(name="PlutoUI")
+		Pkg.PackageSpec(name="SpecialMatrices")
     ])
     using Plots, PlutoUI, LinearAlgebra, SpecialMatrices, Arrowhead
+	import LinearAlgebra.Givens
 end
 
 # ╔═╡ f24e6652-a36b-4f57-b0eb-03921a5616cc
@@ -23,15 +27,15 @@ md"""
 # Algorithms for Structured Matrices
 
 
-For matrices with some special structure, it is possible to derive versions of algorithms which are faster and/or more accurate than the standard algorithms.
+For matrices with some special structure, it is possible to derive versions of algorithms that are faster and/or more accurate than the standard algorithms.
 
 __Prerequisites__
 
-The reader should be familiar with concepts of eigenvalues and eigen vectors, singular values and singular vectors, related perturbation theory, and algorithms.
+The reader should be familiar with concepts of eigenvalues and eigenvectors, singular values and singular vectors, related perturbation theory, and algorithms.
  
 __Competences__
 
-The reader should be able to recognise matrices which have rank-revealing decomposition and apply adequate algorithms, and to apply forward stable algorithms to arrowhead and diagonal-plus-rank-one matrices.
+The reader should be able to recognize matrices which have rank-revealing decomposition and apply adequate algorithms, and to apply forward stable algorithms to arrowhead and diagonal-plus-rank-one matrices.
 """
 
 # ╔═╡ e3e43840-d0a3-4cde-9b1e-5785759912b2
@@ -71,14 +75,14 @@ __Cauchy matrix__ is an $m\times n$ matrix $C$ with elements $C_{ij}=\displaysty
 md"""
 ## Facts
 
-1. The singular values of $A$ are perfectly well determined to high relative accuracy if and only if the bipartite graph $\mathcal{G}(S)$ is acyclic (forest of trees). Examples are bidiagonal and arrowhead matrices. Sparsity pattern $S$ of acyclic bipartite graph allows at most $m+n-1$ nonzero entries. A bisection algorithm computes all singular values of biacyclic matrices to high relative accuracy.
+1. The singular values of $A$ are perfectly well determined to high relative accuracy if and only if the bipartite graph $\mathcal{G}(S)$ is acyclic (forest of trees). Examples are bidiagonal and arrowhead matrices. Sparsity pattern $S$ of the acyclic bipartite graph allows at most $m+n-1$ nonzero entries. A bisection algorithm computes all singular values of biacyclic matrices to high relative accuracy.
 
-2. An RRD of $A$ can be given or computed to high accuracy by some method. Typical methods are Gaussian elimination with complete pivoting or QR factorization with complete pivoting.
+2. An RRD of $A$ can be given or computed with high accuracy by some method. Typical methods are Gaussian elimination with complete pivoting or QR factorization with complete pivoting.
 
 3. Let $\hat X \hat D \hat Y^T$ be the computed RRD of $A$ satisfying $|D_{jj}-\hat D_{jj}| \leq O(\varepsilon)|D_{jj}|$, $\| X-\hat X\|\leq O(\varepsilon) \|X\|$, and $\| Y-\hat Y\|\leq O(\varepsilon) \|Y\|$. The following algorithm computes the EVD of $A$ with high relative accuracy:
 
     1. Perform QR factorization with pivoting to get $\hat X\hat D=QRP$, where $P$ is a permutation matrix. Thus $A=QRP\hat Y^T$.
-    2. Multiply $W=RP\hat Y^T$ (_NOT_ Strassen's multiplication). Thus $A=QW$ and $W$ is well-scaled from the left.
+    2. Multiply $W=RP\hat Y^T$ (_NOT_ Strassen's multiplication). Thus $A=QW$ an W$ are well-scaled from the left.
     3. Compute the SVD of $W^T=V\Sigma^T \bar U^T$ using one-sided Jacobi method. Thus $A=Q\bar U \Sigma V^T$.
     4. Multiply $U=Q\bar U$. Thus $A=U\Sigma V^T$ is the computed SVD of $A$.
 
@@ -122,13 +126,13 @@ md"""
 
 ### Positive definite matrix
 
-Let $A=DA_S D$ be strongly scaled symmetric positive definite matrix. Then Cholesky factorization with complete (diagonal) pivoting is an RRD. Consider the following three step algorithm:
+Let $A=DA_S D$ be a strongly scaled symmetric positive definite matrix. Then Cholesky factorization with complete (diagonal) pivoting is an RRD. Consider the following three-step algorithm:
 
 1. Compute $P^T A P=LL^T$ (_Cholesky factorization with complete pivoting_). 
 2. Compute the $L=\bar U\Sigma V^T$ (_one-sided Jacobi, V is not needed_).
 3. Set $\Lambda=\Sigma^2$ and $U=P\bar U$. Thus $A=U\Lambda U^T$ is an EVD of $A$.
 
-The Cholesky factorization with pivoting can be implemented very fast with block algorithm (see [C. Lucas, LAPack-Style Codes for Level 2 and 3 Pivoted Cholesky Factorizations](http://www.netlib.org/lapack/lawnspdf/lawn161.pdf)).
+The Cholesky factorization with pivoting can be implemented very fast with a block algorithm (see [C. Lucas, LAPack-Style Codes for Level 2 and 3 Pivoted Cholesky Factorizations](http://www.netlib.org/lapack/lawnspdf/lawn161.pdf)).
 
 The eigenvalues $\tilde \lambda_j$ computed using the above algorithm satisfy relative error bounds:
 
@@ -169,7 +173,7 @@ function JacobiR(A₁::AbstractMatrix)
                     t=sign(τ)/(abs(τ)+√(1+τ^2))
                     c=1/√(1+t^2)
                     s=c*t
-                    G=LinearAlgebra.Givens(i,j,c,s)
+                    G=Givens(i,j,c,s)
                     # A*=G'
                     rmul!(A,G)
                     # V*=G'
@@ -200,8 +204,8 @@ begin
 	# Scaling
 	D₀=Diagonal(exp.(50*(rand(n).-0.5)))
 	# Parentheses are necessary!
-	A=Matrix(Symmetric(D₀*As*D₀))
-	A=[As[i,j]*(D₀.diag[i]*D₀.diag[j])  for i=1:n, j=1:n]
+	A=Symmetric(D₀*As*D₀)
+	# A=[As[i,j]*(D₀.diag[i]*D₀.diag[j])  for i=1:n, j=1:n]
 	issymmetric(A), issymmetric(As),cond(As), cond(A)
 end
 
@@ -281,7 +285,7 @@ C=Cauchy([1,2,3,4,5],[0,1,2,3,4])
 H=Hilbert(5)
 
 # ╔═╡ e9bf2b02-a60d-495b-bbdb-d87e31d8d9e0
-Hf=Matrix(H)
+Hf=map(Float64,Matrix(H))
 
 # ╔═╡ c113b7fe-87b9-454c-aeb9-166af79bbe61
 begin
@@ -396,7 +400,7 @@ begin
 	# Now the big test.
 	n₂=100
 	H₂=Hilbert(n₂)
-	C₂=Cauchy(collect(1:n₂), collect(0:n₂-1))
+	C₂=Cauchy(collect(1.0:n₂), collect(0.0:n₂-1))
 end
 
 # ╔═╡ d1fd9b19-78c0-4d77-89db-9ba3d2aa826d
@@ -413,6 +417,9 @@ function RRD(C::Cauchy)
     X[invperm(pr),:], D, Y[invperm(pc),:]
 end
 
+# ╔═╡ 4e9f9d8c-024d-459f-9674-bb457e27e9d3
+GECP(C)
+
 # ╔═╡ 6b544eaf-858a-40e5-b59b-75cfa2237a6f
 X₂,D₂,Y₂=RRD(C₂);
 
@@ -421,6 +428,7 @@ X₂,D₂,Y₂=RRD(C₂);
 norm((X₂*Diagonal(D₂)*Y₂')-C₂)
 
 # ╔═╡ c7fd604c-9e63-4ac0-8839-82371f968ba7
+# This is incorrect - the condition is 10^151.
 cond(C₂)
 
 # ╔═╡ 23df1242-1b43-4d52-a8ed-1b12b0d5d4b9
@@ -492,7 +500,7 @@ md"""
 
 Let $A$ be an arrowhead matrix of order $n$ and let $A=U\Lambda U^T$ be its EVD.
 
-1. If $d_i$ and $\lambda_i$ are nonincreasingy ordered, the Cauchy Interlace Theorem implies 
+1. If $d_i$ and $\lambda_i$ are nonincreasing ordered, the Cauchy Interlace Theorem implies 
 
 $$\lambda _{1}\geq d_{1}\geq \lambda _{2}\geq d_{2}\geq \cdots \geq d_{n-2}\geq\lambda
 _{n-1}\geq d_{n-1}\geq \lambda _{n}.$$
@@ -667,7 +675,7 @@ md"""
 
 The properties of DPR1 matrices are very similar to those of arrowhead matrices. Let $A$ be a DPR1 matrix of order $n$ and let $A=U\Lambda U^T$ be its EVD.
 
-1. If $d_i$ and $\lambda_i$ are nonincreasingy ordered and $\rho>0$, then 
+1. If $d_i$ and $\lambda_i$ are nonincreasing ordered and $\rho>0$, then 
 
 $$\lambda _{1}\geq d_{1}\geq \lambda _{2}\geq d_{2}\geq \cdots \geq d_{n-2}\geq\lambda
 _{n-1}\geq d_{n-1}\geq \lambda _{n}\geq d_n.$$
@@ -718,7 +726,7 @@ b &=\displaystyle\frac{1}{\zeta _{i}^{2}}\left(
 \frac{1}{\rho}+z_{1}^{T}D_{1}^{-1}z_{1}+z_{2}^{T}D_{2}^{-1}z_{2}\right).
 \end{aligned}$$
 
-5. The algorithm based on the same approach as above, computes all eigenvalues and all components of the corresponding eigenvectors in a forward stable manner to almost full accuracy in $O(n)$ operations per eigenpair. The algorithm is implemented in the package `Arrowhead.jl`. In certain cases, $b$ or $\gamma$ need to be computed with extended precision.
+5. The algorithm based on the same approach as above, computes all eigenvalues and all components of the corresponding eigenvectors in a forward stable manner to almost full accuracy in $O(n)$ operations per eigenpair. The algorithm is implemented in the package `Arrowhead. jl`. In certain cases, $b$ or $\gamma$ need to be computed with extended precision.
 """
 
 # ╔═╡ 6b3c7336-f1fc-428b-8b1e-94546b6622e8
@@ -811,6 +819,7 @@ norm(E₆.vectors'*E₆.vectors-I)
 # ╠═d1fd9b19-78c0-4d77-89db-9ba3d2aa826d
 # ╟─72390bf0-c5d6-46de-b8d0-0bee2cbb0af7
 # ╠═46656cee-2202-4eb9-9725-1e3e3af4df42
+# ╠═4e9f9d8c-024d-459f-9674-bb457e27e9d3
 # ╠═6b544eaf-858a-40e5-b59b-75cfa2237a6f
 # ╠═8eb2d15e-53c0-40ab-98ce-7b0bbf4d6cd1
 # ╠═c7fd604c-9e63-4ac0-8839-82371f968ba7
