@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.4
+# v0.19.20
 
 using Markdown
 using InteractiveUtils
@@ -20,14 +20,14 @@ md"""
 
 Instead of using recursive spectral bipartitioning, the graph $k$-partitioning problem can be solved using $k$ eigenvectors which correspond to $k$ smallest eigenvalues of Laplace matrix (Laplacian) or normalized Laplace matrix (normalized Laplacian), respectively.
 
-Suggested reading is [U. von Luxburg, A Tutorial on Spectral Clustering](http://www.kyb.mpg.de/fileadmin/user_upload/files/publications/attachments/luxburg06_TR_v2_4139%5b1%5d.pdf), which includes the quote
+The suggested reading is [U. von Luxburg, A Tutorial on Spectral Clustering](http://www.kyb.mpg.de/fileadmin/user_upload/files/publications/attachments/luxburg06_TR_v2_4139%5b1%5d.pdf), which includes the quote
 
 _"Spectral clustering cannot serve as a “black box algorithm” which automatically detects the correct clusters in any given data set. But it can be considered as a powerful tool which can produce good results if applied with care."_
 
 
 __Prerequisites__
 
-The reader should be familiar with k-means algorithm, spectral graph bipartitioning and recursive bipartitioning.
+The reader should be familiar with the k-means algorithm, spectral graph bipartitioning, and recursive bipartitioning.
 
 __Competences__
 
@@ -227,7 +227,7 @@ end
 begin
 	# Generate concentric rings
 	k=4
-	Random.seed!(541)
+	Random.seed!(542)
 	# Center
 	center=[0,0]
 	# Radii
@@ -245,11 +245,11 @@ begin
 	# Random angles
 	ϕ=2*π*rand(sum(sizes))
 	for i=1:csizes[1]
-		X[:,i]=center+radii[1]*[cos(ϕ[i]);sin(ϕ[i])] + (rand(2).-0.5)/50
+		X[:,i]=center+radii[1]*[cos(ϕ[i]);sin(ϕ[i])] + randn(2)/10
 	end
 	for j=2:k
 		for i=csizes[j-1]+1:csizes[j]
-			X[:,i]=center+radii[j]*[cos(ϕ[i]);sin(ϕ[i])] + (rand(2).-0.5)/50
+			X[:,i]=center+radii[j]*[cos(ϕ[i]);sin(ϕ[i])] + randn(2)/10
 		end
 	end
 	scatter(X[1,:],X[2,:],title="Concentric rings", aspect_ratio=1,label="Points")
@@ -259,10 +259,10 @@ end
 begin
 	S=pairwise(SqEuclidean(),X,dims=2)
 	# S=pairwise(Cityblock(),X)
-	β=60
+	β=100.0
 	W₁=exp.(-β*S)-I
 	# Zero the tiny elements
-	W₁[abs.(W₁) .< eps()] .= 0.0
+	# W₁[abs.(W₁) .< eps()] .= 0.0
 end
 
 # ╔═╡ c298ccfe-f15e-4652-baa7-c122cb22f22f
@@ -333,6 +333,7 @@ version = "3.3.1"
 
 [[ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
+version = "1.1.1"
 
 [[ArnoldiMethod]]
 deps = ["LinearAlgebra", "Random", "StaticArrays"]
@@ -365,7 +366,7 @@ uuid = "6e34b625-4abd-537c-b88f-471c36dfa7a0"
 version = "1.0.8+0"
 
 [[Cairo_jll]]
-deps = ["Artifacts", "Bzip2_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "JLLWrappers", "LZO_jll", "Libdl", "Pixman_jll", "Pkg", "Xorg_libXext_jll", "Xorg_libXrender_jll", "Zlib_jll", "libpng_jll"]
+deps = ["Artifacts", "Bzip2_jll", "CompilerSupportLibraries_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "JLLWrappers", "LZO_jll", "Libdl", "Pixman_jll", "Pkg", "Xorg_libXext_jll", "Xorg_libXrender_jll", "Zlib_jll", "libpng_jll"]
 git-tree-sha1 = "4b859a208b2397a7a623a03449e4636bdb17bcf2"
 uuid = "83423d85-b0ee-5818-9007-b63ccbeb887a"
 version = "1.16.1+1"
@@ -403,6 +404,7 @@ version = "3.34.0"
 [[CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
+version = "1.0.1+0"
 
 [[Compose]]
 deps = ["Base64", "Colors", "DataStructures", "Dates", "IterTools", "JSON", "LinearAlgebra", "Measures", "Printf", "Random", "Requires", "Statistics", "UUIDs"]
@@ -451,8 +453,9 @@ deps = ["Random", "Serialization", "Sockets"]
 uuid = "8ba89e20-285c-5b6f-9357-94700520ee1b"
 
 [[Downloads]]
-deps = ["ArgTools", "LibCURL", "NetworkOptions"]
+deps = ["ArgTools", "FileWatching", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
+version = "1.6.0"
 
 [[EarCut_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -477,6 +480,9 @@ deps = ["Artifacts", "Bzip2_jll", "FreeType2_jll", "FriBidi_jll", "JLLWrappers",
 git-tree-sha1 = "d8a578692e3077ac998b50c0217dfd67f21d1e5f"
 uuid = "b22a6f82-2f65-5046-a5b2-351ab43fb4e5"
 version = "4.4.0+0"
+
+[[FileWatching]]
+uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
 
 [[FixedPointNumbers]]
 deps = ["Statistics"]
@@ -648,10 +654,12 @@ version = "0.15.6"
 [[LibCURL]]
 deps = ["LibCURL_jll", "MozillaCACerts_jll"]
 uuid = "b27032c2-a3e7-50c8-80cd-2d36dbcbfd21"
+version = "0.6.3"
 
 [[LibCURL_jll]]
 deps = ["Artifacts", "LibSSH2_jll", "Libdl", "MbedTLS_jll", "Zlib_jll", "nghttp2_jll"]
 uuid = "deac9b47-8bc7-5906-a0fe-35ac56dc84c0"
+version = "7.84.0+0"
 
 [[LibGit2]]
 deps = ["Base64", "NetworkOptions", "Printf", "SHA"]
@@ -660,6 +668,7 @@ uuid = "76f85450-5226-5b5a-8eaa-529ad045b433"
 [[LibSSH2_jll]]
 deps = ["Artifacts", "Libdl", "MbedTLS_jll"]
 uuid = "29816b5a-b9ab-546f-933c-edad1886dfa8"
+version = "1.10.2+0"
 
 [[Libdl]]
 uuid = "8f399da3-3557-5675-b5ff-fb832c97cbdb"
@@ -690,9 +699,9 @@ version = "1.42.0+0"
 
 [[Libiconv_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "42b62845d70a619f063a7da093d995ec8e15e778"
+git-tree-sha1 = "c7cb1f5d892775ba13767a87c7ada0b980ea0a71"
 uuid = "94ce4f54-9a6c-5748-9c1c-f9c7231a4531"
-version = "1.16.1+1"
+version = "1.16.1+2"
 
 [[Libmount_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -744,6 +753,7 @@ version = "1.0.3"
 [[MbedTLS_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "c8ffd9c3-330d-5841-b78e-0817d7145fa1"
+version = "2.28.0+0"
 
 [[Measures]]
 git-tree-sha1 = "e498ddeee6f9fdb4551ce855a46f54dbd900245f"
@@ -761,6 +771,7 @@ uuid = "a63ad114-7e13-5084-954f-fe012c677804"
 
 [[MozillaCACerts_jll]]
 uuid = "14a3606d-f60d-562e-9121-12d972cd8159"
+version = "2022.2.1"
 
 [[NaNMath]]
 git-tree-sha1 = "bfe47e760d60b82b66b61d2d44128b62e3a369fb"
@@ -775,6 +786,7 @@ version = "0.4.9"
 
 [[NetworkOptions]]
 uuid = "ca575930-c2e3-43a9-ace4-1e988b2c1908"
+version = "1.2.0"
 
 [[Ogg_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -785,6 +797,7 @@ version = "1.3.5+1"
 [[OpenBLAS_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Libdl"]
 uuid = "4536629a-c528-5b80-bd46-f80d51c5b363"
+version = "0.3.20+0"
 
 [[OpenSSL_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -824,6 +837,7 @@ version = "0.40.1+0"
 [[Pkg]]
 deps = ["Artifacts", "Dates", "Downloads", "LibGit2", "Libdl", "Logging", "Markdown", "Printf", "REPL", "Random", "SHA", "Serialization", "TOML", "Tar", "UUIDs", "p7zip_jll"]
 uuid = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+version = "1.8.0"
 
 [[PlotThemes]]
 deps = ["PlotUtils", "Requires", "Statistics"]
@@ -861,9 +875,9 @@ uuid = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
 [[Qt5Base_jll]]
 deps = ["Artifacts", "CompilerSupportLibraries_jll", "Fontconfig_jll", "Glib_jll", "JLLWrappers", "Libdl", "Libglvnd_jll", "OpenSSL_jll", "Pkg", "Xorg_libXext_jll", "Xorg_libxcb_jll", "Xorg_xcb_util_image_jll", "Xorg_xcb_util_keysyms_jll", "Xorg_xcb_util_renderutil_jll", "Xorg_xcb_util_wm_jll", "Zlib_jll", "xkbcommon_jll"]
-git-tree-sha1 = "c6c0f690d0cc7caddb74cef7aa847b824a16b256"
+git-tree-sha1 = "0c03844e2231e12fda4d0086fd7cbe4098ee8dc5"
 uuid = "ea2cea3b-5b76-57ae-a6ef-0a8af62496e1"
-version = "5.15.3+1"
+version = "5.15.3+2"
 
 [[REPL]]
 deps = ["InteractiveUtils", "Markdown", "Sockets", "Unicode"]
@@ -897,6 +911,7 @@ version = "1.1.3"
 
 [[SHA]]
 uuid = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+version = "0.7.0"
 
 [[Scratch]]
 deps = ["Dates"]
@@ -971,6 +986,7 @@ version = "0.2.0"
 [[TOML]]
 deps = ["Dates"]
 uuid = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
+version = "1.0.0"
 
 [[TableTraits]]
 deps = ["IteratorInterfaceExtensions"]
@@ -987,6 +1003,7 @@ version = "1.5.0"
 [[Tar]]
 deps = ["ArgTools", "SHA"]
 uuid = "a4e569a6-e804-4fa4-b0f3-eef7a1d5b13e"
+version = "1.10.1"
 
 [[Test]]
 deps = ["InteractiveUtils", "Logging", "Random", "Serialization"]
@@ -1157,6 +1174,7 @@ version = "1.4.0+3"
 [[Zlib_jll]]
 deps = ["Libdl"]
 uuid = "83775a58-1f1d-513f-b197-d71354ab007a"
+version = "1.2.12+3"
 
 [[Zstd_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1173,6 +1191,7 @@ version = "0.15.1+0"
 [[libblastrampoline_jll]]
 deps = ["Artifacts", "Libdl", "OpenBLAS_jll"]
 uuid = "8e850b90-86db-534c-a0d3-1478176c7d93"
+version = "5.1.1+0"
 
 [[libfdk_aac_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
@@ -1195,10 +1214,12 @@ version = "1.3.7+1"
 [[nghttp2_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "8e850ede-7688-5339-a07c-302acd2aaf8d"
+version = "1.48.0+0"
 
 [[p7zip_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "3f19e933-33d8-53b3-aaab-bd5110c3b7a0"
+version = "17.4.0+0"
 
 [[x264_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
