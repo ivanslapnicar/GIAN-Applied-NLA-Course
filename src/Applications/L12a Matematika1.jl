@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.20
+# v0.19.23
 
 using Markdown
 using InteractiveUtils
@@ -34,11 +34,11 @@ n=144
 
 # ╔═╡ 30498550-2071-11eb-0f6b-33372a37909e
 # Uncoment this block to download files.
-#=
+
 for i=1:n
 	download("http://www.mathematics.digital/matematika1/predavanja/node$i.html","./files/Mat1/node$i.html")
 end
-=#
+
 
 # ╔═╡ b59d17a0-2100-11eb-27de-c3196ecc1268
 md"
@@ -58,6 +58,9 @@ begin
 	remove_corrupt_utf8!(sdf)
 	prepare!(sdf, strip_html_tags | strip_case | strip_numbers | strip_whitespace |  strip_punctuation | strip_stopwords)
 end
+
+# ╔═╡ 9b900c38-4660-4acb-acec-b6f4b0081fa4
+fr
 
 # ╔═╡ be6872c0-c006-4895-a6d3-95224af87af4
 fr[200]
@@ -92,6 +95,9 @@ for i=1:n
 	prepare!(sdf, strip_html_tags | strip_case | strip_numbers | strip_whitespace |  strip_punctuation | strip_stopwords)
 	a[i]=sdf
 end
+
+# ╔═╡ 664dc4e5-3382-4c03-b5ef-2344d8f361f1
+TextAnalysis.text(a[10])
 
 # ╔═╡ 0b67ef4e-2077-11eb-2716-5fed149d4e28
 c=Corpus(a)
@@ -1115,6 +1121,7 @@ version = "0.9.1+5"
 # ╠═621ed340-2072-11eb-1742-3b4d0b042fb9
 # ╠═30498550-2071-11eb-0f6b-33372a37909e
 # ╟─b59d17a0-2100-11eb-27de-c3196ecc1268
+# ╠═9b900c38-4660-4acb-acec-b6f4b0081fa4
 # ╠═08057a10-20dd-11eb-300e-f52ff0eaf35f
 # ╠═be6872c0-c006-4895-a6d3-95224af87af4
 # ╠═68174819-9f40-4627-ab86-5bda4f6cc652
@@ -1123,6 +1130,7 @@ version = "0.9.1+5"
 # ╠═1c2c2b0e-20dd-11eb-39b6-a7a56b61391c
 # ╠═022dae30-2076-11eb-225e-233a63507457
 # ╠═2f61f232-2076-11eb-0606-351e586f37f1
+# ╠═664dc4e5-3382-4c03-b5ef-2344d8f361f1
 # ╠═0b67ef4e-2077-11eb-2716-5fed149d4e28
 # ╠═168f01c0-2077-11eb-20ee-e381bbb1aa61
 # ╠═24e5a940-2077-11eb-3071-21fb31744527
