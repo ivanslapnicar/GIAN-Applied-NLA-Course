@@ -206,7 +206,7 @@ get(rating_set.item_to_index,"Blade Runner (1982)",0)
 
 # ╔═╡ 7c839d8f-9b30-4a5e-ae0e-d8db7e3ce30e
 # This takes about half a minute
-model = train(rating_set, 25);
+model = train(rating_set, 5);
 
 # ╔═╡ bfabfbaf-10a3-4f21-8e3e-ef5bdfa9fec5
 propertynames(model)
