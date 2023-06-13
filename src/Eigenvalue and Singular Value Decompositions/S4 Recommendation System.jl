@@ -1,16 +1,20 @@
 ### A Pluto.jl notebook ###
-# v0.19.22
+# v0.19.20
 
 using Markdown
 using InteractiveUtils
 
-# ╔═╡ 21b85823-6493-4551-bc31-e1811d11c910
+# ╔═╡ 01cf3e78-e99e-493a-9663-ffb5320ea7cc
 begin
-	using Pkg
-	Pkg.add(PackageSpec(url="https://github.com/aaw/IncrementalSVD.jl"))
-	using IncrementalSVD
-	# or
-	# pkg> add https://github.com/aaw/IncrementalSVD.jl
+    import Pkg
+    # activate a temporary environment
+    Pkg.activate(mktempdir())
+	Pkg.instantiate()
+    Pkg.add([
+        Pkg.PackageSpec(url="https://github.com/aaw/IncrementalSVD.jl")
+    ])
+	Pkg.instantiate()
+	using InfoZIP, LinearAlgebra
 end
 
 # ╔═╡ c9c5a3f1-1d3b-48d6-85e6-fd7de59d5a3f
@@ -135,8 +139,24 @@ SVD decomposition $M=U\Sigma V^T$ is [approximated by a low-rank matrix](https:/
 
 The approximation matrix is __full__ and __gives enough good information__.
 
-Prize for efficient approximation algorithm was $\$$ 1.000.000$.  
+Prize for efficient approximation algorithm was \$$ $1.000.000$.  
 """
+
+# ╔═╡ 21b85823-6493-4551-bc31-e1811d11c910
+# ╠═╡ disabled = true
+#=╠═╡
+begin
+	
+	using Pkg
+	Pkg.add(PackageSpec(url="https://github.com/aaw/IncrementalSVD.jl",rev="master"))
+	using IncrementalSVD
+	# or
+	# pkg> add https://github.com/aaw/IncrementalSVD.jl
+end
+  ╠═╡ =#
+
+# ╔═╡ e2386262-d1b1-44ce-8ded-5e14e9bd1a0b
+
 
 # ╔═╡ cf7044dd-3180-46e8-925d-81369d8261b5
 varinfo(IncrementalSVD)
@@ -273,8 +293,10 @@ md"""
 # ╟─e2973b1e-6333-4bf0-b567-654ab35bae26
 # ╟─5b787963-e734-4f9d-b224-dbf6360fbcbd
 # ╟─c512c71e-ea26-4ccd-9029-cdbd7fef07d2
-# ╟─aabe1fa7-bec8-4ab9-97e2-308ebf491931
+# ╠═aabe1fa7-bec8-4ab9-97e2-308ebf491931
+# ╠═01cf3e78-e99e-493a-9663-ffb5320ea7cc
 # ╠═21b85823-6493-4551-bc31-e1811d11c910
+# ╠═e2386262-d1b1-44ce-8ded-5e14e9bd1a0b
 # ╠═cf7044dd-3180-46e8-925d-81369d8261b5
 # ╠═bb4fa13c-2504-44d6-b7e3-72e67f3fbd05
 # ╠═4b31e1cd-d412-4c8e-99d0-59dab6a3f9e4
