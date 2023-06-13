@@ -4,17 +4,12 @@
 using Markdown
 using InteractiveUtils
 
-# ╔═╡ 01cf3e78-e99e-493a-9663-ffb5320ea7cc
+# ╔═╡ 21b85823-6493-4551-bc31-e1811d11c910
 begin
-    import Pkg
-    # activate a temporary environment
-    Pkg.activate(mktempdir())
-	Pkg.instantiate()
-    Pkg.add([
-        Pkg.PackageSpec(url="https://github.com/aaw/IncrementalSVD.jl")
-    ])
-	Pkg.instantiate()
-	using InfoZIP, LinearAlgebra
+	import Pkg
+	Pkg.activate(mktempdir())
+	Pkg.add(Pkg.PackageSpec(url="https://github.com/ivanslapnicar/IncrementalSVD.jl"))
+	using IncrementalSVD, PlutoUI
 end
 
 # ╔═╡ c9c5a3f1-1d3b-48d6-85e6-fd7de59d5a3f
@@ -133,27 +128,16 @@ Matrix $M$ is sparse so we do not have enough information. For example,
 md"""
 ## Approximation
 
-SVD decomposition $M=U\Sigma V^T$ is [approximated by a low-rank matrix](https://en.wikipedia.org/wiki/Low-rank_approximation) (for example. $rank=25$)
+SVD decomposition $M=U\Sigma V^T$ is [approximated by a low-rank matrix](https://en.wikipedia.org/wiki/Low-rank_approximation) (for example, $\operatorname{rank}=25$)
 
-![SVD decomposition](svd.png)
+ $(PlutoUI.LocalResource("./svd.png")) 
+
+
 
 The approximation matrix is __full__ and __gives enough good information__.
 
-Prize for efficient approximation algorithm was \$$ $1.000.000$.  
+Prize for an efficient approximation algorithm was USD $1.000.000$.  
 """
-
-# ╔═╡ 21b85823-6493-4551-bc31-e1811d11c910
-# ╠═╡ disabled = true
-#=╠═╡
-begin
-	
-	using Pkg
-	Pkg.add(PackageSpec(url="https://github.com/aaw/IncrementalSVD.jl",rev="master"))
-	using IncrementalSVD
-	# or
-	# pkg> add https://github.com/aaw/IncrementalSVD.jl
-end
-  ╠═╡ =#
 
 # ╔═╡ e2386262-d1b1-44ce-8ded-5e14e9bd1a0b
 
@@ -226,7 +210,7 @@ get(rating_set.item_to_index,"Blade Runner (1982)",0)
 
 # ╔═╡ 7c839d8f-9b30-4a5e-ae0e-d8db7e3ce30e
 # This takes about half a minute
-model = train(rating_set, 5);
+model = train(rating_set, 10);
 
 # ╔═╡ bfabfbaf-10a3-4f21-8e3e-ef5bdfa9fec5
 propertynames(model)
@@ -284,6 +268,7 @@ md"""
 
 
 # ╔═╡ Cell order:
+# ╠═21b85823-6493-4551-bc31-e1811d11c910
 # ╟─c9c5a3f1-1d3b-48d6-85e6-fd7de59d5a3f
 # ╟─634b73c1-5cd7-48f9-a3c0-a96678f7857a
 # ╟─b5e97ee7-7724-400d-8b8a-7dfb4002b482
@@ -293,9 +278,7 @@ md"""
 # ╟─e2973b1e-6333-4bf0-b567-654ab35bae26
 # ╟─5b787963-e734-4f9d-b224-dbf6360fbcbd
 # ╟─c512c71e-ea26-4ccd-9029-cdbd7fef07d2
-# ╠═aabe1fa7-bec8-4ab9-97e2-308ebf491931
-# ╠═01cf3e78-e99e-493a-9663-ffb5320ea7cc
-# ╠═21b85823-6493-4551-bc31-e1811d11c910
+# ╟─aabe1fa7-bec8-4ab9-97e2-308ebf491931
 # ╠═e2386262-d1b1-44ce-8ded-5e14e9bd1a0b
 # ╠═cf7044dd-3180-46e8-925d-81369d8261b5
 # ╠═bb4fa13c-2504-44d6-b7e3-72e67f3fbd05
