@@ -8,8 +8,12 @@ using InteractiveUtils
 begin
 	import Pkg
 	Pkg.activate(mktempdir())
-	Pkg.add(Pkg.PackageSpec(url="https://github.com/ivanslapnicar/IncrementalSVD.jl"))
-	using IncrementalSVD, PlutoUI
+	Pkg.add([
+		Pkg.PackageSpec(url="https://github.com/ivanslapnicar/IncrementalSVD.jl")
+		Pkg.PackageSpec(name="PlutoUI")
+		Pkg.PackageSpec(name="ZipFile")
+	])
+	using ZipFile, PlutoUI, IncrementalSVD
 end
 
 # ╔═╡ c9c5a3f1-1d3b-48d6-85e6-fd7de59d5a3f
@@ -144,6 +148,36 @@ Prize for an efficient approximation algorithm was USD $1.000.000$.
 
 # ╔═╡ cf7044dd-3180-46e8-925d-81369d8261b5
 varinfo(IncrementalSVD)
+
+# ╔═╡ 6582a408-af38-4ebc-8b78-024c78d382ed
+begin
+	temp_dir = tempdir()
+	zipfile_name="ml-1m.zip"
+	download_path = joinpath(temp_dir, zipfile_name)
+	download("http://files.grouplens.org/datasets/movielens/$(zipfile_name)", download_path)
+end
+
+# ╔═╡ a9246d58-2c23-4080-af33-a6971c428dd4
+begin
+	zarchive = ZipFile.Reader(download_path)
+	
+	for f in zarchive.files
+	    println(f.name)
+	
+	    fullFilePath = joinpath(temp_dir,f.name)
+	    if endswith(f.name,"/")
+			if isdir(fullFilePath)==false
+	        	mkdir(fullFilePath)
+			end
+	    else
+	        out =  open(fullFilePath,"w")
+	        write(out,read(f,String))
+	        close(out) 
+	    end
+	end
+	
+	close(zarchive)
+end
 
 # ╔═╡ bb4fa13c-2504-44d6-b7e3-72e67f3fbd05
 rating_set = load_small_movielens_dataset()
@@ -281,6 +315,8 @@ md"""
 # ╟─aabe1fa7-bec8-4ab9-97e2-308ebf491931
 # ╠═e2386262-d1b1-44ce-8ded-5e14e9bd1a0b
 # ╠═cf7044dd-3180-46e8-925d-81369d8261b5
+# ╠═6582a408-af38-4ebc-8b78-024c78d382ed
+# ╠═a9246d58-2c23-4080-af33-a6971c428dd4
 # ╠═bb4fa13c-2504-44d6-b7e3-72e67f3fbd05
 # ╠═4b31e1cd-d412-4c8e-99d0-59dab6a3f9e4
 # ╠═f40046a7-5693-4ceb-8101-8553af6691df
