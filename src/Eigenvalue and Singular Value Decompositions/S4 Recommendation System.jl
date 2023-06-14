@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.20
+# v0.19.22
 
 using Markdown
 using InteractiveUtils
@@ -244,7 +244,7 @@ get(rating_set.item_to_index,"Blade Runner (1982)",0)
 
 # ╔═╡ 7c839d8f-9b30-4a5e-ae0e-d8db7e3ce30e
 # This takes about half a minute
-model = train(rating_set, 10);
+model = train(rating_set, 30);
 
 # ╔═╡ bfabfbaf-10a3-4f21-8e3e-ef5bdfa9fec5
 propertynames(model)
