@@ -180,7 +180,7 @@ x
 # ╔═╡ d948741f-6748-44d7-ae8c-cf074f7549bd
 begin
 	# Fact 14
-	y=rand(ComplexF64,10)
+	y=randn(ComplexF64,10)
 	opnorm(x*y'), norm(x*y'), norm(x)*norm(y)
 end
 

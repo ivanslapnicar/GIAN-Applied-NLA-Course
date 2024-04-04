@@ -61,12 +61,15 @@ Algoritam is __stable__ is the above equality always holds for small $\delta x$.
 """
 
 # ╔═╡ 143d2bd9-6873-4ff1-ae84-37ee1dc53749
-B=rand(ComplexF64,5,5)
+begin
+	B=rand(ComplexF64,5,5)
+	B=B+B'
+end
 
 # ╔═╡ 104e51a1-2d72-497d-8556-0f6ad97552d4
 begin
 	C=copy(B)
-	for i=1:50
+	for i=1:100
 		Q,R=qr(C)
 		C=R*Q
 	end
@@ -74,6 +77,9 @@ end
 
 # ╔═╡ 527035ab-9b51-497b-9cb9-4a5d7c82f725
 abs.(C)
+
+# ╔═╡ 98ce0894-8849-4d94-9c8c-4b693eb67825
+C
 
 # ╔═╡ e7e45287-7e3a-4334-beee-a0cc45dd6275
 C[1,1]
@@ -153,7 +159,7 @@ $$\begin{bmatrix} U_{:1} & X \end{bmatrix}^T A  \begin{bmatrix} U_{:1} & X \end{
 
 6. Inverse iteration requires solving the system of linear equations $(A-\mu I)x_{k+1}= x_k$ for $x_{k+1}$ in each step. At the beginning, LU factorization of $A-\mu I$ needs to be computed, which requires $2n^3/3$ operations. In each subsequent step, two triangular systems need to be solved, which requires $2n^2$ operations.
 
-7. If $\mu$ is close to some eigenvalue of $A$, the eigenvalues of the shifted matrix satisfy $|\lambda_1|\gg |\lambda_2|\geq\cdots\geq |\lambda_n|$, so the convergence of the inverse iteration method is fast.
+7. If $\mu$ is close to some eigenvalue of $A$, the eigenvalues of the inverse of the shifted matrix satisfy $|1/\lambda_1|\gg |1/\lambda_2|\geq\cdots\geq |1/\lambda_n|$, so the convergence of the inverse iteration method is fast.
   
 8. If $\mu$ is very close to some eigenvalue of $A$, then the matrix $A-\mu I$ is nearly singular, so the solutions of linear systems may have large errors. However, these errors are almost entirely in the direction of the dominant eigenvector so the inverse iteration method is both fast and accurate!!
   
@@ -175,7 +181,7 @@ In order to keep the programs simple, in the examples below we do not compute fu
 "
 
 # ╔═╡ 3994bd3e-c2b2-486c-924f-c38896760bff
-function Power(A::Matrix,x::Vector,tol::Real)
+function Power(A::Matrix,x::Vector,tol::Real=1e-10)
     y=A*x
     ν=x⋅y
     steps=1
@@ -1152,6 +1158,7 @@ version = "17.4.0+2"
 # ╠═143d2bd9-6873-4ff1-ae84-37ee1dc53749
 # ╠═104e51a1-2d72-497d-8556-0f6ad97552d4
 # ╠═527035ab-9b51-497b-9cb9-4a5d7c82f725
+# ╠═98ce0894-8849-4d94-9c8c-4b693eb67825
 # ╠═e7e45287-7e3a-4334-beee-a0cc45dd6275
 # ╠═d59b2c3d-ac34-4b0c-9ecf-691141f5f3a1
 # ╟─9993ff53-f07e-46cf-b871-a4b4a2806c24

@@ -576,7 +576,7 @@ begin
 	# Generating Hermitian matrix
 	Random.seed!(431)
 	nₕ=6
-	Aₕ=rand(ComplexF64,nₕ,nₕ)
+	Aₕ=randn(ComplexF64,nₕ,nₕ)
 	Aₕ=Aₕ+adjoint(Aₕ)
 end
 
@@ -612,6 +612,9 @@ begin
 	eigvals(Aₕ[[1:i-1;i+1:end],[1:i-1;i+1:end]])
 end
 
+# ╔═╡ 159ebddb-f147-4aac-9075-04451f3e1af7
+sum(eigvals(Aₕ).>0)
+
 # ╔═╡ b42042c0-5592-4793-b3ff-72ff269dcf6e
 # Inertia
 inertia(A)=[sum(eigvals(A).>0), sum(eigvals(A).<0), sum(eigvals(A).==0)]
@@ -622,7 +625,7 @@ inertia(Aₕ)
 # ╔═╡ b6adec3b-d812-4268-9d13-9e82dcf30f22
 begin
 	# Similar matrices
-	Mₕ=rand(ComplexF64,nₕ,nₕ)
+	Mₕ=randn(ComplexF64,nₕ,nₕ)
 	eigvals(Mₕ*Aₕ*inv(Mₕ))
 end
 
@@ -646,7 +649,7 @@ inertia((Mₕ'*Aₕ*Mₕ+(Mₕ'*Aₕ*Mₕ)')/2)
 # ╔═╡ de537b01-876b-40a3-a941-4b5d8bcd2e0f
 begin
 	# Weyl's Inequalities
-	B=rand(ComplexF64,nₕ,nₕ)
+	B=randn(ComplexF64,nₕ,nₕ)
 	Bₕ=(B+B')/10
 	μₕ=eigvals(Bₕ)
 	γₕ=eigvals(Aₕ+Bₕ)
@@ -730,7 +733,7 @@ Matrix $A\in\mathcal{H}_n$ is __positive semidefinite__ (PSD) if $x^*Ax\geq 0$ f
 
 6. For $A\in \mathrm{PSD}_n$, there exists unique PSD $k$-th __root__, $A^{1/k}=U\Lambda^{1/k} U^*$.
 
-7. __Cholesky Factorization.__ $A\in\mathcal{H}_n$ if PD iff there is an invertible lower triangular matrix $L$ with positive diagonal entries such that $A=LL^*$.
+7. __Cholesky Factorization.__ $A\in\mathcal{H}_n$ is PD iff there is an invertible lower triangular matrix $L$ with positive diagonal entries such that $A=LL^*$.
 
 8. Gram matrix is PSD. If the vectors are linearly independent, Gram matrix is PD.
 """
@@ -745,7 +748,7 @@ md"""
 begin
 	# Generating positive definite matrix as a Gram matrix
 	nₚ=5
-	Aₚ=rand(ComplexF64,nₚ,nₚ)
+	Aₚ=randn(ComplexF64,nₚ,nₚ)
 	Aₚ=Aₚ*Aₚ'
 end
 
@@ -772,8 +775,8 @@ eigvals(Aₚ)
 begin
 	# Matrix function - square root
 	λₚ,Uₚ=eigen(Aₚ)
-	A2=Uₚ*√Diagonal(λₚ)*Uₚ'
-	norm(Aₚ-A2^2)
+	Aₚ₂=Uₚ*√Diagonal(λₚ)*Uₚ'
+	norm(Aₚ-Aₚ₂^2)
 end
 
 # ╔═╡ 8a4c37e0-a442-46da-929c-24cdc8280313
@@ -844,6 +847,9 @@ mean(y,dims=1)
 # ╔═╡ 15c93185-d758-426f-a94d-cba68a1c84a1
 y.-mean(y,dims=1)
 
+# ╔═╡ 941a91e5-93cb-43e4-b8cb-080ed14ce610
+size(y,1)
+
 # ╔═╡ 688efeb3-07da-4d75-a35b-a79f9440da76
 # Covariance matrix is a Gram matrix
 Cov₁=(y.-mean(y,dims=1))'*(y.-mean(y,dims=1))/(size(y,1)-1)
@@ -870,8 +876,11 @@ eigvals(Cor)
 
 # ╔═╡ c35bd54f-0f0f-4979-b842-a800eca12a6a
 md"
-Let us check the case when there are mor obervations than data:
+Let us check the case when there are more observations than data:
 "
+
+# ╔═╡ cd59b493-88a4-4d6e-aa9b-ccfca33eae8d
+
 
 # ╔═╡ 24fc1b19-97b4-4535-9276-c9db11549fff
 z=Matrix(transpose(y))
@@ -1599,6 +1608,7 @@ version = "17.4.0+2"
 # ╠═96f6750c-422d-4c2f-9719-32a3c8042181
 # ╠═189b6d8f-a080-473c-a9a7-0507707707c8
 # ╠═a6339443-0249-4b12-b94b-1f4b2b1b6d10
+# ╠═159ebddb-f147-4aac-9075-04451f3e1af7
 # ╠═b42042c0-5592-4793-b3ff-72ff269dcf6e
 # ╠═73eb2ab0-92f7-4d74-8960-0b11e8773f4b
 # ╠═b6adec3b-d812-4268-9d13-9e82dcf30f22
@@ -1642,6 +1652,7 @@ version = "17.4.0+2"
 # ╠═69346220-2310-4015-b29b-5b7186791fa8
 # ╠═070a4816-6fe3-4a29-b1ec-b68d1500f48d
 # ╠═15c93185-d758-426f-a94d-cba68a1c84a1
+# ╠═941a91e5-93cb-43e4-b8cb-080ed14ce610
 # ╠═688efeb3-07da-4d75-a35b-a79f9440da76
 # ╠═eb371182-ea27-4334-8cde-3fd8bf810148
 # ╠═f28e0e9a-23c5-4114-a853-2da285a24641
@@ -1650,6 +1661,7 @@ version = "17.4.0+2"
 # ╠═f6be3df8-6368-4535-8085-537a80dd3ae0
 # ╠═808904ca-b1d9-4eca-ae40-bcd53451fa83
 # ╟─c35bd54f-0f0f-4979-b842-a800eca12a6a
+# ╠═cd59b493-88a4-4d6e-aa9b-ccfca33eae8d
 # ╠═24fc1b19-97b4-4535-9276-c9db11549fff
 # ╠═34001f70-e2db-4529-a315-caf38ecb87b0
 # ╠═aee1f31c-4650-4ead-b25e-8a728419b18c
