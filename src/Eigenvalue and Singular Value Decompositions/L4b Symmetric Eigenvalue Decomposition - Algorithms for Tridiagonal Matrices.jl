@@ -83,7 +83,29 @@ begin
 end
 
 # ╔═╡ 2694c3c7-a3a5-4302-9d1a-7a7a9fbdbf34
-Λ,U=eigen(T)
+begin
+	Λ,U=eigen(T)
+	norm(U'*U-I), norm(T*U-U*Diagonal(Λ))
+end
+
+# ╔═╡ de416bcb-a9f1-4523-a461-8efce1e8eda3
+begin
+	# Example of matrix with cluster of eigenvalues
+	B=Diagonal(randn(6))
+	B.diag[3]=B.diag[2]+0.0000001*randn()
+	B.diag[4]=B.diag[2]+0.000001*randn()
+	q,r=qr(randn(6,6))
+	B=q'*B*q
+	B=tril(Matrix(hessenberg(B).H),1)
+	B=(B+B')/2
+	T0=SymTridiagonal(B)
+end
+
+# ╔═╡ 7f7d6516-6e0b-44a5-82ca-16029c98b3ff
+eigvals(B)
+
+# ╔═╡ c8840037-ab67-44e7-b6ee-c069e6e498dc
+eigvals(B)
 
 # ╔═╡ 0140996f-3c6e-4ed9-9df2-cebd9b6fbd7d
 # Fact 2
@@ -94,6 +116,7 @@ function myLDLt(T::SymTridiagonal{S},μ::S) where S<:Real
     D.diag[1]=T.dv[1]-μ
     for i=2:n
         D.diag[i]=(T.dv[i]-μ)-T.ev[i-1]^2/D.diag[i-1]
+		println(D[i,i])
     end
     for i=1:n-1
         L.ev[i]=T.ev[i]/D.diag[i]
@@ -224,8 +247,8 @@ begin
 	α=T₀[3,4]
 	T₁[3,3]-=α
 	T₂[1,1]-=α
-	D₁,X₁=eigen(Matrix(T₁))
-	D₂,X₂=eigen(Matrix(T₂))
+	Λ₁,X₁=eigen(Matrix(T₁))
+	Λ₂,X₂=eigen(Matrix(T₂))
 	x=zeros(6)
 	x[3]=√(α)
 	x[4]=√(α)
@@ -246,7 +269,7 @@ X'*T₀*X
 v=X'*x
 
 # ╔═╡ 2abbf839-847a-4d94-8a4b-f25f57a91540
-D₀=Diagonal([D₁;D₂])+v*v'
+D₀=Diagonal([Λ₁;Λ₂])+v*v'
 
 # ╔═╡ 903e7308-e7be-4821-82e5-105aca75aca2
 eigvals(D₀)
@@ -343,7 +366,7 @@ function DivideConquer(T::SymTridiagonal{S}) where S
     U=Matrix{S}(undef,n,n)
     Λ=Vector{S}(undef,n)
     if n==1
-        Λ=T.dv[1]
+        Λ=[T.dv[1]]
         U=[one(S)]
     else
         k=div(n,2)
@@ -715,6 +738,9 @@ version = "17.4.0+2"
 # ╟─219aea92-5737-42f5-8bed-a214a287851c
 # ╠═b089f3ea-ac9d-48c8-ae6d-769e6d3efd07
 # ╠═2694c3c7-a3a5-4302-9d1a-7a7a9fbdbf34
+# ╠═de416bcb-a9f1-4523-a461-8efce1e8eda3
+# ╠═7f7d6516-6e0b-44a5-82ca-16029c98b3ff
+# ╠═c8840037-ab67-44e7-b6ee-c069e6e498dc
 # ╠═0140996f-3c6e-4ed9-9df2-cebd9b6fbd7d
 # ╠═9a185d60-6431-4e1e-a729-268a767bad85
 # ╠═b7889ca1-c79d-43d7-9d65-11f0fed35791
