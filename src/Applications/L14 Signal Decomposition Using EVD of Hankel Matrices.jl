@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.40
+# v0.19.41
 
 using Markdown
 using InteractiveUtils
@@ -428,11 +428,11 @@ begin
 	T=Toeplitz(a₂,b₂)
 end
 
-# ╔═╡ a598c1a7-9788-44bb-85ee-24aa4f14d9f9
-# C=Circulant([a₂[n₀:2*n₀-1];a₂[1:n₀-1]])
-
 # ╔═╡ b2fc20f1-faf1-4e08-9ccd-6b175cff0066
 C=Circulant([a₂;reverse(b₂[2:end])])
+
+# ╔═╡ a598c1a7-9788-44bb-85ee-24aa4f14d9f9
+# C=Circulant([a₂[n₀:2*n₀-1];a₂[1:n₀-1]])
 
 # ╔═╡ d132b9c0-8101-4c14-89d7-5fa1462ea71e
 # Fact 5 - Toeplitz() x vector
@@ -2137,10 +2137,10 @@ version = "1.4.1+1"
 # ╠═319a6376-3172-4f9b-9137-c8a3809920c3
 # ╠═5be3c4c2-dcae-4a57-8bcc-9a6d1f580110
 # ╠═61d7911a-ea4d-4ef1-9778-6a2e8eff10e1
+# ╠═b2fc20f1-faf1-4e08-9ccd-6b175cff0066
 # ╠═7e92160b-51eb-4434-8001-60a00f84d1f2
 # ╠═70890a0e-f7bb-4a92-aa11-2e65e70875b1
 # ╠═a598c1a7-9788-44bb-85ee-24aa4f14d9f9
-# ╠═b2fc20f1-faf1-4e08-9ccd-6b175cff0066
 # ╠═d132b9c0-8101-4c14-89d7-5fa1462ea71e
 # ╟─f3fce6ec-b9c8-4aae-bdfa-2387bb2cc38a
 # ╠═32f20ec2-bf15-467f-98ef-6dbe6a568bca

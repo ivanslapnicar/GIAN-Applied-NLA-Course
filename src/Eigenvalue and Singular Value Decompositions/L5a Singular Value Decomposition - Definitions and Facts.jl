@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.40
+# v0.19.41
 
 using Markdown
 using InteractiveUtils
@@ -18,7 +18,7 @@ end
 using PlutoUI, Random, LinearAlgebra, SymPyPythonCall
 
 # ╔═╡ 34979e8f-0d24-4577-aaa2-1462201276dc
-PlutoUI.TableOfContents(aside=true)
+TableOfContents(aside=true)
 
 # ╔═╡ c226e28d-3a8a-42f6-8a51-2ac418023a27
 md"""
@@ -389,8 +389,8 @@ Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 SymPyPythonCall = "bc8888f7-b21e-4b7c-a06a-5d9c9496438c"
 
 [compat]
-PlutoUI = "~0.7.58"
-SymPyPythonCall = "~0.2.5"
+PlutoUI = "~0.7.59"
+SymPyPythonCall = "~0.2.6"
 """
 
 # ╔═╡ 00000000-0000-0000-0000-000000000002
@@ -399,13 +399,13 @@ PLUTO_MANIFEST_TOML_CONTENTS = """
 
 julia_version = "1.10.2"
 manifest_format = "2.0"
-project_hash = "89544e0289f47d7b6eda625e83cbaf0eb02a2dca"
+project_hash = "046e4742ba087d932464c131600f3e6e602fe3b1"
 
 [[deps.AbstractPlutoDingetjes]]
 deps = ["Pkg"]
-git-tree-sha1 = "0f748c81756f2e5e6854298f11ad8b2dfae6911a"
+git-tree-sha1 = "6e1d2a35f2f90a4bc7c2ed98079b2ba09c35b83a"
 uuid = "6e696c72-6542-2067-7265-42206c756150"
-version = "1.3.0"
+version = "1.3.2"
 
 [[deps.ArgTools]]
 uuid = "0dad84c5-d112-42e6-8d28-ef12dabb789f"
@@ -419,9 +419,9 @@ uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
 
 [[deps.ColorTypes]]
 deps = ["FixedPointNumbers", "Random"]
-git-tree-sha1 = "eb7f0f8307f71fac7c606984ea5fb2817275d6e4"
+git-tree-sha1 = "b10d0b65641d57b8b4d5e234446582de5047050d"
 uuid = "3da002f7-5984-5a60-b8a6-cbb66c0b333f"
-version = "0.11.4"
+version = "0.11.5"
 
 [[deps.CommonEq]]
 git-tree-sha1 = "6b0f0354b8eb954cdba708fb262ef00ee7274468"
@@ -546,9 +546,9 @@ version = "1.3.1"
 
 [[deps.Latexify]]
 deps = ["Format", "InteractiveUtils", "LaTeXStrings", "MacroTools", "Markdown", "OrderedCollections", "Requires"]
-git-tree-sha1 = "cad560042a7cc108f5a4c24ea1431a9221f22c1b"
+git-tree-sha1 = "e0b5cd21dc1b44ec6e64f351976f961e6f31d6c4"
 uuid = "23fbe1c1-3f47-55db-b15f-69d7ec21a316"
-version = "0.16.2"
+version = "0.16.3"
 
     [deps.Latexify.extensions]
     DataFramesExt = "DataFrames"
@@ -689,9 +689,9 @@ version = "1.10.0"
 
 [[deps.PlutoUI]]
 deps = ["AbstractPlutoDingetjes", "Base64", "ColorTypes", "Dates", "FixedPointNumbers", "Hyperscript", "HypertextLiteral", "IOCapture", "InteractiveUtils", "JSON", "Logging", "MIMEs", "Markdown", "Random", "Reexport", "URIs", "UUIDs"]
-git-tree-sha1 = "71a22244e352aa8c5f0f2adde4150f62368a3f2e"
+git-tree-sha1 = "ab55ee1510ad2af0ff674dbcced5e94921f867a9"
 uuid = "7f904dfe-b85e-4ff6-b463-dae2292396a8"
-version = "0.7.58"
+version = "0.7.59"
 
 [[deps.PrecompileTools]]
 deps = ["Preferences"]
@@ -791,9 +791,9 @@ version = "7.2.1+1"
 
 [[deps.SymPyCore]]
 deps = ["CommonEq", "CommonSolve", "Latexify", "LinearAlgebra", "Markdown", "RecipesBase", "SpecialFunctions"]
-git-tree-sha1 = "4c5a53625f0e53ce1e726a6dab1c870017303728"
+git-tree-sha1 = "075700e623e8dac9ba7f94d9e6d6e424f2000f46"
 uuid = "458b697b-88f0-4a86-b56b-78b75cfb3531"
-version = "0.1.16"
+version = "0.1.17"
 
     [deps.SymPyCore.extensions]
     SymPyCoreSymbolicUtilsExt = "SymbolicUtils"
@@ -803,9 +803,9 @@ version = "0.1.16"
 
 [[deps.SymPyPythonCall]]
 deps = ["CommonEq", "CommonSolve", "CondaPkg", "LinearAlgebra", "PythonCall", "SpecialFunctions", "SymPyCore"]
-git-tree-sha1 = "1948385c5c0f0659ca3abcdea214318d691b1770"
+git-tree-sha1 = "09929c3fbc75a4d5e931327035c8de8d83c2435d"
 uuid = "bc8888f7-b21e-4b7c-a06a-5d9c9496438c"
-version = "0.2.5"
+version = "0.2.6"
 
     [deps.SymPyPythonCall.extensions]
     SymPyPythonCallSymbolicsExt = "Symbolics"
@@ -873,9 +873,9 @@ version = "5.8.0+1"
 
 [[deps.micromamba_jll]]
 deps = ["Artifacts", "JLLWrappers", "LazyArtifacts", "Libdl"]
-git-tree-sha1 = "66d07957bcf7e4930d933195aed484078dd8cbb5"
+git-tree-sha1 = "b4a5a3943078f9fd11ae0b5ab1bdbf7718617945"
 uuid = "f8abcde7-e9b7-5caa-b8af-a437887ae8e4"
-version = "1.4.9+0"
+version = "1.5.8+0"
 
 [[deps.nghttp2_jll]]
 deps = ["Artifacts", "Libdl"]
