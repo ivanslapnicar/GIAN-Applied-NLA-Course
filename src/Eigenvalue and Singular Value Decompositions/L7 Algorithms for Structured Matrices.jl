@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.36
+# v0.19.40
 
 using Markdown
 using InteractiveUtils
@@ -20,7 +20,7 @@ begin
 end
 
 # ╔═╡ f24e6652-a36b-4f57-b0eb-03921a5616cc
-PlutoUI.TableOfContents(aside=true)
+TableOfContents(aside=true)
 
 # ╔═╡ 5d95dc2c-bf94-4b13-b9d5-b7b261e86cf6
 md"""
@@ -82,7 +82,7 @@ md"""
 3. Let $\hat X \hat D \hat Y^T$ be the computed RRD of $A$ satisfying $|D_{jj}-\hat D_{jj}| \leq O(\varepsilon)|D_{jj}|$, $\| X-\hat X\|\leq O(\varepsilon) \|X\|$, and $\| Y-\hat Y\|\leq O(\varepsilon) \|Y\|$. The following algorithm computes the EVD of $A$ with high relative accuracy:
 
     1. Perform QR factorization with pivoting to get $\hat X\hat D=QRP$, where $P$ is a permutation matrix. Thus $A=QRP\hat Y^T$.
-    2. Multiply $W=RP\hat Y^T$ (_NOT_ Strassen's multiplication). Thus $A=QW$ an W$ are well-scaled from the left.
+    2. Multiply $W=RP\hat Y^T$ (_NOT_ Strassen's multiplication). Thus $A=QW$ and $W$ are well-scaled from the left.
     3. Compute the SVD of $W^T=V\Sigma^T \bar U^T$ using one-sided Jacobi method. Thus $A=Q\bar U \Sigma V^T$.
     4. Multiply $U=Q\bar U$. Thus $A=U\Sigma V^T$ is the computed SVD of $A$.
 

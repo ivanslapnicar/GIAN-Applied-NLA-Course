@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.20
+# v0.19.40
 
 using Markdown
 using InteractiveUtils
@@ -9,12 +9,15 @@ begin
     import Pkg
     # activate a temporary environment
     Pkg.activate(mktempdir())
-    Pkg.add([Pkg.PackageSpec(name="Arrowhead", rev="master")])
+    Pkg.add([
+		Pkg.PackageSpec(name="Arrowhead", rev="master")
+		Pkg.PackageSpec(name="PlutoUI")
+	])
     using PlutoUI, LinearAlgebra, Arrowhead
 end
 
 # ╔═╡ 51c330f6-7675-475e-b0eb-0fc8486fd094
-PlutoUI.TableOfContents(aside=true)
+TableOfContents(aside=true)
 
 # ╔═╡ c3caaf95-bef6-446d-b197-23ad1a7da450
 md"""
@@ -30,9 +33,6 @@ __Competences__
 
 The reader should be able to recognize applications where SVD updating can be successfully applied and apply it.
 """
-
-# ╔═╡ f1451f8c-2bb7-4e28-884e-cbbd66edc963
-
 
 # ╔═╡ e070e205-b8fb-4608-93c1-f5c5beb075c3
 md"""
@@ -320,7 +320,6 @@ end
 # ╠═c5dfc888-42a6-4fa5-b969-61ff6c9180fe
 # ╠═51c330f6-7675-475e-b0eb-0fc8486fd094
 # ╟─c3caaf95-bef6-446d-b197-23ad1a7da450
-# ╠═f1451f8c-2bb7-4e28-884e-cbbd66edc963
 # ╟─e070e205-b8fb-4608-93c1-f5c5beb075c3
 # ╟─0ff9f1d6-1ebf-4a42-b51a-5a67f6192fe7
 # ╠═1f7f9f7a-df70-40a3-aa06-b5621b729a0c
