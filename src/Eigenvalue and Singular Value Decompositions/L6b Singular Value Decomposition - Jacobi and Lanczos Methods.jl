@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.40
+# v0.19.41
 
 using Markdown
 using InteractiveUtils
@@ -161,7 +161,7 @@ md"""
 begin
 	m₁=20
 	n₁=15
-	B₁=rand(m₁,n₁)
+	B₁=randn(m₁,n₁)
 	D₁=exp.(50*(rand(n₁).-0.5))
 	A₁=B₁*Diagonal(D₁)
 end
@@ -240,7 +240,7 @@ The function `svds()` is based on the Lanczos method for symmetric matrices. Inp
 begin
 	m₂=20
 	n₂=15
-	A₂=rand(m₂,n₂)
+	A₂=randn(m₂,n₂)
 end
 
 # ╔═╡ 8af3203b-9e58-460a-a7e0-81c60d6dcad4

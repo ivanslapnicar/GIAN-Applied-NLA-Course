@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.40
+# v0.19.41
 
 using Markdown
 using InteractiveUtils
@@ -105,7 +105,7 @@ end
 function H(x)
     v=copy(x)
     v[1]+=sign(x[1])*norm(x)
-    # display(v/v[1])
+    display(v/v[1])
     I-(2/(v⋅v))*v*v'
 end
 
@@ -265,10 +265,13 @@ md"
 "
 
 # ╔═╡ a0d540ea-d116-499a-bcad-d6bfe3e52470
-W,σ,Z=svd(B)
+W=svd(B)
 
 # ╔═╡ 2b900980-6ccb-441c-9ef5-e7dc68ff843e
 @which svd(B)
+
+# ╔═╡ d1d2757a-4243-4914-b21c-059663fd60f5
+norm(W.U'*W.U-I), norm(W.V*W.Vt-I), norm(B*W.V-W.U*Diagonal(W.S))
 
 # ╔═╡ 90970845-d921-4b88-9681-d344451d4c3c
 σ₁=svdvals(B)
@@ -277,7 +280,7 @@ W,σ,Z=svd(B)
 @which svdvals!(B)
 
 # ╔═╡ 2c1943df-95d8-43bb-bf6a-8fe13424a2c9
-norm(σ-σ₁)
+norm(W.S-σ₁)
 
 # ╔═╡ 1a79b153-6560-45d7-8113-e39101d17460
 # ?LAPACK.bdsqr!
@@ -314,7 +317,7 @@ Functions `svd()`, `LAPACK.bdsqr!()` and `LAPACK.bdsdc!()` use the same algorith
 """
 
 # ╔═╡ beec8bad-9621-4c66-88d3-4f48dbcf5566
-[σ₃-σ₂ σ₃-σ]
+[σ₃-σ₂ σ₃-W.S]
 
 # ╔═╡ 569d2241-b9a8-4501-8b17-9527e1777cdc
 md"
@@ -357,8 +360,8 @@ Sv.Vt
 # ╔═╡ 4ef07f50-e9aa-4075-960a-dce2ee9f9d9e
 begin
 	# With our building blocks
-	U₁=X*W
-	V₁=Y*Z
+	U₁=X*W.U
+	V₁=Y*W.V
 	U₁'*A*V₁
 end
 
@@ -413,7 +416,7 @@ PlutoUI = "~0.7.58"
 PLUTO_MANIFEST_TOML_CONTENTS = """
 # This file is machine-generated - editing it directly is not advised
 
-julia_version = "1.10.2"
+julia_version = "1.10.3"
 manifest_format = "2.0"
 project_hash = "1867d9ce1bd88115b124f124b5d7cd866c186b11"
 
@@ -442,7 +445,7 @@ version = "0.11.4"
 [[deps.CompilerSupportLibraries_jll]]
 deps = ["Artifacts", "Libdl"]
 uuid = "e66e0078-7015-5450-92f7-15fbd957f2ae"
-version = "1.1.0+0"
+version = "1.1.1+0"
 
 [[deps.Dates]]
 deps = ["Printf"]
@@ -712,6 +715,7 @@ version = "17.4.0+2"
 # ╟─e64fc85e-2861-4e42-9789-ee12b6f9950f
 # ╠═a0d540ea-d116-499a-bcad-d6bfe3e52470
 # ╠═2b900980-6ccb-441c-9ef5-e7dc68ff843e
+# ╠═d1d2757a-4243-4914-b21c-059663fd60f5
 # ╠═90970845-d921-4b88-9681-d344451d4c3c
 # ╠═860a3476-b257-4384-b255-4a8bd68728c9
 # ╠═2c1943df-95d8-43bb-bf6a-8fe13424a2c9

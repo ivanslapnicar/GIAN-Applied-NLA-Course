@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.19.40
+# v0.19.41
 
 using Markdown
 using InteractiveUtils
@@ -75,11 +75,11 @@ __Cauchy matrix__ is an $m\times n$ matrix $C$ with elements $C_{ij}=\displaysty
 md"""
 ## Facts
 
-1. The singular values of $A$ are perfectly well determined to high relative accuracy if and only if the bipartite graph $\mathcal{G}(S)$ is acyclic (forest of trees). Examples are bidiagonal and arrowhead matrices. Sparsity pattern $S$ of the acyclic bipartite graph allows at most $m+n-1$ nonzero entries. A bisection algorithm computes all singular values of biacyclic matrices to high relative accuracy.
+1. The singular values of $A$ are perfectly well determined to high relative accuracy __if and only if__ the bipartite graph $\mathcal{G}(S)$ is acyclic (forest of trees). Examples are bidiagonal and arrowhead matrices. Sparsity pattern $S$ of the acyclic bipartite graph allows at most $m+n-1$ nonzero entries. A bisection algorithm computes all singular values of biacyclic matrices to high relative accuracy.
 
 2. An RRD of $A$ can be given or computed with high accuracy by some method. Typical methods are Gaussian elimination with complete pivoting or QR factorization with complete pivoting.
 
-3. Let $\hat X \hat D \hat Y^T$ be the computed RRD of $A$ satisfying $|D_{jj}-\hat D_{jj}| \leq O(\varepsilon)|D_{jj}|$, $\| X-\hat X\|\leq O(\varepsilon) \|X\|$, and $\| Y-\hat Y\|\leq O(\varepsilon) \|Y\|$. The following algorithm computes the EVD of $A$ with high relative accuracy:
+3. Let $\hat X \hat D \hat Y^T$ be the computed RRD of $A$ satisfying $|D_{jj}-\hat D_{jj}| \leq O(\varepsilon)|D_{jj}|$, $\| X-\hat X\|\leq O(\varepsilon) \|X\|$, and $\| Y-\hat Y\|\leq O(\varepsilon) \|Y\|$. The following algorithm computes the SVD of $A$ with high relative accuracy:
 
     1. Perform QR factorization with pivoting to get $\hat X\hat D=QRP$, where $P$ is a permutation matrix. Thus $A=QRP\hat Y^T$.
     2. Multiply $W=RP\hat Y^T$ (_NOT_ Strassen's multiplication). Thus $A=QW$ and $W$ are well-scaled from the left.
@@ -285,22 +285,19 @@ C=Cauchy([1,2,3,4,5],[0,1,2,3,4])
 H=Hilbert(5)
 
 # ╔═╡ e9bf2b02-a60d-495b-bbdb-d87e31d8d9e0
-Hf=map(Float64,Matrix(H))
+Hf=Float64.(H)
 
 # ╔═╡ c113b7fe-87b9-454c-aeb9-166af79bbe61
-begin
-	# Exact formula for the determinant of a Cauchy matrix from Fact 7.
-	import LinearAlgebra.det
-	function det(C::Cauchy{T}) where T
-	    n=length(C.x)
-	    F=triu([(C.x[j]-C.x[i])*(C.y[j]-C.y[i]) for i=1:n, j=1:n],1)
-	    num=prod(F[findall(!iszero,F)])
-	    den=prod([(C.x[i]+C.y[j]) for i=1:n, j=1:n])
-	    if all(isinteger,C.x)&all(isinteger,C.y)
-	        return num//den
-	    else
-	        return num/den
-	    end
+# Exact formula for the determinant of a Cauchy matrix from Fact 7.
+function LinearAlgebra.det(C::Cauchy{T}) where T
+	n=length(C.x)
+	F=triu([(C.x[j]-C.x[i])*(C.y[j]-C.y[i]) for i=1:n, j=1:n],1)
+	num=prod(F[findall(!iszero,F)])
+	den=prod([(C.x[i]+C.y[j]) for i=1:n, j=1:n])
+	if all(isinteger,C.x)&all(isinteger,C.y)
+	    return num//den
+	else
+	    return num/den
 	end
 end
 
@@ -562,7 +559,7 @@ b&= \displaystyle\frac{1}{\zeta _{i}^{2}}\left(-\alpha +z_{1}^{T}D_{1}^{-1}z_{1}
     2. Invert the shifted matrix.
     3. Compute the absolutely largest eigenvalue of the inverted shifted matrix and the corresponding eigenvector.
 
-7. The algorithm is implemented in the package [Arrowhead.jl](https://github.com/ivanslapnicar/Arrowhead.jl). In certain cases, $b$ or $\rho$ need to be computed with extended precision. For this, we use the functions from file [DoubleDouble.jl](https://github.com/ivanslapnicar/Arrowhead.jl/blob/master/src/DoubleDouble.jl), originally from the the package [DoubleDouble.jl](https://github.com/simonbyrne/DoubleDouble.jl).
+7. The algorithm is implemented in the package [Arrowhead.jl](https://github.com/ivanslapnicar/Arrowhead.jl). In certain cases, $b$ or $\rho$ need to be computed with extended precision. For this, we use the functions from file [DoubleDouble.jl](https://github.com/ivanslapnicar/Arrowhead.jl/blob/master/src/DoubleDouble.jl), originally from the the package [DoubleDouble.jl](https://github.com/simonbyrne/DoubleDouble.jl), which is based on ideas and algorithms from [Dekker, 1971](https://eudml.org/doc/132105).
 """
 
 # ╔═╡ 6d7f330f-3c88-44bd-aff9-65daa7f1ea1c
