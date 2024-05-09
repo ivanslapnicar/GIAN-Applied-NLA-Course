@@ -7,8 +7,9 @@ using InteractiveUtils
 # ╔═╡ 0cd92d78-1da6-435b-ad8e-60af29502e1d
 begin
 	# Necessary packages
-	using PlutoUI, Random, LinearAlgebra, Graphs, GraphPlot
+	using PlutoUI, Random, LinearAlgebra
 	using SparseArrays, Plots, Distances, Arpack
+	using Graphs, GraphPlot
 end
 
 # ╔═╡ 7ef4b0b3-9d0a-4356-bd16-14487f14e0ab
@@ -223,7 +224,7 @@ end
 
 # ╔═╡ fed7f592-be03-4baf-8ace-ff9ee78fee71
 # Fact 8
-eigvals(Matrix(Lₙ))
+eigen(Matrix(Lₙ))
 
 # ╔═╡ 9f31928e-c933-43bb-9a5c-bf55f29737cd
 md"""
@@ -437,6 +438,9 @@ begin
 	W₁
 end
 
+# ╔═╡ c9abe69b-2b2c-4997-8aaf-fd3db0fa89a4
+1 ./pairwise(SqEuclidean(),X)
+
 # ╔═╡ bb68b540-f515-40c3-95ad-7f1f86f1852a
 L₁=Laplacian(W₁)
 
@@ -484,6 +488,17 @@ begin
 	C₂=ones(Int64,m)
 	C₂[findall(E₂[2][:,2].>0)].=2
 	plotKpartresult(C₂,X)
+end
+
+# ╔═╡ 518a5efc-4a3b-4bb9-b349-9415fda5520d
+begin
+	# σ=1.0 # 0.1
+	# W₂=exp.(-pairwise(SqEuclidean(),X)/σ^2)-I
+	L₃=NormalizedLaplacian(L₂)
+	E₃=eigs(L₃,nev=2,which=:SM, v0=ones(m))
+	C₃=ones(Int64,m)
+	C₃[findall(E₃[2][:,2].>0)].=2
+	plotKpartresult(C₃,X)
 end
 
 # ╔═╡ 1a96c144-4a77-47bc-a112-d2f61941d412
@@ -1786,6 +1801,7 @@ version = "1.4.1+1"
 # ╠═80ed91ad-6f9a-4f12-a1ee-bc8dc6b58168
 # ╠═2d8689c9-1b9e-4360-865c-23c2c8c5dcb9
 # ╠═fa4ae713-a0b2-46ce-b5f7-558b26d82019
+# ╠═c9abe69b-2b2c-4997-8aaf-fd3db0fa89a4
 # ╠═bb68b540-f515-40c3-95ad-7f1f86f1852a
 # ╠═f3c4556e-186c-4952-adc7-d84a1582b3c9
 # ╠═75956488-76ab-4262-a32f-0c53e1b3dc17
@@ -1794,6 +1810,7 @@ version = "1.4.1+1"
 # ╠═46de28bc-73ed-495c-a2e0-f565c1ce5651
 # ╟─e004e4bf-ca04-4b41-947b-9f1ecd058abb
 # ╠═bb9d4d98-3aff-439e-b8a3-8347cf345839
+# ╠═518a5efc-4a3b-4bb9-b349-9415fda5520d
 # ╠═1a96c144-4a77-47bc-a112-d2f61941d412
 # ╟─012fa54a-5171-4980-a0ba-474a22c25981
 # ╟─00000000-0000-0000-0000-000000000001

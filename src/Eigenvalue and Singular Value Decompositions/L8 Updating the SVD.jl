@@ -59,7 +59,7 @@ is the SVD of $\tilde A$.
 
 2. Direct computation of $\tilde U$ and $\tilde V$ requires $O(mn^2)$ and $O(n^3)$ operations. However, these multiplications can be performed using Fast Multipole Method. This is not (yet) implemented in Julia and is "not for the timid" (quote by Steven G. Johnson).
 
-3. If $m<n$ and $\mathop{\mathrm{rank}}(A)=n$, then
+3. If $m<n$ and $\mathop{\mathrm{rank}}(A)=m$, then
 
 $$
 \begin{bmatrix} A \\ a^T\end{bmatrix} =\begin{bmatrix} U & \\ & 1 \end{bmatrix}
@@ -99,6 +99,7 @@ function SVDaddrow(svdA::SVD,a::Vector)
         M=HalfArrow(svdA.S,b)
     else
         β=√(norm(a)^2-norm(b)^2)
+		println(β)
         M=HalfArrow(svdA.S,[b;β])
     end
     # From Arrowhead package
@@ -123,8 +124,8 @@ methods(SVD)
 begin
 	import Random
 	Random.seed!(421)
-	A=rand(10,6)
-	a=rand(6)
+	A=randn(10,6)
+	a=randn(6)
 end
 
 # ╔═╡ 148c7157-3d93-4673-bd9b-26bef99627a7
@@ -163,8 +164,8 @@ md"""
 begin
 	# Now flat matrix
 	Random.seed!(421)
-	A₁=rand(6,10)
-	a₁=rand(10)
+	A₁=randn(6,10)
+	a₁=randn(10)
 	S₁=svd(A₁)
 end
 
@@ -266,9 +267,9 @@ md"""
 # ╔═╡ 0a5298eb-ed33-443b-b9e4-c0a32b408605
 begin
 	# Adding row to a tall matrix
-	A₆=rand(10,6)
+	A₆=randn(10,6)
 	S₆=svd(A₆)
-	a₆=rand(6)
+	a₆=randn(6)
 	# Rank of the approximation
 	r=4
 end

@@ -115,7 +115,7 @@ S_{B}&=\sum_{i=1}^k|C_{i}|(c_{i}-c)(c_{i}-c)^{T} =
 
 # ╔═╡ 89685aa2-f773-4a72-b1c0-ec45bb7d1e1f
 begin
-	# W#e need this for mean() to work with tuples
+	# We need this for mean() to work with tuples
 	import Base: /,+, zero
 	/(a::Tuple,b::Number)=a./b
 	+(a::Tuple,b::Tuple)=a.+b
