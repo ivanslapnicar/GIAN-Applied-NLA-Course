@@ -80,7 +80,7 @@ It holds
 $$
 \begin{aligned}
 & \mathop{\mathrm{cut}}(V_{i},V\backslash V_{i})=h_{i}^{T}(D-W)h_{i}=h_{i}^{T}L h_{i},\quad
-\omega( C_{i})=h_{i}^{T}D h_{i},\quad |C_{i}| =h_{i}^{T}h_{i},\\
+\omega( V_{i})=h_{i}^{T}D h_{i},\quad |V_{i}| =h_{i}^{T}h_{i},\\
 & \mathop{\mathrm{pcut}}(\pi_k) =\frac{h_{1}^{T}L h_{1}}{h_{1}^{T} h_{1}}+
 \cdots + \frac{h_{k}^{T}L h_{k}}{h_{k}^{T}h_{k}}
 =x_{1}^{T}L x_{1}+\cdots +x_{k}^{T}Lx_{k}=\mathop{\mathrm{trace}}(X^{T}LX),\\

@@ -143,12 +143,18 @@ norm(A)
 # Compute the splitting - 2 minutes
 @time L,S,iters=PCPAD(A);
 
+# ╔═╡ 4d651892-7e52-4e99-9c41-cd397e010877
+iters
+
 # ╔═╡ fac15864-4d9c-4c89-975d-ce76ade843c4
 # Reconstruct the low-rank video component
 rank(L), norm(A-L-S), norm(A)
 
 # ╔═╡ 2485d13b-985b-46ae-9924-d9b91b4eb0dd
 svdvals(L)[1:20]
+
+# ╔═╡ 8e0e98b4-41c7-41eb-a407-bf973d170921
+clip[1]
 
 # ╔═╡ 60fa97c8-c1e6-4b31-8d99-41b65882ebd6
 begin
@@ -1772,8 +1778,10 @@ version = "3.5.0+0"
 # ╠═eea0d3a3-bcd7-41d4-83bf-501fafef4015
 # ╠═1620306d-1e2c-4d8d-9383-d9fdd2e49936
 # ╠═feda63b4-cf85-43b6-9aac-f6d700429fdf
+# ╠═4d651892-7e52-4e99-9c41-cd397e010877
 # ╠═fac15864-4d9c-4c89-975d-ce76ade843c4
 # ╠═2485d13b-985b-46ae-9924-d9b91b4eb0dd
+# ╠═8e0e98b4-41c7-41eb-a407-bf973d170921
 # ╠═60fa97c8-c1e6-4b31-8d99-41b65882ebd6
 # ╠═f7b93cba-065e-4fdf-95ce-ef99dbc0b845
 # ╠═5232e5a8-158d-456e-8a0d-c61c29e55148
