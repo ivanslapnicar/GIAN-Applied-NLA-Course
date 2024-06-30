@@ -257,6 +257,12 @@ function SamplingMatrix(m::Int,n::Int,kind::String)
     return A
 end
 
+# ╔═╡ bf461f2c-3faf-42c7-a6a6-b176a938d37b
+Aₒ=SamplingMatrix(4,6,"Fourier")
+
+# ╔═╡ 5a209f01-b6a1-406c-bff0-4d60e62fac25
+norm(Aₒ[:,1])
+
 # ╔═╡ 9e02f055-6f3d-42f8-940e-f3bd944942fd
 function recovery(A,b)
     model = Model(Clp.Optimizer)
@@ -300,6 +306,9 @@ end
 # ╔═╡ c17eac6a-1ab5-406a-b063-95c91dd81e46
 # Sample x
 bₛ=Aₛ*xₛ
+
+# ╔═╡ 400c3fb9-d577-47ad-b4a3-961eeb478fd7
+xₛ
 
 # ╔═╡ acab203d-f158-4460-9452-7037895559bd
 xᵣ=recovery(Aₛ,bₛ)
@@ -2672,9 +2681,12 @@ version = "1.4.1+1"
 # ╠═5525bba3-b96d-40e6-97fb-132c6767337d
 # ╟─35b0bd70-b0f8-4ca8-a7e7-805e31a032d8
 # ╠═4c96769b-ec49-4134-91e3-df77545fcc61
+# ╠═bf461f2c-3faf-42c7-a6a6-b176a938d37b
+# ╠═5a209f01-b6a1-406c-bff0-4d60e62fac25
 # ╠═9e02f055-6f3d-42f8-940e-f3bd944942fd
 # ╠═9d5e6751-9e3e-4b0a-8fd3-35a43e079ee7
 # ╠═c17eac6a-1ab5-406a-b063-95c91dd81e46
+# ╠═400c3fb9-d577-47ad-b4a3-961eeb478fd7
 # ╠═acab203d-f158-4460-9452-7037895559bd
 # ╟─dfa4e322-5660-42fc-9cb5-eae48bad5750
 # ╠═372b7d99-b6e8-4656-aaa5-a5c489105e80
