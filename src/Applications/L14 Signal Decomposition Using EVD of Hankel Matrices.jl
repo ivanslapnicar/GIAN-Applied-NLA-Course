@@ -15,9 +15,9 @@ macro bind(def, element)
 end
 
 # ╔═╡ b4423c48-1d43-4887-9f96-a2f6ac8eaa45
-using Plots, FFTW, ToeplitzMatrices, SpecialMatrices, PlutoUI, Random, LinearAlgebra, WAV, Arpack, LinearMaps
+using PlutoUI, FFTW, ToeplitzMatrices, SpecialMatrices, Random, LinearAlgebra, WAV, Arpack, LinearMaps, Plots
 
-# ╔═╡ 5c3aeb0a-4840-4508-81d8-775747b7cb63
+# ╔═╡ b6058fe0-72a9-4be3-9d09-5f35109198a2
 plotly()
 
 # ╔═╡ 5b8f2611-cdf9-4761-8768-4b014f02b842
@@ -38,8 +38,9 @@ Mono-component recovery can be successfully applied to audio signals.
 
 __Prerequisites__
 
-The reader should be familiar to elementary concepts about signals, and with linear algebra concepts, particularly EVD and its properties and algorithms.
- 
+The reader should be familiar with elementary concepts about signals and linear algebra concepts, particularly eigenvalue decomposition and its properties and algorithms. The latter can be learned from any textbook on linear algebra or from this [notebook](https://ivanslapnicar.github.io/GIAN-Applied-NLA-Course/L3a%20Eigenvalue%20Decomposition%20-%20Definitions%20and%20Facts.html).
+
+
 __Competences__
 
 The reader should be able to decompose given signal into mono-components using EVD methods.
@@ -47,8 +48,6 @@ The reader should be able to decompose given signal into mono-components using E
 __References__
 
 For more details see [P. Jain and R. B. Pachori, An iterative approach for decomposition of multi-component non-stationary signals based on eigenvalue decomposition of the Hankel matrix](http://www.sciencedirect.com/science/article/pii/S0016003215002288).
-
-__Credits__: The first Julia implementation was derived in [A. M. Bačak, Master's Thesis]().
 """
 
 # ╔═╡ d1b6461e-6e87-4cab-af2d-f28e09c336ac
@@ -73,6 +72,8 @@ Here:
 
  $f_k=\displaystyle\frac{F_k}{F}$ is the __normalized frequency__ of $x^{(k)}$,
 
+ $p_k=\displaystyle\frac{1}{f_k}$ is the period of $x^{(k)}$,
+
  $F$ is the __sampling frequency__ of $x$ in Hz, 
 
  $F_k$ is the sampling frequency of $x^{(k)}$,
@@ -84,7 +85,17 @@ Here:
 We assume that $F_k< F_{k+1}$ for $k=1,2,\ldots,n-1$, and $F>2F_n$.
 
 A __Hankel matrix__ is a (real) square matrix with constant values along the skew-diagonals. More precisely, let $a\in\mathbb{R}^{2n-1}$. An $n\times n$ matrix $H\equiv H(a)$ for which $H_{ij}=H_{i+1,j-1}=a_{i+j-1}$ is a Hankel matrix.
+"""
 
+# ╔═╡ 545776f8-e826-430b-8744-05a53ef708b6
+begin
+	# Small Hankel matrix
+	a=collect(1:9)
+	Hankel(a)
+end
+
+# ╔═╡ a8bff246-a387-43ec-91b9-de97d366c79d
+md"""
 ## Facts
 
 Let $x$ be a signal with $2n-1$ samples composed of $L$ stationary mono-components.
@@ -103,13 +114,6 @@ md"""
 ## Example - Signal with three mono-components
 """
 
-# ╔═╡ 545776f8-e826-430b-8744-05a53ef708b6
-begin
-	# Small Hankel matrix
-	a=collect(1:11)
-	Hankel(a)
-end
-
 # ╔═╡ 2206c20c-9e67-49a4-bc26-b203477b872f
 begin
 	# Create the signal
@@ -119,6 +123,8 @@ begin
 	L = 3
 	A = [3, 2, 1]
 	Fk= [200, 320, 160]
+	# Normalized frequencies
+	fk=Fk./F
 	θ = [pi/2, pi/4, 0]
 	x = zeros(N)
 	for k=1:3
@@ -126,7 +132,7 @@ begin
 	        x[i]+=A[k]*cos(2*pi*Fk[k]*i/F+θ[k])
 	    end
 	end
-	x
+	x, fk
 end
 
 # ╔═╡ a781a4c1-d0b1-4bab-a08b-724697d617f9
@@ -139,14 +145,8 @@ F./Fk
 
 # ╔═╡ e6ad6e6e-b0ba-42d4-8677-f1149aed08bc
 # FFT indicates that there are three components with (approximate) 
-# angular frequencies 160,200, and 320
-plot(range(-F/2,stop=F/2,length=length(x)),abs.(fftshift(fft(x))), title="FFT of a signal", legend=false, xlabel="Angular frequency")
-
-# ╔═╡ 6bd5fd7b-4251-44af-a2fa-a481640d3fa2
-plot(abs.(fftshift(fft(x))))
-
-# ╔═╡ 81f06f66-bf6d-4b11-93ab-a628c6e3b0a5
-plot(abs.(fft(x)))
+# sampling frequencies 160,200, and 320
+scatter(range(-F/2,stop=F/2,length=length(x)),abs.(fftshift(fft(x))), title="FFT of a signal", legend=false, xlabel="Angular frequency",xlims=(-500,500))
 
 # ╔═╡ e0054a3b-2e14-4bb8-81b0-6763e963dfaa
 # Decompose the signal 
@@ -173,42 +173,40 @@ end
 
 # ╔═╡ 2369b267-cfbc-4092-9822-24582c10af13
 begin
-	# Compare the first matrix with the Hankel matrix of the first mono-component
+	# For comparison, create the first mono-component and its Hankel matrix
 	x₁ = zeros(N)
 	c=1
 	for i=1:N
 	    x₁[i]+=A[c]*cos(2*pi*Fk[c]*i/F+θ[c])
 	end
-end
-
-# ╔═╡ 4a35f8fa-33d8-481f-8423-d5af7e32dc8f
-begin
 	H₁=Hankel(x₁)
-	eigvals(Matrix(H₁)), norm(Hcomp[1]-H₁)
 end
 
 # ╔═╡ 16f56d88-d9e4-4ad5-9431-3a993408d26d
+# Compare
 Hcomp[1]
+
+# ╔═╡ 4a35f8fa-33d8-481f-8423-d5af7e32dc8f
+# Check norm
+norm(Hcomp[1]-H₁)
 
 # ╔═╡ 2d0f04ca-fb8d-4dc9-81e6-1f2600fb0fab
 begin
-	# Now we reconstruct the mono-components from the skew-diagonal elements of Hcomp
-	xcomp=Array{Array{Float64}}(undef,L)
-	z=Array{Float64}(undef,N)
+	# Reconstruct the mono-component xcomp[k] using the border elements of Hcomp[k]
+	# (first column and last row)
+	xcomp=Array{Vector{Float64}}(undef,L)
 	for k=1:L
-	    z[1:2:N]=diag(Hcomp[k])
-	    z[2:2:N]=diag(Hcomp[k],1)
-	    xcomp[k]=copy(z)
+		xcomp[k]=[Hcomp[k][:,1];Hcomp[k][end,2:end]]
 	end
 end
 
 # ╔═╡ 79db0e46-1685-4c90-b51c-b158eac11f03
 # xaxis=collect(1:N)
-plot([xcomp[1],xcomp[2],xcomp[3]],title="Extracted mono-components", label=["First" "Second" "Third"],xlabel="Sample")
+plot([xcomp[1],xcomp[2],xcomp[3]],title="Extracted mono-components", label=["First" "Second" "Third"], xlabel="Sample")
 
 # ╔═╡ 97b56eb0-df22-4877-8320-6440a1806c10
 md"""
-# Fast EVD of Hankel matrices
+# Fast Hankel × Vector using FFT
 
 Several outer eigenvalues pairs of Hankel matrices can be computed using Lanczos method. If the multiplication $Hx$ is performed using Fast Fourier Transform, this EVD computation is very fast.
 
@@ -220,21 +218,6 @@ $$
 a=(a_{-(n-1)},a_{-(n-2)},\ldots,a_{-1},a_0,a_1,\ldots,a_{n-1})\in\mathbb{R}^{2n-1}.$$ 
 
 An $n\times n$ matrix $T\equiv T(a)$ for which $T_{ij}=T_{i+1,j+1}=a_{i-j}$ is a Toeplitz matrix.
-
-A __circulant matrix__ is a Toeplitz matrix where each column is rotated one element downwards relative to preceeding column. 
-
-More precisely, let $a\in\mathbb{R}^{n}$. An $n\times n$ matrix $C\equiv C(a)=T(a,a_{1:n-1})$ is a Circulant matrix.
-
-A __rotation matrix__ is an identity matrix rotated 90 degrees to the right (or left).
-
-A __Fourier matrix__ is Vandermonde matrix:
-
-$$
-F_n=V(1,\omega_n,\omega_n^2,\ldots, \omega_n^{n-1}),$$
-
-where 
-$\omega_n=exp(2\pi i/n)$ is the $n$-th root of unity (see the notebook 
-[Eigenvalue Decomposition - Definitions and Facts](../Module+B+-+Eigenvalue+and+Singular+Value+Decompositions/L3a+Eigenvalue+Decomposition+-+Definitions+and+Facts.ipynb)).
 """
 
 # ╔═╡ fd85e7bd-b950-4f0b-909c-cbdc85216a61
@@ -243,69 +226,30 @@ Notice different meanings of vector $a$: in `C=Circulant(a)`, $a$ is the first c
 `T=Toeplitz(a,b)`, $a_i$ are the elements in the first column and $b_i$ are the elements in the first row, and in `H=Hankel(a)`, $a_i$ is the element of the $i$-th skew-diagonal starting from $H_{11}$.
 """
 
-# ╔═╡ a2570d4b-101c-4120-aa6c-8bbf8e42decd
-# C
-Circulant([1,2,3,4,5])
-
-# ╔═╡ 31498e3b-94eb-4fe6-a814-f69fc9e5bb4c
-# TC
-Toeplitz([1,2,3,4,5],[1,5,4,3,2])
-
 # ╔═╡ 26beaaa8-923b-4b03-ae6d-af18996eb398
 # T
 Toeplitz([5,6,7,8,9],[5,4,3,2,1])
 
-# ╔═╡ 55c51a2a-d99b-4e39-b2d5-4d82d8742a78
-# H₁
-Hankel([1,2,3,4,5,6,7,8,9])
-
-# ╔═╡ faf54ef7-7f3b-4f16-a18f-b21c0f00c2c9
-Vandermonde([6,2,3,4,5])
-
-# ╔═╡ f17cf45a-738e-4d23-8bfb-c06990ebd1fe
+# ╔═╡ afd8681e-3169-44f1-aece-599ca9998531
 md"""
-## Facts 
+A __circulant matrix__ is a Toeplitz matrix where each column is rotated one element downwards relative to the preceding column. 
 
-For more details see [G. H. Golub and C. F. Van Loan, Matrix Computations, p. 202] (http://web.mit.edu/ehliu/Public/sclark/Golub%20G.H.,%20Van%20Loan%20C.F.-%20Matrix%20Computations.pdf), and the references therein
-
-1. Hankel matrix is the product of a Toeplitz matrix and the rotation matrix.
-
-2. Circulant matrix is normal and, thus, unitarily diagonalizable, with the eigenvalue decomposition
-
-$$
-C(a)=U\mathop{\mathrm{diag}}(F_n^* a)U^*,$$
-
-where $U=\displaystyle\frac{1}{\sqrt{n}} F_n$. The product $F_n^* a$ can be computed by the _Fast Fourier Transform_(FFT).
-
-3. Given $a,x\in\mathbb{R}^n$, the product $y=C(a)x$ can be computed using FFT as follows:
-
-$$\begin{aligned}
-\tilde x&=F_n^*x\\
-\tilde a&=F_n^*a\\
-\tilde y&=\tilde x.* \tilde a\\
-y&= F_n^{-*} \tilde y.
-\end{aligned}$$
-
-4. Toeplitz matrix of order $n$ can be embedded in a circulant matrix of order $2n-1$: if $a\in\mathbb{R}^{2n-1}$, then 
-
-$$
-T(a)=[C([a_{n+1:2n-1};a_{1:n}])]_{1:n,1:n}.$$
-
-5. Further, let $x\in\mathbb{R}^{n}$ and let $\bar x\in\mathbb{R}^{2n-1}$ be equal to $x$ padded with $n-1$ zeros.Then
-
-$$
-T(a)x=[C([a_{n+1:2n-1};a_{1:n}])\bar x]_{1:n}.$$
-
-6. Fact 1 implies $H(a)x=(T(a)J)x=T(a)(Jx)$.
-
+More precisely, let $a\in\mathbb{R}^{n}$. An $n\times n$ matrix $C\equiv C(a)=T(a,a_{1:n-1})$ is a Circulant matrix.
 """
 
-# ╔═╡ 9782d6f9-285c-46d8-a826-017f4a5bcf53
-md"
-## Examples
+# ╔═╡ a2570d4b-101c-4120-aa6c-8bbf8e42decd
+Circulant([1,2,3,4,5])
 
-### Facts 1 and 2
-"
+# ╔═╡ 31498e3b-94eb-4fe6-a814-f69fc9e5bb4c
+# Notice the different indexing
+Toeplitz([1,2,3,4,5],[1,5,4,3,2])
+
+# ╔═╡ c07030fd-47e4-4ee7-b409-8591771f61c7
+md"""
+A __rotation matrix__ is an identity matrix rotated 90 degrees to the right (or left).
+
+Hankel matrix is the product of a Toeplitz matrix and the rotation matrix.
+"""
 
 # ╔═╡ 86985c1c-c4a2-4b38-88e5-d1488d903ea8
 begin
@@ -318,24 +262,76 @@ Matrix(Toeplitz([5,6,7,8,9],[5,4,3,2,1]))*J, Hankel([1,2,3,4,5,6,7,8,9])
 # ╔═╡ 9dbdb70b-758d-49e7-b0b1-74fb339a9a8d
 rotl90(Matrix(Toeplitz([5,6,7,8,9],[5,4,3,2,1])))
 
-# ╔═╡ b9c3585a-e4cb-45a0-a864-a1739f4a47ed
-begin
-	# Fact 2
-	Random.seed!(467)
-	n₀=6
-	a₀=rand(-8:8,n₀)
-	a₀,fft(a₀)
-end
+# ╔═╡ 23c239f3-4cd2-48fc-9391-41d361460f98
+md"""
+
+Given vector $x$ of length $n$, a __Vandermonde matrix__ is a $n\times n$ matrix:
+
+$$
+V(x)=\begin{bmatrix} x.^0 & x.^1 & x.^2 & \cdots & x.^n\end{bmatrix}.$$
+
+A __Fourier matrix__ is the Vandermonde matrix:
+
+$$
+F_n=V(1,\omega_n,\omega_n^2,\ldots, \omega_n^{n-1}),$$
+
+where $\omega_n=\exp(2\pi i/n)$ is the $n$-th root of unity.
+"""
+
+# ╔═╡ faf54ef7-7f3b-4f16-a18f-b21c0f00c2c9
+Vandermonde([6,2,3,4,5])
+
+# ╔═╡ f17cf45a-738e-4d23-8bfb-c06990ebd1fe
+md"""
+## Facts 
+
+For more details see [G. H. Golub and C. F. Van Loan, Matrix Computations] (https://epubs.siam.org/doi/book/10.1137/1.9781421407944), and the references therein
+
+1. Circulant matrix is normal and, thus, unitarily diagonalizable, with the eigenvalue decomposition
+$$
+C(a)=U\mathop{\mathrm{diag}}(F_n^* a)U^*,$$
+where $U=\displaystyle\frac{1}{\sqrt{n}} F_n$. The product $F_n^* a$ can be computed by the Fast Fourier Transform (FFT).
+2. Given $a,x\in\mathbb{R}^n$, the product $y=C(a)x$ can be computed using FFT as follows:
+$$\begin{aligned}
+\tilde x&=F_n^*x\\
+\tilde a&=F_n^*a\\
+\tilde y&=\tilde x.* \tilde a\\
+y&= F_n^{-*} \tilde y.
+\end{aligned}$$
+3. Toeplitz matrix of order $n$ can be embedded in a circulant matrix of order $2n-1$: if $a\in\mathbb{R}^{2n-1}$, then 
+$$
+T(a)=[C([a_{n+1:2n-1};a_{1:n}])]_{1:n,1:n}.$$
+4. Further, let $x\in\mathbb{R}^{n}$ and let $\bar x\in\mathbb{R}^{2n-1}$ be equal to $x$ padded with $n-1$ zeros. Then
+$$
+\begin{bmatrix} T & A \\ B & C\end{bmatrix}
+\begin{bmatrix} x \\ 0 \end{bmatrix}$$
+or
+
+$$
+T(a)x=[C([a_{n+1:2n-1};a_{1:n}])\bar x]_{1:n}.$$
+5. Since Hankel = Toeplitz × Rotation, we have
+$$
+H(a)x=(T(a)J)x=T(a)(Jx).$$
+"""
+
+# ╔═╡ 9782d6f9-285c-46d8-a826-017f4a5bcf53
+md"
+## Examples
+"
 
 # ╔═╡ 94171cfa-1e8e-4aba-a5b8-faad0104cf80
-begin	
+begin
+	# Fact 1 - EVD of Circulant
+	Random.seed!(467)
+	n₀=5
+	a₀=rand(-8:8,n₀)
 	C₀=Circulant(a₀)
 	ω=exp(2*pi*im/n₀)
 	v=[ω^k for k=0:n₀-1]
 	F₀=Vandermonde(v)
-	U₀=F₀/sqrt(n₀)
+	U₀=F₀/√n₀
 	λ₀=Matrix(F₀)'*a₀
-	λ₀,eigvals(Matrix(C₀))
+	λ₀,eigvals(C₀)
 end
 
 # ╔═╡ 8a1efef7-8903-426c-b8d6-a99bc5288981
@@ -343,21 +339,14 @@ C₀
 
 # ╔═╡ 41b7458c-dc6c-4774-8991-f74519a850ed
 # Residual
-norm(Matrix(C₀)*U₀-U₀*Diagonal(λ₀))
-
-# ╔═╡ e7e58aaf-af48-4eac-a875-b64c569e435c
-#?fft
-
-# ╔═╡ 955fa4c1-50a8-4b61-be12-b4adb557ea82
-# Check fft
-norm(λ₀-fft(a₀))
+norm(C₀*U₀-U₀*Diagonal(λ₀))
 
 # ╔═╡ 8fbdea3e-2c49-4068-8b2e-6339737554f2
 md"""
 
-### Fast multiplication using FFT
+## Fast Circulant × Vector
 
-Fact 3 - Circulant() x vector, as implemented in the (oudated) package `SpecialMatrices.jl`, use `add SpecialMatrices#withToeplitz`.
+Fact 2 - Circulant() × vector, as implemented in the (oudated) package `SpecialMatrices.jl`, use `add SpecialMatrices#withToeplitz`.
 
 ```
 function *(C::Circulant{T},x::Vector{T}) where T
@@ -409,97 +398,85 @@ end
 ```
 """
 
-# ╔═╡ 3c96b257-8c18-4e7b-9677-c8a703d5d21f
-x₀=rand(-9.0:9,1000)
-
 # ╔═╡ 561faa84-f4e3-4712-92b0-68e6edabae65
-M=Circulant(x₀)
+begin
+	# Fact 2 - Fast Circulant × Vector
+	x₀=rand(-9.0:9,1000)
+	M=Circulant(x₀)
+	y₀=rand(-9.0:9,1000)
+end
 
 # ╔═╡ 0c6a11eb-e4b2-4daa-83c9-97872ca150ce
 @which mul!(similar(x₀),M,x₀,1,0)
 
 # ╔═╡ c8d73641-e8ba-46ff-b368-981d3c288d48
-@which M*x₀
+@which M*y₀
 
 # ╔═╡ b69942f4-34b8-47f9-b33a-9776719feac0
-y₀=mul!(similar(x₀),M,x₀,1,0)
+@time mul!(similar(y₀),M,y₀,1,0);
+
+# ╔═╡ 72f3a029-32f2-4dbd-b8c3-f5794ea85404
+# For comparison of timing
+@time Matrix(M)*y₀;
 
 # ╔═╡ 319a6376-3172-4f9b-9137-c8a3809920c3
-norm(y₀-M*x₀)
-
-# ╔═╡ 5be3c4c2-dcae-4a57-8bcc-9a6d1f580110
-[Matrix(M)*x₀ M*x₀ mul!(similar(x₀),M,x₀,1.0,0.0)]
+norm(M*y₀-Matrix(M)*y₀)
 
 # ╔═╡ 61d7911a-ea4d-4ef1-9778-6a2e8eff10e1
 begin
-	a₂=rand(-6:6,6)
-	b₂=[a₂[1];rand(-6:6,5)]
+	# Fact 3 - Embedding Toeplitz into Circulant
+	a₂=rand(-6:6,5)
+	b₂=[a₂[1];rand(-6:6,4)]
 	T=Toeplitz(a₂,b₂)
 end
 
 # ╔═╡ b2fc20f1-faf1-4e08-9ccd-6b175cff0066
 C=Circulant([a₂;reverse(b₂[2:end])])
 
-# ╔═╡ a598c1a7-9788-44bb-85ee-24aa4f14d9f9
-# C=Circulant([a₂[n₀:2*n₀-1];a₂[1:n₀-1]])
-
 # ╔═╡ d132b9c0-8101-4c14-89d7-5fa1462ea71e
-# Fact 5 - Toeplitz() x vector
+# Fact 4 - Fast Toeplitz() × vector
 x₂=rand(-6:6,n₀)
-
-# ╔═╡ 7e92160b-51eb-4434-8001-60a00f84d1f2
-x₂
-
-# ╔═╡ 70890a0e-f7bb-4a92-aa11-2e65e70875b1
-mul!(similar(x₂),T,x₂,1,0)
-
-# ╔═╡ f3fce6ec-b9c8-4aae-bdfa-2387bb2cc38a
-md"""
-$$
-\begin{bmatrix} T & A \\ B & C\end{bmatrix} 
-\begin{bmatrix} x \\ 0 \end{bmatrix}$$
-"""
 
 # ╔═╡ 32f20ec2-bf15-467f-98ef-6dbe6a568bca
 [Matrix(T)*x₂ T*x₂ mul!(similar(x₂),T,x₂,1,0)]
 
 # ╔═╡ 825e7090-8196-4165-853c-57237f5e05c9
 begin
-	# Fact 6 - Hankel() x vector
-	h₂=rand(-9:9,1999)
+	# Fact 6 - Fast Hankel() x vector
+	h₂=rand(-9:9,9)
 	H₂=Hankel(h₂)
 end
 
 # ╔═╡ 8f361246-8941-47a6-98c1-2b92dea2c74b
-[Matrix(H₂)*x₀ H₂*x₀ mul!(similar(x₀),H₂,x₀,1,0)]
+[Matrix(H₂)*x₂ H₂*x₂ mul!(similar(x₂),H₂,x₂,1,0)]
 
 # ╔═╡ 84d96895-e4ad-4bf4-8df7-6e81b983bb3e
 md"""
-### Fast EVD of a Hankel matrix
+# Fast EVD of a Hankel matrix
 
-Given a Hankel matrix $H$, the Lanczos method can be applied by defining a function (linear map) which returns the product $Hx$ for any vector $x$. This approach uses the package [LinearMaps.jl](https://github.com/Jutho/LinearMaps.jl) and is described in the notebook
-[Symmetric Eigenvalue Decomposition - Lanczos Method](../Module+B+-+Eigenvalue+and+Singular+Value+Decompositions/L4d+Symmetric+Eigenvalue+Decomposition+-+Lanczos+Method.ipynb) notebook. 
+Given a Hankel matrix $H$, the Lanczos method can be applied by defining a function (linear map) which returns the product $Hx$ for any vector $x$. This approach uses the package [LinearMaps.jl](https://github.com/Jutho/LinearMaps.jl) and is described in the this
+[notebook](https://ivanslapnicar.github.io/GIAN-Applied-NLA-Course/L4d%20Symmetric%20Eigenvalue%20Decomposition%20-%20Lanczos%20Method.html). 
 
-_The computation is very fast and allocates little extra space._
+__The computation is high-speed and allocates little extra space.__
 """
 
 # ╔═╡ cc41548c-674a-4f67-bdf7-95ce16a6a5d8
+# Define the function using the Hankel matrix H of the three-component signal
 f(x)=mul!(similar(x),H,x,1,0)
 
-# ╔═╡ 40e51d70-0e20-48c8-9156-b1475870a604
-H
-
 # ╔═╡ eb1daded-ad36-41d3-9088-a9f8cf6bf63f
+# Define the linear map using the function f
 A₁=LinearMap(f,size(H,1),issymmetric=true)
 
 # ╔═╡ eef3c2ad-3619-49b1-a612-63c234314dfd
 size(A₁)
 
 # ╔═╡ aac0a39f-0c49-4009-974e-852c7e8e2b17
+# This is the standard O(n^3) algorithm
 @time eigvals(Matrix(H));
 
 # ╔═╡ 38b8e9f0-2546-4113-83b7-85599faa6992
-# Run twice
+# This is the Lanczos algorithm using fast multiplication
 @time λA,UA=eigs(A₁, nev=6, which=:LM)
 
 # ╔═╡ 146871c4-e014-4ee4-9933-1d21c2504635
@@ -523,12 +500,15 @@ x^{(k)}_i=A_k \cos(2\pi f_k i +\theta_k),\quad i=1,2,\ldots,m.$$
 Assume that the normalized frequencies $f_k=\displaystyle\frac{F_k}{F}$, the sampling frequencies $F_k$, the amplitudes  $A_k$, and the phases $\theta_k$, all _sightly_ change in time.
 
 Let $H\equiv H(x)$ be the Hankel matrix of $x$. The eigenpair of $(\lambda,u)$ of $H$ is __significant__ if $|\lambda|> \tau  \cdot \sigma(H)$. Here $\sigma(H)$ is the spectral radius of $H$, and $\tau$ is the __significant threshold percentage__ chosen by the user depending on the type of the problem.
+"""
 
-
+# ╔═╡ e09da774-b32d-487f-97a9-2195d3306224
+md"""
 ## Fact
 
 The following algorithm decomposes the signal $x$:
-1. Choose $\tau$ and form the Hankel matrix $H$
+1. Choose the threshold $\tau$
+2. Form the Hankel matrix $H$
 2. Compute the EVD of $H$
 3. Choose the significant eigenpairs of $H$
 4. For each significant eigenpair $(\lambda,u)$
@@ -542,14 +522,14 @@ The following algorithm decomposes the signal $x$:
 
 # ╔═╡ e47f1bd9-89b5-4f67-96bf-d6b4a50a721c
 md"""
-## Example -  Note A
+## Note A⁴ (440 Hz)
 
 Each tone has its fundamental frequency (mono-component). However, musical instruments produce different overtones (harmonics) which are near integer multiples of the fundamental frequency.
 Due to construction of resonant boxes, these frequencies slightly vary in time, and their amplitudes are contained in a time varying envelope.
 
 Tones produces by musical instruments  are nice examples of non-stationary signals. We shall decompose the note A4 played on piano.
 
-For manipulation of recordings, we are using package [WAV.jl](https://github.com/dancasimiro/WAV.jl). Another package with similar functionality is the package [AudioIO.jl](https://github.com/ssfrr/AudioIO.jl).
+For manipulation of recordings, we are using package [WAV.jl](https://github.com/dancasimiro/WAV.jl). Another package with similar functionality is the package [LibSndFile.jl](https://github.com/JuliaAudio/LibSndFile.jl).
 """
 
 # ╔═╡ 309e82f8-2ea4-4de8-a27b-92844948c579
@@ -564,7 +544,9 @@ typeof(Signalₐ)
 
 # ╔═╡ 59afc24f-fdf0-4694-a723-426352299629
 begin
+	# Data
 	sₐ=Signalₐ[1]
+	# Sampling frequency
 	Fs=Signalₐ[2]
 end
 
@@ -574,13 +556,13 @@ wavplay(sₐ,Fs)
 
 # ╔═╡ e52f9b5c-12eb-4b9b-9d60-9b421d5b7fe2
 # Plot the signal
-plot(sₐ,title="Note a", legend=false, xlabel="sample")
+plot(sₐ,title="Note A⁴", legend=false, xlabel="sample")
 
 # ╔═╡ ec8ae004-b945-4fe7-a32f-172ff5f6e82a
 begin
 	# Plot in time scale
 	tₐ=range(0,stop=length(sₐ)/Fs,length=length(sₐ))
-	plot(tₐ,sₐ,title="Note a", legend=false,xlabel="time (s)")
+	plot(tₐ,sₐ,title="Note A⁴", legend=false,xlabel="time (s)")
 end
 
 # ╔═╡ 72e0fc55-4c34-473a-b78b-b6910530b1e9
@@ -589,7 +571,7 @@ tₐ[end], length(sₐ)
 
 # ╔═╡ b9523247-9c65-4278-8e10-1050783ae73a
 md"
-Last part of the signal is just noise, so we create (or read) a shorter signal. $N$ must be odd.
+Second half of the signal is not interesting, so we create a shorter signal. $N$ must be odd.
 "
 
 # ╔═╡ 527f72cf-16de-4c16-bd96-4e6581687527
@@ -609,14 +591,13 @@ plot(t,s,title="Note a", legend=false,xlabel="time (s)")
 
 # ╔═╡ 368e2830-3152-40eb-9795-5ea0ec69d8a5
 md"""
-Let us visualize the signal in detail.
+Let us visualize the signal in detail:
+
+k = $(@bind k Slider(1:1000:100001-1000,show_value=true))
 """
 
-# ╔═╡ 6945a13f-7554-40b9-9e65-75c18ce5ec1a
-@bind k Slider(1:1000:100001-1000,show_value=true)
-
 # ╔═╡ 533165d8-3c49-4609-8f69-1237c43b6946
-plot(tₐ[k:k+1000],s[k:k+1000], title="Note a",label=false,xlabel="time (s)")
+plot(tₐ[k:k+1000],s[k:k+1000], title="Note A⁴",label=false,xlabel="time (s)")
 
 # ╔═╡ 3873b054-5005-4b17-bae8-a51c44dca506
 # Save the short signal
@@ -627,11 +608,8 @@ begin
 	# Check the signal with FFT
 	# Notice 3 stronger harmonics and six weaker ones
 	fs=abs.(fft(s))
-	plot(Fs/length(fs)*(1:length(fs)),fs, title="FFT of note a",xlabel="Frequency", leg=false)
+	plot(Fs/length(fs)*(1:length(fs)),fs, title="FFT of the note A⁴",xlabel="Frequency", leg=false, xlims=(0,4000))
 end
-
-# ╔═╡ a1cf574f-db23-424f-aa0b-301770768323
-@bind l Slider(1:1000:100001-1000,show_value=true)
 
 # ╔═╡ 3f257922-9321-4b2a-84b3-ab3e5f57253e
 # Form the Hankel matrix
@@ -642,7 +620,7 @@ Hₐ=Hankel(s);
 size(Hₐ), Hₐ[100,200]
 
 # ╔═╡ d539f8c0-2f35-4a88-9646-07aedff40bda
-# Get the idea about time to compute EVD
+# Get the idea about the time to compute EVD
 @time fft(s);
 
 # ╔═╡ 9575d673-a0e5-47d1-b109-9be6ee241623
@@ -666,14 +644,12 @@ Lₐ=round(Int,(sum(abs.(λₐ).>(τ*maximum(abs,λₐ)))/2))
 
 # ╔═╡ 1b3e2e57-7c3f-4365-8616-e4b46b046102
 md"""
-At this point, the implementation using full matrices is rather obvious. However, we cannot do that, due to large dimension. Recall, the task is to define Hankel matrices $H_k$ for $k=1,\ldots,L$, from the signal obtained by averaging the skew-diagonals of the matrices
+At this point, the implementation using full matrices is rather obvious. However, we cannot do that, due to the large dimension. Recall, ideally we should define the signal by averaging skew-diagonals of the Hankel matrices $H_k$ for $k=1,\ldots,L$,
 
 $$
 H_k=\lambda_k U_{:,k}U_{:,k}^T + \lambda_{n-k+1} U_{:,n-k+1}U_{:,n-k+1}^T,$$
 
-__without actually forming the matrices__.
-
-This is a nice programming excercise which can be solved using $\cdot$ products.
+This can be done without forming the matrices:
 """
 
 # ╔═╡ 93248879-4486-4059-a363-6c7b6a0015d8
@@ -690,44 +666,26 @@ function averages(λ::T, u::Vector{T}) where T
     λ*x
 end
 
-# ╔═╡ 251b6304-4314-479e-aa8a-d9e573d29c69
-begin
-	# A small test
-	u=[1,2,3,4,5]
-	u*u'
+# ╔═╡ 46f8977f-fe22-4efc-9724-6b8ca588414d
+#=
+xcompₐ=Array(Array{Float64},Lₐ)
+for k=1:Lₐ
+    xcompₐ[k]=averages(λₐ[2*k-1],Uₐ[:,2*k-1])+averages(λₐ[2*k],Uₐ[:,2*k])
 end
-
-# ╔═╡ 3d552383-bf50-422d-9d8a-e096cdb521c4
-averages(1,u)
+=#
 
 # ╔═╡ 949954b4-663d-4ef3-99b5-0df3c74a31e7
 md"""
-We now execute the first step of the algorithm from the above Fact.
-
-Notice that `eigs()` returns the eigenvalues arranged by the absoulte value, so the consecutive 
-pairs define the $i$-th signal. The computation of averages is long - it requires $O(n^2)$ 
-operations and takes several minutes.
+N.B. `eigs()` returns the eigenvalues arranged by the absoulte value, so the consecutive pairs define the $i$-th signal. 
 """
-
-# ╔═╡ 46f8977f-fe22-4efc-9724-6b8ca588414d
-# This step takes 7 minutes, so we skip it
-
-# xcompₐ=Array(Array{Float64},Lₐ)
-# for k=1:Lₐ
-#     xcompₐ[k]=averages(λₐ[2*k-1],Uₐ[:,2*k-1])+averages(λₐ[2*k],Uₐ[:,2*k])
-# end
 
 # ╔═╡ 8fc35997-f124-423e-b384-0f2369ecaa35
 md"""
-__Can we do without averaging?__
+However, function `averages()` is very slow - it requires $O(n^2)$ operations and takes 7 minutes, compared to 5 seconds for the eigenvalue computation.
 
-The function `averages()` is very slow - 7 minutes, compared to 5 seconds for the eigenvalue computation.
+The simplest option is to disregard the averages and use the first column and the last row of the underlying matrix, as in the definition of Hankel matrices, which we do next. 
 
-The simplest option is to disregard the averages, and use the first column and the last row of the underlying matrix, as in definition of Hankel matrices, which we do next. 
-Smarter approach might be to use small random samples 
-to compute the averages.
-
-Let us try the simple approach for the fundamental frequency. (See also the notebook [Examples in Signal Decomposition.ipynb](S8%20Examples%20in%20Signal%20Decomposition.ipynb).)
+(A smarter approach might be to approximate averages using small random samples.)
 """
 
 # ╔═╡ 84b53076-c26b-445a-a458-fe71cca242dc
@@ -745,43 +703,33 @@ end
 # ╔═╡ 16f2dc1f-30d2-4335-87e2-afb32235f1dc
 md"""
 Let us look and listen to what we got:
+
+Mono-component number $(@bind kₐ Slider(1:Lₐ,show_value=true))
 """
-
-# ╔═╡ 62c83b97-32ed-4c48-987e-bbbd95afbd20
-typeof(xcompₐ[1])
-
-# ╔═╡ 400fa7e6-6090-46fb-9610-ab3c816177c5
-@bind kₐ Slider(1:Lₐ,show_value=true)
 
 # ╔═╡ d33b3243-058c-446f-975a-0aee5b5426ac
 plot(t,xcompₐ[kₐ],title="Mono-component $(kₐ)",leg=false,xlabel="time (s)")
-
-# ╔═╡ 08f567b2-769a-498d-9a49-4fb82eae8639
-@bind lₐ Slider(1:1000:100001-1000,show_value=true)
-
-# ╔═╡ 9c452b24-0e8a-4b4e-a408-ea60da97a831
-# Details of a mono-component
-plot(t[lₐ:lₐ+1000],xcompₐ[kₐ][lₐ:lₐ+1000], title="Mono-component $(kₐ)",leg=false,xlabel="time (s)")
-
-# ╔═╡ 87f1dd44-5127-4c94-b0ef-4aa018029c18
-@bind k₂ Slider(1:Lₐ,show_value=true)
 
 # ╔═╡ 0d3e2f32-19fe-435d-96b6-83f047ecd8ef
 begin
 	# FFT of a mono-component and computed frequency
 	l₁=10000
-	fsₐ=abs.(fft(xcompₐ[k₂]))
+	fsₐ=abs.(fft(xcompₐ[kₐ]))
 	m,ind=findmax(fsₐ[1:l₁])
-	"Frequency of mono-component $(k₂) = ", ind*Fs/length(fsₐ)  ," Hz, Amplitude = ", m
+	"Frequency of mono-component $(kₐ) = ", ind*Fs/length(fsₐ)  ," Hz, Amplitude = ", m
 end
 
 # ╔═╡ cf6f1ff9-6439-4ef9-af20-f278495eb239
 # Plot the FFT
-plot(Fs/length(fsₐ)*(1:l₁),fsₐ[1:l₁], title="FFT of mono-component $(k₂)",leg=false,xlabel="Frequency")
+plot(Fs/length(fsₐ)*(1:l₁),fsₐ[1:l₁], title="FFT of mono-component $(kₐ)",leg=false,xlabel="Frequency")
+
+# ╔═╡ 847bb094-a2b8-4459-9d7b-f39bd3db2101
+# Listen to individual mono-components
+wavplay(5*xcompₐ[kₐ],Fs)
 
 # ╔═╡ e03267b6-1320-435a-818a-c2018556c25b
 md"""
-We see that all `xcompₐ[k]` are clean mono-components - see 
+We see and hear that all `xcompₐ[k]` are (almost 😀) clean mono-components - see 
 [Fundamental Frequencies of Notes ..](http://auditoryneuroscience.com/index.php/pitch/fundamental-frequencies-notes-western-music):
 
 ```
@@ -802,13 +750,6 @@ __N.B.__ Some mono-components are repeated, and they should be grouped by adding
 correlation larger than some prescribed threshold. 
 """
 
-# ╔═╡ 0f3840e7-0ca5-4d57-ac12-cd4df3c9caf3
-@bind k₃ Slider(1:Lₐ,show_value=true)
-
-# ╔═╡ 847bb094-a2b8-4459-9d7b-f39bd3db2101
-# Listen to individual mono-components
-wavplay(xcompₐ[k₃],Fs)
-
 # ╔═╡ 662b0be2-9f82-4980-83de-bb0143c28736
 # Store the mono-components
 for i=1:Lₐ
@@ -819,18 +760,215 @@ end
 # Listen to the sum of mono-components
 wavplay(sum([xcompₐ[i] for i=1:Lₐ]),Fs)
 
-# ╔═╡ f358da6f-5d6c-4d20-bf54-057b06a3f473
-wavplay(s,Fs)
-
-# ╔═╡ 70b538e0-2a51-4b88-9086-a9fe4d029260
-sum([xcompₐ[i] for i=1:Lₐ])-s
-
-# ╔═╡ 6b43c19a-d3d6-4e09-aa0f-20cff481ffaf
-wavplay(sum([xcompₐ[i] for i=1:Lₐ])-s,Fs)
-
 # ╔═╡ 1fba26bb-4d17-4df8-8ce2-ca4185101681
 # Store the sum of mono-components
 wavwrite(sum([xcompₐ[i] for i=1:Lₐ]),"files/compsum.wav",Fs=Fs)
+
+# ╔═╡ 13e65ea8-e0c4-45ee-ae57-460310380097
+md"""
+## C-minor chord
+
+Let us decompose the first chord of Beethoven's Piano Piano Sonata No. 8 in C minor, Op. 13 (Pathétique), recorded by Arthur Rubinstein. 
+
+The original `mp3` file's name is `Beethoven__Piano_Sonata_Pathetique__Arthur_Rubenstein_64kb.mp3`.
+It is converted to mono `wav` file using Linux command:
+
+```
+> ffmpeg -i Beethoven__Piano_Sonata_Pathetique__Arthur_Rubenstein_64kb.mp3 -ac 1 Pathetique_mono.wav
+```
+
+Then, the first 2 seconds (the C minor chord consisting of 7 notes, see [link](https://tonic-chord.com/beethoven-piano-sonata-no-8-in-c-minor-pathetique-analysis/)) were extracted as above, and saved to the file `Pathetique_mono_2sec.wav`. Here is the code used:
+
+```
+begin
+	# Load the signal and make a short 2seconds file
+	Pat = wavread("files/Pathetique_mono.wav")
+	wavwrite(Pat[1][1:48001],"files/Pathetique_mono_2sec.wav",Fs=Pat[2])
+end
+```
+
+Here we are interested in basic notes and not the overtones, but we keep the threshold at $0.1$.
+"""
+
+# ╔═╡ f83e5917-ee9e-46b4-a11e-35a6a2c4a16e
+Pat2 = wavread("files/Pathetique_mono_2sec.wav")
+
+# ╔═╡ 5c3bd9b8-128d-4966-9f25-740650ac174a
+wavplay(5*Pat2[1],Pat2[2])
+
+# ╔═╡ cd88c2ef-6754-456d-a06a-7bf525c4cc14
+# Signal and sampling frequency
+p=Pat2[1][:]; Fp=Pat2[2]
+
+# ╔═╡ a205b9df-6dbc-4273-a562-a140114250fc
+length(p)
+
+# ╔═╡ dc48d7b5-65ec-45e4-9611-9a3f589d9463
+p
+
+# ╔═╡ 1449ca3a-5d15-4e96-8ae7-ce2b96df9747
+begin
+	# Plot in time scale
+	tₚ=range(0,stop=length(p)/Fp,length=length(p))
+	plot(tₚ,p,title="C minor chord", legend=false,xlabel="time (s)")
+end
+
+# ╔═╡ 18369292-fa64-4f23-9f47-6d7087f2913f
+begin
+	# Check the signal with FFT
+	# Notice that many overtones show up
+	fp=abs.(fft(p))
+	plot(Fp/length(fp)*(1:length(fp)),fp, title="FFT of the C minor chord",xlabel="Frequency", leg=false, xlims=(0,2000))
+end
+
+# ╔═╡ 564c7262-fe98-444e-a1a4-6d04a39fb013
+# Form the Hankel matrix
+# IMPORTANT - Do not try to display H - it is a 24001 x 24001 matrix.
+Hₚ=Hankel(p);
+
+# ╔═╡ d67ac882-dfb3-4469-a6f5-bd7562a9030c
+nₚ=size(Hₚ)[1]
+
+# ╔═╡ ffda42db-43e7-4c52-a1ec-bd967f98cfb9
+begin
+	# We are looking for 20-40 eigenvalue pairs, try different values of nev
+	fₚ(x)=mul!(similar(x),Hₚ,x,1.0,0.0)
+	Aₚ=LinearMap(fₚ,nₚ,issymmetric=true)
+	@time λₚ,Uₚ=eigs(Aₚ, nev=80, which=:LM)
+end
+
+# ╔═╡ 925818b5-d07f-4b0b-913e-84ef7ab0a27e
+# Eigenvalues are in pairs
+λₚ
+
+# ╔═╡ cc992d38-8ef4-4b1a-8c11-2ba00010abf5
+# Count the eigenvalue pairs (+-) larger than the 10% of the maximum
+τₚ=0.1
+
+# ╔═╡ e9a1ce96-4b7c-4502-884e-daabb567417f
+Lₚ=round(Int,(sum(abs.(λₚ).>(τₚ*maximum(abs,λₚ)))/2))
+
+# ╔═╡ 7704fedd-98aa-4f3e-ba27-81292ead309e
+begin
+	xcompₚ=Array{Array{Float64}}(undef,Lₚ)
+	for kp=1:Lₚ
+	    kp₁=2*kp-1
+	    kp₂=2*kp
+		xsimpleₚ=[(λₚ[kp₁]*Uₚ[1,kp₁])*Uₚ[:,kp₁]; (λₚ[kp₁]*Uₚ[nₚ,kp₁])*Uₚ[2:nₚ,kp₁]]
+	    xsimpleₚ+=[(λₚ[kp₂]*Uₚ[1,kp₂])*Uₚ[:,kp₂]; (λₚ[kp₂]*Uₚ[nₚ,kp₂])*Uₚ[2:nₚ,kp₂]]
+	    xcompₚ[kp]=xsimpleₚ
+	end
+end
+
+# ╔═╡ 6c16f8ea-9d17-4ed6-9586-7d387170f6cb
+md"""
+Let us look and listen to what we got:
+
+Mono-component number $(@bind kₚ Slider(1:Lₚ,show_value=true))
+"""
+
+# ╔═╡ 2e89cddd-cbbc-4523-946c-f02758318be8
+begin
+	# FFT of a mono-component and computed frequency
+	lp₁=1000
+	fsₚ=abs.(fft(xcompₚ[kₚ]))
+	mₚ,indₚ=findmax(fsₚ[1:lp₁])
+	"Frequency of mono-component $(kₚ) = ", indₚ*Fp/length(fsₚ)  ," Hz, Amplitude = ", mₚ
+end
+
+# ╔═╡ 4dc7a0ca-b421-4975-9c53-bd5ba95f9a6b
+# Plot the FFT
+plot(Fp/length(fsₚ)*(1:lp₁),fsₚ[1:lp₁], title="FFT of mono-component $(kₚ)",leg=false,xlabel="Frequency")
+
+# ╔═╡ f8392ada-3896-4ec0-bf43-b99f58ec714a
+# Listen to individual mono-components
+wavplay(xcompₚ[kₚ],Fp)
+
+# ╔═╡ 2171aa3d-e86e-4dfc-a3f2-2800707f78c3
+# Listen to the sum of mono-components
+wavplay(sum([xcompₚ[i] for i=1:Lₚ]),Fp)
+
+# ╔═╡ 35eb8042-1fbd-4416-85aa-39e569c21148
+md"""
+How to recognize the notes? First we need table of frequencies of individual notes, `Df`, which we create using `DataFrames.jl`. DataFrame 
+
+`Df` is constructed using the table of rounded frequencies `Nf`, where each row represents half-tones from `C` to `B` and each column represents an octave from `Oct0` to `Oct8`.
+"""
+
+# ╔═╡ 2ced9f0e-a769-4955-97c2-120d08910420
+# Table of rounded frequencies
+Nf=[16 33 65 131 262 523 1047 2093 4186; 
+	17 35 69 139 277 554 1109 2217 4435;
+	18 37 73 147 294 587 1175 2349 4699;
+	19 39 78 156 311 622 1245 2489 4978;
+	21 41 82 165 330 659 1319 2637 5274;
+	22 44 87 175 349 698 1397 2794 5588;
+	23 46 93 185 370 740 1480 2960 5920;
+	25 49 98 196 392 784 1568 3136 6272;
+	26 52 104 208 415 831 1661 3322 6645;
+	28 55 110 220 440 880 1760 3520 7040;
+	29 58 117 233 466 932 1865 3729 7459;
+	31 62 123 247 494 988 1976 3951 7902]
+
+# ╔═╡ ae4e5a29-73a8-45d2-81d2-c3c656ddbfef
+Notes=["C", "C♯/D♭", "D", "D♯/E♭", "E", "F", "F♯/G♭", "G", "G♯/A♭", "A", "A♯/B♭", "B"]
+
+# ╔═╡ 283b8d85-d42c-486c-9430-4d0e1111fadb
+Octaves=string.(collect(0:8))
+
+# ╔═╡ a1b27036-352d-4f68-a629-44691120f8e6
+Chord=Vector{Any}(undef,Lₚ);
+
+# ╔═╡ 63a0bb76-0098-4575-bd2c-fddf3a81a466
+begin
+	# Compute again the frequencies of all mono-components
+	Frequency=Vector{Float64}(undef,Lₚ)
+	Amplitude=Vector{Float64}(undef,Lₚ)
+	for i=1:Lₚ
+		# FFT of a mono-component and computed frequency
+		l0=1000
+		fs0=abs.(fft(xcompₚ[i]))
+		Amplitude[i],ind0=findmax(fs0[1:l0])
+		Frequency[i]=ind0*Fp/length(fs0)
+	end
+end
+
+# ╔═╡ 0b5d7813-d4d8-4e62-9e9a-2dd9eab5adb6
+ [Frequency Amplitude]
+
+# ╔═╡ 5adaf3aa-3256-4076-85fc-e10439d8be63
+sort(Amplitude,rev=true)
+
+# ╔═╡ 08912314-bbf1-404e-bcdc-05623f48b173
+for i=1:Lₚ
+	Cind=findfirst(isapprox.(Nf,Frequency[i],rtol=0.03))
+	Chord[i]=Notes[Cind[1]]*Octaves[Cind[2]]
+end
+
+# ╔═╡ 469b3d33-b616-4e48-998a-d9476263ab74
+[Chord Amplitude]
+
+# ╔═╡ 174995db-f16b-4a6c-867e-744f3b2a265c
+sort(Amplitude,rev=true)
+
+# ╔═╡ 9d8c7bf8-67b0-45e1-98a5-312dbe032081
+begin
+	# Indices of notes with Abig largest amplitudes
+	Abig=10
+	Aind=sortperm(Amplitude,rev=true)[1:Abig]
+end
+
+# ╔═╡ 20ac7f13-df71-415d-ad1b-4df08ff7fb3f
+# Notes with Abig largest amplitudes
+Chord[Aind]
+
+# ╔═╡ 04ae92c1-8609-4fc0-9939-a5963b5ecc59
+unique(Chord[Aind])
+
+# ╔═╡ 3463f0b0-60b0-4d10-810a-c53b07914380
+md"""
+__Nota bene:__ D4 is somewhat unexpected. The frequency (with the largest amplitude) of the 17-th mono-component is 291.5 Hz, close to 294 Hz.
+"""
 
 # ╔═╡ 00000000-0000-0000-0000-000000000001
 PLUTO_PROJECT_TOML_CONTENTS = """
@@ -916,9 +1054,9 @@ version = "0.1.9"
 
 [[deps.Bzip2_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg"]
-git-tree-sha1 = "9e2a6b69137e6969bab0152632dcb3bc108c8bdd"
+git-tree-sha1 = "8873e196c2eb87962a2048b3b8e08946535864a1"
 uuid = "6e34b625-4abd-537c-b88f-471c36dfa7a0"
-version = "1.0.8+1"
+version = "1.0.8+2"
 
 [[deps.Cairo_jll]]
 deps = ["Artifacts", "Bzip2_jll", "CompilerSupportLibraries_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "JLLWrappers", "LZO_jll", "Libdl", "Pixman_jll", "Xorg_libXext_jll", "Xorg_libXrender_jll", "Zlib_jll", "libpng_jll"]
@@ -934,9 +1072,9 @@ version = "0.7.6"
 
 [[deps.ColorSchemes]]
 deps = ["ColorTypes", "ColorVectorSpace", "Colors", "FixedPointNumbers", "PrecompileTools", "Random"]
-git-tree-sha1 = "b5278586822443594ff615963b0c09755771b3e0"
+git-tree-sha1 = "c785dfb1b3bfddd1da557e861b919819b82bbe5b"
 uuid = "35d6a980-a343-548e-a6ea-1d62b119f2f4"
-version = "3.26.0"
+version = "3.27.1"
 
 [[deps.ColorTypes]]
 deps = ["FixedPointNumbers", "Random"]
@@ -956,9 +1094,9 @@ weakdeps = ["SpecialFunctions"]
 
 [[deps.Colors]]
 deps = ["ColorTypes", "FixedPointNumbers", "Reexport"]
-git-tree-sha1 = "362a287c3aa50601b0bc359053d5c2468f0e7ce0"
+git-tree-sha1 = "64e15186f0aa277e174aa81798f7eb8598e0157e"
 uuid = "5ae59095-9a9b-59fe-a467-6f913c188581"
-version = "0.12.11"
+version = "0.13.0"
 
 [[deps.Compat]]
 deps = ["TOML", "UUIDs"]
@@ -1045,9 +1183,9 @@ version = "0.1.10"
 
 [[deps.Expat_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "1c6317308b9dc757616f0b5cb379db10494443a7"
+git-tree-sha1 = "cc5231d52eb1771251fbd37171dbc408bcc8a1b6"
 uuid = "2e619515-83b5-522b-bb60-26c02a35a201"
-version = "2.6.2+0"
+version = "2.6.4+0"
 
 [[deps.FFMPEG]]
 deps = ["FFMPEG_jll"]
@@ -1075,9 +1213,13 @@ version = "3.3.10+1"
 
 [[deps.FileIO]]
 deps = ["Pkg", "Requires", "UUIDs"]
-git-tree-sha1 = "62ca0547a14c57e98154423419d8a342dca75ca9"
+git-tree-sha1 = "2dd20384bf8c6d411b5c7370865b1e9b26cb2ea3"
 uuid = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
-version = "1.16.4"
+version = "1.16.6"
+weakdeps = ["HTTP"]
+
+    [deps.FileIO.extensions]
+    HTTPExt = "HTTP"
 
 [[deps.FileWatching]]
 uuid = "7b1f6079-737a-58dc-b8bc-7a2ca5c1b5ee"
@@ -1171,9 +1313,9 @@ version = "1.0.2"
 
 [[deps.HTTP]]
 deps = ["Base64", "CodecZlib", "ConcurrentUtilities", "Dates", "ExceptionUnwrapping", "Logging", "LoggingExtras", "MbedTLS", "NetworkOptions", "OpenSSL", "Random", "SimpleBufferStream", "Sockets", "URIs", "UUIDs"]
-git-tree-sha1 = "d1d712be3164d61d1fb98e7ce9bcbc6cc06b45ed"
+git-tree-sha1 = "1336e07ba2eb75614c99496501a8f4b233e9fafe"
 uuid = "cd3eb016-35fb-5094-929b-558a96fad6f3"
-version = "1.10.8"
+version = "1.10.10"
 
 [[deps.HarfBuzz_jll]]
 deps = ["Artifacts", "Cairo_jll", "Fontconfig_jll", "FreeType2_jll", "Glib_jll", "Graphite2_jll", "JLLWrappers", "Libdl", "Libffi_jll"]
@@ -1331,9 +1473,9 @@ version = "3.2.2+1"
 
 [[deps.Libgcrypt_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Libgpg_error_jll"]
-git-tree-sha1 = "9fd170c4bbfd8b935fdc5f8b7aa33532c991a673"
+git-tree-sha1 = "8be878062e0ffa2c3f67bb58a595375eda5de80b"
 uuid = "d4300ac3-e22c-5743-9152-c294e39db1e4"
-version = "1.8.11+0"
+version = "1.11.0+0"
 
 [[deps.Libglvnd_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Pkg", "Xorg_libX11_jll", "Xorg_libXext_jll"]
@@ -1343,15 +1485,15 @@ version = "1.6.0+0"
 
 [[deps.Libgpg_error_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "fbb1f2bef882392312feb1ede3615ddc1e9b99ed"
+git-tree-sha1 = "c6ce1e19f3aec9b59186bdf06cdf3c4fc5f5f3e6"
 uuid = "7add5ba3-2f88-524e-9cd5-f83b8a55f7b8"
-version = "1.49.0+0"
+version = "1.50.0+0"
 
 [[deps.Libiconv_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "f9557a255370125b405568f9767d6d195822a175"
+git-tree-sha1 = "61dfdba58e585066d8bce214c5a51eaa0539f269"
 uuid = "94ce4f54-9a6c-5748-9c1c-f9c7231a4531"
-version = "1.17.0+0"
+version = "1.17.0+1"
 
 [[deps.Libmount_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
@@ -1414,9 +1556,9 @@ version = "1.11.0"
 
 [[deps.LoggingExtras]]
 deps = ["Dates", "Logging"]
-git-tree-sha1 = "c1dd6d7978c12545b4179fb6153b9250c96b0075"
+git-tree-sha1 = "f02b56007b064fbfddb4c9cd60161b6dd0f40df3"
 uuid = "e6f89c97-d47a-5376-807f-9c37f3926c36"
-version = "1.0.3"
+version = "1.1.0"
 
 [[deps.MIMEs]]
 git-tree-sha1 = "65f28ad4b594aebe22157d6fac869786a255b7eb"
@@ -1564,21 +1706,21 @@ weakdeps = ["REPL"]
 
 [[deps.PlotThemes]]
 deps = ["PlotUtils", "Statistics"]
-git-tree-sha1 = "6e55c6841ce3411ccb3457ee52fc48cb698d6fb0"
+git-tree-sha1 = "41031ef3a1be6f5bbbf3e8073f210556daeae5ca"
 uuid = "ccf2f8ad-2431-5c83-bf29-c5338b663b6a"
-version = "3.2.0"
+version = "3.3.0"
 
 [[deps.PlotUtils]]
 deps = ["ColorSchemes", "Colors", "Dates", "PrecompileTools", "Printf", "Random", "Reexport", "StableRNGs", "Statistics"]
-git-tree-sha1 = "650a022b2ce86c7dcfbdecf00f78afeeb20e5655"
+git-tree-sha1 = "3ca9a356cd2e113c420f2c13bea19f8d3fb1cb18"
 uuid = "995b91a9-d308-5afd-9ec6-746e21dbc043"
-version = "1.4.2"
+version = "1.4.3"
 
 [[deps.Plots]]
 deps = ["Base64", "Contour", "Dates", "Downloads", "FFMPEG", "FixedPointNumbers", "GR", "JLFzf", "JSON", "LaTeXStrings", "Latexify", "LinearAlgebra", "Measures", "NaNMath", "Pkg", "PlotThemes", "PlotUtils", "PrecompileTools", "Printf", "REPL", "Random", "RecipesBase", "RecipesPipeline", "Reexport", "RelocatableFolders", "Requires", "Scratch", "Showoff", "SparseArrays", "Statistics", "StatsBase", "TOML", "UUIDs", "UnicodeFun", "UnitfulLatexify", "Unzip"]
-git-tree-sha1 = "45470145863035bb124ca51b320ed35d071cc6c2"
+git-tree-sha1 = "dae01f8c2e069a683d3a6e17bbae5070ab94786f"
 uuid = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
-version = "1.40.8"
+version = "1.40.9"
 
     [deps.Plots.extensions]
     FileIOExt = "FileIO"
@@ -1903,9 +2045,9 @@ version = "1.31.0+0"
 
 [[deps.XML2_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Libiconv_jll", "Zlib_jll"]
-git-tree-sha1 = "1165b0443d0eca63ac1e32b8c0eb69ed2f4f8127"
+git-tree-sha1 = "a2fccc6559132927d4c5dc183e3e01048c6dcbd6"
 uuid = "02c8fc9c-b97f-50b9-bbe4-9be30ff0a78a"
-version = "2.13.3+0"
+version = "2.13.5+0"
 
 [[deps.XSLT_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl", "Libgcrypt_jll", "Libgpg_error_jll", "Libiconv_jll", "XML2_jll", "Zlib_jll"]
@@ -1915,9 +2057,9 @@ version = "1.1.41+0"
 
 [[deps.XZ_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
-git-tree-sha1 = "ac88fb95ae6447c8dda6a5503f3bafd496ae8632"
+git-tree-sha1 = "15e637a697345f6743674f1322beefbc5dcd5cfc"
 uuid = "ffd25f8a-64ca-5728-b0f7-c24cf3aae800"
-version = "5.4.6+0"
+version = "5.6.3+0"
 
 [[deps.Xorg_libICE_jll]]
 deps = ["Artifacts", "JLLWrappers", "Libdl"]
@@ -2188,72 +2330,65 @@ version = "1.4.1+1"
 
 # ╔═╡ Cell order:
 # ╠═b4423c48-1d43-4887-9f96-a2f6ac8eaa45
-# ╠═5c3aeb0a-4840-4508-81d8-775747b7cb63
+# ╠═b6058fe0-72a9-4be3-9d09-5f35109198a2
 # ╠═5b8f2611-cdf9-4761-8768-4b014f02b842
 # ╟─9e73d94e-c26e-4513-8142-1058738f103b
 # ╟─d1b6461e-6e87-4cab-af2d-f28e09c336ac
-# ╟─9ad716ab-57d8-4b17-b40c-93f6e14903b2
 # ╠═545776f8-e826-430b-8744-05a53ef708b6
+# ╟─a8bff246-a387-43ec-91b9-de97d366c79d
+# ╟─9ad716ab-57d8-4b17-b40c-93f6e14903b2
 # ╠═2206c20c-9e67-49a4-bc26-b203477b872f
 # ╠═a781a4c1-d0b1-4bab-a08b-724697d617f9
 # ╠═a03492f5-c172-46f3-839f-4d7417015acb
 # ╠═e6ad6e6e-b0ba-42d4-8677-f1149aed08bc
-# ╠═6bd5fd7b-4251-44af-a2fa-a481640d3fa2
-# ╠═81f06f66-bf6d-4b11-93ab-a628c6e3b0a5
 # ╠═e0054a3b-2e14-4bb8-81b0-6763e963dfaa
 # ╠═7b8eeeb2-bae5-46ed-9dee-0a8efb2d31c9
 # ╟─771a6712-36a4-4e1c-8355-210e4f3787ec
 # ╠═407c19d9-d67f-4e98-a8e6-8bb26c24e46f
 # ╠═2369b267-cfbc-4092-9822-24582c10af13
-# ╠═4a35f8fa-33d8-481f-8423-d5af7e32dc8f
 # ╠═16f56d88-d9e4-4ad5-9431-3a993408d26d
+# ╠═4a35f8fa-33d8-481f-8423-d5af7e32dc8f
 # ╠═2d0f04ca-fb8d-4dc9-81e6-1f2600fb0fab
 # ╠═79db0e46-1685-4c90-b51c-b158eac11f03
 # ╟─97b56eb0-df22-4877-8320-6440a1806c10
 # ╟─fd85e7bd-b950-4f0b-909c-cbdc85216a61
+# ╠═26beaaa8-923b-4b03-ae6d-af18996eb398
+# ╟─afd8681e-3169-44f1-aece-599ca9998531
 # ╠═a2570d4b-101c-4120-aa6c-8bbf8e42decd
 # ╠═31498e3b-94eb-4fe6-a814-f69fc9e5bb4c
-# ╠═26beaaa8-923b-4b03-ae6d-af18996eb398
-# ╠═55c51a2a-d99b-4e39-b2d5-4d82d8742a78
-# ╠═faf54ef7-7f3b-4f16-a18f-b21c0f00c2c9
-# ╟─f17cf45a-738e-4d23-8bfb-c06990ebd1fe
-# ╟─9782d6f9-285c-46d8-a826-017f4a5bcf53
+# ╟─c07030fd-47e4-4ee7-b409-8591771f61c7
 # ╠═86985c1c-c4a2-4b38-88e5-d1488d903ea8
 # ╠═cce7dba2-2bee-474d-b17a-4d091e4a1fd6
 # ╠═9dbdb70b-758d-49e7-b0b1-74fb339a9a8d
-# ╠═b9c3585a-e4cb-45a0-a864-a1739f4a47ed
+# ╟─23c239f3-4cd2-48fc-9391-41d361460f98
+# ╠═faf54ef7-7f3b-4f16-a18f-b21c0f00c2c9
+# ╟─f17cf45a-738e-4d23-8bfb-c06990ebd1fe
+# ╟─9782d6f9-285c-46d8-a826-017f4a5bcf53
 # ╠═94171cfa-1e8e-4aba-a5b8-faad0104cf80
 # ╠═8a1efef7-8903-426c-b8d6-a99bc5288981
 # ╠═41b7458c-dc6c-4774-8991-f74519a850ed
-# ╠═e7e58aaf-af48-4eac-a875-b64c569e435c
-# ╠═955fa4c1-50a8-4b61-be12-b4adb557ea82
 # ╟─8fbdea3e-2c49-4068-8b2e-6339737554f2
 # ╟─5c76963a-5cd6-4797-bc28-536a565bf4fe
-# ╠═3c96b257-8c18-4e7b-9677-c8a703d5d21f
 # ╠═561faa84-f4e3-4712-92b0-68e6edabae65
 # ╠═0c6a11eb-e4b2-4daa-83c9-97872ca150ce
 # ╠═c8d73641-e8ba-46ff-b368-981d3c288d48
 # ╠═b69942f4-34b8-47f9-b33a-9776719feac0
+# ╠═72f3a029-32f2-4dbd-b8c3-f5794ea85404
 # ╠═319a6376-3172-4f9b-9137-c8a3809920c3
-# ╠═5be3c4c2-dcae-4a57-8bcc-9a6d1f580110
 # ╠═61d7911a-ea4d-4ef1-9778-6a2e8eff10e1
 # ╠═b2fc20f1-faf1-4e08-9ccd-6b175cff0066
-# ╠═7e92160b-51eb-4434-8001-60a00f84d1f2
-# ╠═70890a0e-f7bb-4a92-aa11-2e65e70875b1
-# ╠═a598c1a7-9788-44bb-85ee-24aa4f14d9f9
 # ╠═d132b9c0-8101-4c14-89d7-5fa1462ea71e
-# ╟─f3fce6ec-b9c8-4aae-bdfa-2387bb2cc38a
 # ╠═32f20ec2-bf15-467f-98ef-6dbe6a568bca
 # ╠═825e7090-8196-4165-853c-57237f5e05c9
 # ╠═8f361246-8941-47a6-98c1-2b92dea2c74b
 # ╟─84d96895-e4ad-4bf4-8df7-6e81b983bb3e
 # ╠═cc41548c-674a-4f67-bdf7-95ce16a6a5d8
-# ╠═40e51d70-0e20-48c8-9156-b1475870a604
 # ╠═eb1daded-ad36-41d3-9088-a9f8cf6bf63f
 # ╠═eef3c2ad-3619-49b1-a612-63c234314dfd
 # ╠═aac0a39f-0c49-4009-974e-852c7e8e2b17
 # ╠═38b8e9f0-2546-4113-83b7-85599faa6992
 # ╟─146871c4-e014-4ee4-9933-1d21c2504635
+# ╟─e09da774-b32d-487f-97a9-2195d3306224
 # ╟─e47f1bd9-89b5-4f67-96bf-d6b4a50a721c
 # ╠═309e82f8-2ea4-4de8-a27b-92844948c579
 # ╠═0499ad09-e8a8-41e8-99f3-4ca309ceb9d9
@@ -2268,11 +2403,9 @@ version = "1.4.1+1"
 # ╠═0e8c82c6-ca02-4684-b319-ce35c2cf19cb
 # ╠═5f3c0dd6-8ec8-432c-a230-786cf3d8a73a
 # ╟─368e2830-3152-40eb-9795-5ea0ec69d8a5
-# ╠═6945a13f-7554-40b9-9e65-75c18ce5ec1a
 # ╠═533165d8-3c49-4609-8f69-1237c43b6946
 # ╠═3873b054-5005-4b17-bae8-a51c44dca506
 # ╠═8d59bb1c-458c-4d51-a735-2587c84e0f2c
-# ╠═a1cf574f-db23-424f-aa0b-301770768323
 # ╠═3f257922-9321-4b2a-84b3-ab3e5f57253e
 # ╠═b41a985a-c81a-467d-b137-4a0cde1c4a73
 # ╠═d539f8c0-2f35-4a88-9646-07aedff40bda
@@ -2282,29 +2415,53 @@ version = "1.4.1+1"
 # ╠═a630247b-0505-43ff-b94a-468ef8887728
 # ╟─1b3e2e57-7c3f-4365-8616-e4b46b046102
 # ╠═93248879-4486-4059-a363-6c7b6a0015d8
-# ╠═251b6304-4314-479e-aa8a-d9e573d29c69
-# ╠═3d552383-bf50-422d-9d8a-e096cdb521c4
-# ╟─949954b4-663d-4ef3-99b5-0df3c74a31e7
 # ╠═46f8977f-fe22-4efc-9724-6b8ca588414d
+# ╟─949954b4-663d-4ef3-99b5-0df3c74a31e7
 # ╟─8fc35997-f124-423e-b384-0f2369ecaa35
 # ╠═84b53076-c26b-445a-a458-fe71cca242dc
 # ╟─16f2dc1f-30d2-4335-87e2-afb32235f1dc
-# ╠═62c83b97-32ed-4c48-987e-bbbd95afbd20
-# ╠═400fa7e6-6090-46fb-9610-ab3c816177c5
 # ╠═d33b3243-058c-446f-975a-0aee5b5426ac
-# ╠═08f567b2-769a-498d-9a49-4fb82eae8639
-# ╠═9c452b24-0e8a-4b4e-a408-ea60da97a831
-# ╟─87f1dd44-5127-4c94-b0ef-4aa018029c18
 # ╠═0d3e2f32-19fe-435d-96b6-83f047ecd8ef
 # ╠═cf6f1ff9-6439-4ef9-af20-f278495eb239
-# ╟─e03267b6-1320-435a-818a-c2018556c25b
-# ╟─0f3840e7-0ca5-4d57-ac12-cd4df3c9caf3
 # ╠═847bb094-a2b8-4459-9d7b-f39bd3db2101
+# ╟─e03267b6-1320-435a-818a-c2018556c25b
 # ╠═662b0be2-9f82-4980-83de-bb0143c28736
 # ╠═60b8f0cc-7e28-4787-be5c-e2b779e655c4
-# ╠═f358da6f-5d6c-4d20-bf54-057b06a3f473
-# ╠═70b538e0-2a51-4b88-9086-a9fe4d029260
-# ╠═6b43c19a-d3d6-4e09-aa0f-20cff481ffaf
 # ╠═1fba26bb-4d17-4df8-8ce2-ca4185101681
+# ╟─13e65ea8-e0c4-45ee-ae57-460310380097
+# ╠═f83e5917-ee9e-46b4-a11e-35a6a2c4a16e
+# ╠═5c3bd9b8-128d-4966-9f25-740650ac174a
+# ╠═cd88c2ef-6754-456d-a06a-7bf525c4cc14
+# ╠═a205b9df-6dbc-4273-a562-a140114250fc
+# ╠═dc48d7b5-65ec-45e4-9611-9a3f589d9463
+# ╠═1449ca3a-5d15-4e96-8ae7-ce2b96df9747
+# ╠═18369292-fa64-4f23-9f47-6d7087f2913f
+# ╠═564c7262-fe98-444e-a1a4-6d04a39fb013
+# ╠═d67ac882-dfb3-4469-a6f5-bd7562a9030c
+# ╠═ffda42db-43e7-4c52-a1ec-bd967f98cfb9
+# ╠═925818b5-d07f-4b0b-913e-84ef7ab0a27e
+# ╠═cc992d38-8ef4-4b1a-8c11-2ba00010abf5
+# ╠═e9a1ce96-4b7c-4502-884e-daabb567417f
+# ╠═7704fedd-98aa-4f3e-ba27-81292ead309e
+# ╟─6c16f8ea-9d17-4ed6-9586-7d387170f6cb
+# ╠═2e89cddd-cbbc-4523-946c-f02758318be8
+# ╠═4dc7a0ca-b421-4975-9c53-bd5ba95f9a6b
+# ╠═f8392ada-3896-4ec0-bf43-b99f58ec714a
+# ╠═2171aa3d-e86e-4dfc-a3f2-2800707f78c3
+# ╟─35eb8042-1fbd-4416-85aa-39e569c21148
+# ╠═2ced9f0e-a769-4955-97c2-120d08910420
+# ╠═ae4e5a29-73a8-45d2-81d2-c3c656ddbfef
+# ╠═283b8d85-d42c-486c-9430-4d0e1111fadb
+# ╠═a1b27036-352d-4f68-a629-44691120f8e6
+# ╠═63a0bb76-0098-4575-bd2c-fddf3a81a466
+# ╠═0b5d7813-d4d8-4e62-9e9a-2dd9eab5adb6
+# ╠═5adaf3aa-3256-4076-85fc-e10439d8be63
+# ╠═08912314-bbf1-404e-bcdc-05623f48b173
+# ╠═469b3d33-b616-4e48-998a-d9476263ab74
+# ╠═174995db-f16b-4a6c-867e-744f3b2a265c
+# ╠═9d8c7bf8-67b0-45e1-98a5-312dbe032081
+# ╠═20ac7f13-df71-415d-ad1b-4df08ff7fb3f
+# ╠═04ae92c1-8609-4fc0-9939-a5963b5ecc59
+# ╟─3463f0b0-60b0-4d10-810a-c53b07914380
 # ╟─00000000-0000-0000-0000-000000000001
 # ╟─00000000-0000-0000-0000-000000000002
